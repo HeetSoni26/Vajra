@@ -1,0 +1,14 @@
+FROM nvidia/cuda:12.1.1-cudnn8-runtime-ubuntu22.04
+
+ENV DEBIAN_FRONTEND=noninteractive PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1
+RUN apt-get update && apt-get install -y --no-install-recommends python3.11 python3-pip git ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+WORKDIR /app
+COPY requirements-serve.txt .
+RUN python3.11 -m pip install --upgrade pip && python3.11 -m pip install -r requirements-serve.txt
+COPY api ./api
+COPY inference ./inference
+COPY model ./model
+ENV MODEL_PATH=/app/model_weights
+EXPOSE 8000
+CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]

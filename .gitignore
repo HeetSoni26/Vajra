@@ -1,0 +1,49 @@
+# Environments
+.env
+.venv/
+venv/
+env/
+ENV/
+
+# Python
+*.pyc
+__pycache__/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.coverage
+build/
+dist/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project Specific
+.cache/
+logs/
+data/
+checkpoints/
+wandb/
+
+# Weights
+*.safetensors
+*.bin
+*.gguf
+*.zst
+*.pt
+
+# Outputs & Reports
+benchmark_report.json
+generation_benchmark.json
+evaluation_report.json
+PROJECT_STATUS.json
+output.txt
+test_output.txt
+calc.txt

@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vajra-lm"
+version = "1.0.0"
+description = "Vajra v1.0.0 - A 1B-2B open-source foundation language model and autonomous agent framework."
+requires-python = ">=3.10"
+dependencies = [
+  "torch>=2.3",
+  "transformers>=4.40",
+  "tokenizers>=0.19",
+  "datasets>=2.19",
+  "accelerate>=0.30",
+  "deepspeed>=0.14",
+  "safetensors>=0.4",
+  "numpy>=1.26",
+  "pyyaml>=6.0",
+  "tqdm>=4.66",
+  "wandb>=0.17",
+  "zstandard>=0.22",
+  "pyarrow>=16",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.4", "mypy>=1.10", "pre-commit>=3.7"]
+data = ["datasketch>=1.6", "ftfy>=6.2", "trafilatura>=1.9", "datatrove>=0.3"]
+serve = ["fastapi>=0.111", "uvicorn>=0.29", "pydantic>=2", "httpx>=0.27", "gradio>=4.0", "huggingface-hub>=0.20"]
+align = ["trl>=0.8"]
+eval = ["lm-eval>=0.4"]
+all = [
+  "vajra-lm[dev,data,serve,align,eval]",
+]
+
+[project.scripts]
+vajra-lm = "cli.main:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["*"]
+exclude = ["tests*", "docs*", "configs*", "notebooks*", "scripts*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+

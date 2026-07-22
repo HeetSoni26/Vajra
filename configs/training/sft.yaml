@@ -1,0 +1,17 @@
+base_model: checkpoints/pretrain_1b/hf
+tokenizer: tokenizer/v1.0
+train_file: data/alignment/sft_train.jsonl
+validation_file: data/alignment/sft_valid.jsonl
+output_dir: checkpoints/sft_1b
+max_seq_length: 2048
+learning_rate: 2.0e-5
+num_train_epochs: 2
+per_device_train_batch_size: 4
+gradient_accumulation_steps: 8
+warmup_ratio: 0.03
+lr_scheduler_type: cosine
+weight_decay: 0.0
+bf16: true
+completion_only_loss: true
+chat_template: llama_style_custom
+wandb_project: vajra-lm-sft

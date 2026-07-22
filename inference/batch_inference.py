@@ -1,0 +1,1 @@
+print("Batch inference placeholder.")

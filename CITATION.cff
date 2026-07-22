@@ -1,0 +1,8 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: "Vajra-LM Team"
+title: "Foundation LM: Open-Source Vajra Language Model Framework"
+version: 0.6.0
+date-released: 2026-07-22
+url: "https://github.com/vajra-lm/vajra-lm"

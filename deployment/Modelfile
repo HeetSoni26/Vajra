@@ -1,0 +1,5 @@
+FROM ./model-Q4_K_M.gguf
+TEMPLATE """<|sys|>{{ .System }}<|user|>{{ .Prompt }}<|assistant|>"""
+SYSTEM "You are a helpful assistant."
+PARAMETER stop "<|eos|>"
+PARAMETER stop "<|user|>"

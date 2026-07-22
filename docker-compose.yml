@@ -1,0 +1,9 @@
+services:
+  trainer:
+    build: .
+    ipc: host
+    shm_size: "16gb"
+    volumes:
+      - .:/app
+    environment:
+      - WANDB_MODE=offline

@@ -1,0 +1,15 @@
+{
+  "version": "1.0",
+  "status": "scaffold",
+  "target_tokens": 100000000000,
+  "domains": [
+    "web",
+    "code",
+    "math",
+    "science",
+    "books",
+    "wikipedia",
+    "technical",
+    "other"
+  ]
+}

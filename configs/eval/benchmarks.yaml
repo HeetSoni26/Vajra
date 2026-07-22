@@ -1,0 +1,12 @@
+primary:
+  mmlu: 5
+  arc_challenge: 25
+  hellaswag: 10
+  winogrande: 5
+  piqa: 0
+  truthfulqa_mc2: 0
+  gsm8k: 8
+  math: 4
+code:
+  humaneval: 0
+  mbpp: 3

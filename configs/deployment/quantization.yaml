@@ -1,0 +1,10 @@
+hf_model_path: checkpoints/final/hf
+gguf_output_dir: models/gguf
+awq_output_dir: models/awq-4bit
+gguf_quantizations:
+  - Q4_K_M
+  - Q5_K_M
+  - Q8_0
+awq:
+  w_bit: 4
+  q_group_size: 128
