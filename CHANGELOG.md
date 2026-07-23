@@ -35,6 +35,10 @@ All notable changes to this project will be documented in this file.
   - Added `scripts/prepare_dataset.py`: end-to-end orchestrator (synthetic + production modes).
   - Added `scripts/verify_training_readiness.py`: 5-stage pre-flight verification (model, dataset, forward/backward, optimizer, checkpoint round-trip).
   - Expanded unit test suite to **213/213 passing tests** (33 new Phase 5 tests added).
+- **Phase 6 (End-to-End Training Pipeline Validation)**:
+  - Created `configs/model/model_tiny_validation.yaml` and `configs/training/pretrain_tiny_validation.yaml` for `Vajra-Tiny-Validation`.
+  - Created `scripts/run_phase6_validation.py` validating 11 pipeline sections: Tokenizer workflow, Dataset pipeline, Forward/Backward/Optimizer/AMP, Checkpoint save/load/resume, HF Export/Reload, Greedy/Sample/Stream Inference, Evaluation, and Failure recovery.
+  - Expanded unit test suite to **216/216 passing tests** (100% pass rate).
 
 ## [0.9.0] - 2026-07-22 (Vajra-Agent Phase 3 — Memory & Knowledge System)
 

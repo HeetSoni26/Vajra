@@ -1,0 +1,20 @@
+# Dedicated training configuration for Vajra-Tiny-Validation
+model_config: configs/model/model_tiny_validation.yaml
+data_dir: data/tokenized_validation
+output_dir: checkpoints/validation_run
+tokenizer_path: tokenizer/v1.0
+sequence_length: 32
+micro_batch_size: 2
+gradient_accumulation_steps: 2
+learning_rate: 1.0e-3
+min_learning_rate: 1.0e-4
+warmup_steps: 5
+weight_decay: 0.01
+adam_beta1: 0.9
+adam_beta2: 0.95
+adam_epsilon: 1.0e-8
+grad_clip: 1.0
+max_steps: 20
+save_every_steps: 5
+eval_every_steps: 5
+precision: float32
