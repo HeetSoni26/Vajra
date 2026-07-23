@@ -78,3 +78,16 @@ def test_checkpoints():
         
         loaded = CheckpointManager.load_checkpoint(d)
         assert summarize_model(loaded)["parameters"] == summarize_model(model)["parameters"]
+
+
+def test_label_shifting():
+    config = VajraConfig(
+        vocab_size=100, hidden_size=64, intermediate_size=128, 
+        num_layers=1, num_attention_heads=2, num_key_value_heads=1
+    )
+    model = VajraForCausalLM(config)
+    input_ids = torch.randint(0, 100, (2, 10))
+    labels = torch.randint(0, 100, (2, 10))
+    out = model(input_ids, labels=labels)
+    assert "loss" in out and out["loss"] is not None
+

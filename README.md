@@ -45,7 +45,7 @@ vajra/
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/vajra.git
+git clone https://github.com/vajra-ai/vajra.git
 cd vajra
 
 # Install with all dependencies
@@ -70,13 +70,10 @@ print(result.output)
 
 ### Vajra-LM Inference
 ```python
-from vajra_agent.reasoners import VajraReasoner
-from model.model import FoundationLM
-from model.config import ModelConfig
+from model import VajraForCausalLM, VajraConfig
 
-config = ModelConfig.from_pretrained("path/to/checkpoint")
-model = FoundationLM(config)
-model.load_state_dict(...)
+config = VajraConfig.from_pretrained("path/to/checkpoint")
+model = VajraForCausalLM.from_pretrained("path/to/checkpoint")
 ```
 
 ## 📊 Benchmarks & Validation
@@ -85,7 +82,7 @@ Vajra v1.0.0 has passed a rigorous **Real-World Validation Suite** covering mult
 
 *   **Task Success Rate**: 100.0%
 *   **Verification Success**: 100.0%
-*   **Pytest Suite**: 103/103 Passed
+*   **Pytest Suite**: 180/180 Passed
 *   **Ruff Cleanliness**: 0 Errors
 
 See the [Validation Report](docs/agent/validation_report.md) for full metrics.

@@ -1,5 +1,5 @@
 from typing import List
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from enum import Enum
 
 class TokenizerType(str, Enum):
@@ -37,5 +37,4 @@ class TokenizerConfig(BaseModel):
     output_dir: str = "output/tokenizer"
     training_corpus_paths: List[str] = Field(default_factory=list)
     
-    class Config:
-        use_enum_values = True
+    model_config = ConfigDict(use_enum_values=True)

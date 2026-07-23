@@ -11,4 +11,12 @@ COPY inference ./inference
 COPY model ./model
 ENV MODEL_PATH=/app/model_weights
 EXPOSE 8000
+
+# Security hardening: Create non-root user and assign permissions
+RUN groupadd -g 10001 vajra && \
+    useradd -u 10001 -g vajra -m -s /bin/bash vajra && \
+    chown -R vajra:vajra /app
+
+USER vajra
+
 CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -11,13 +11,46 @@ from typing import Any
 
 from vajra_agent.sandbox.models import SandboxResult
 
+BLOCKED_MODULES = {"subprocess", "ctypes", "pty", "socket", "signal"}
+
+def _sandbox_import(name: str, globals: dict[str, Any] | None = None, locals: dict[str, Any] | None = None, fromlist: tuple[str, ...] = (), level: int = 0) -> Any:
+    base = name.split(".")[0]
+    if base in BLOCKED_MODULES:
+        raise ImportError(f"Security error: Module '{name}' is restricted in sandbox execution.")
+    return __import__(name, globals, locals, fromlist, level)
+
+def _get_sandbox_builtins(work_dir: Path) -> dict[str, Any]:
+    import builtins
+    safe = {k: getattr(builtins, k) for k in dir(builtins) if not k.startswith("_")}
+    safe.pop("eval", None)
+    safe.pop("compile", None)
+    safe["__import__"] = _sandbox_import
+
+    # Safe open function bounded to work_dir or relative paths
+    raw_open = builtins.open
+    def safe_open(file: str | Path, mode: str = "r", *args: Any, **kwargs: Any) -> Any:
+        file_path = Path(file)
+        if not file_path.is_absolute():
+            file_path = (work_dir / file_path).resolve()
+        else:
+            file_path = file_path.resolve()
+        # Bounded file check
+        try:
+            file_path.relative_to(work_dir.resolve())
+        except ValueError:
+            raise PermissionError(f"Access denied: Path '{file}' is outside sandbox working directory '{work_dir}'.")
+        return raw_open(file_path, mode, *args, **kwargs)
+
+    safe["open"] = safe_open
+    return safe
+
 
 class PythonSandbox:
     """Isolated Python code execution environment capturing stdout/stderr, files created, and execution times."""
 
     def __init__(self, timeout: float = 30.0, work_dir: str | Path | None = None) -> None:
         self.timeout = timeout
-        self.work_dir = Path(work_dir) if work_dir else Path.cwd()
+        self.work_dir = Path(work_dir).resolve() if work_dir else Path.cwd().resolve()
 
     def execute(self, code: str, global_vars: dict[str, Any] | None = None) -> SandboxResult:
         start_t = time.perf_counter()
@@ -35,6 +68,8 @@ class PythonSandbox:
             before_files = {str(f.relative_to(self.work_dir)) for f in self.work_dir.rglob("*") if f.is_file()}
 
         namespace = global_vars or {}
+        namespace["__builtins__"] = _get_sandbox_builtins(self.work_dir)
+
         success = True
         error_type = None
         tb_str = None

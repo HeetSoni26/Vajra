@@ -3,9 +3,10 @@ from __future__ import annotations
 from contextlib import asynccontextmanager
 import os
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, status
 from fastapi.responses import StreamingResponse
 
+from api.middleware import setup_middleware
 from api.schemas import (
     CompletionRequest,
     ChatRequest,
@@ -42,16 +43,18 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+setup_middleware(app)
+
 
 # --- Health & Model Info ---
 
 @app.get("/health")
-def health():
+async def health():
     return {"status": "ok"}
 
 
 @app.get("/v1/models")
-def models():
+async def models():
     engine = _get_engine()
     if engine:
         info = engine.model_info()
@@ -60,21 +63,27 @@ def models():
 
 
 @app.get("/model")
-def model_info():
+async def model_info():
     engine = _get_engine()
-    if engine:
-        return engine.model_info()
-    return {"error": "Engine not initialised"}
+    if engine is None:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Engine not initialised",
+        )
+    return engine.model_info()
 
 
 # --- Generation ---
 
 @app.post("/v1/completions")
 @app.post("/generate")
-def completions(request: CompletionRequest):
+async def completions(request: CompletionRequest):
     engine = _get_engine()
     if engine is None:
-        return {"error": "Engine not initialised"}
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Engine not initialised",
+        )
 
     from inference.engine import GenerationConfig
     gen_cfg = GenerationConfig(
@@ -88,13 +97,20 @@ def completions(request: CompletionRequest):
     )
 
     if request.stream:
-        def _stream():
+        async def _async_stream():
             for token_text in engine.generate_stream(request.prompt, gen_cfg):
                 yield f"data: {token_text}\n\n"
             yield "data: [DONE]\n\n"
-        return StreamingResponse(_stream(), media_type="text/event-stream")
+        return StreamingResponse(_async_stream(), media_type="text/event-stream")
 
-    results = engine.generate(request.prompt, gen_cfg)
+    try:
+        results = engine.generate(request.prompt, gen_cfg)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Generation failed: {str(e)}",
+        )
+
     return {
         "id": "cmpl-local",
         "object": "text_completion",
@@ -106,10 +122,13 @@ def completions(request: CompletionRequest):
 # --- Chat ---
 
 @app.post("/v1/chat/completions")
-def chat_completions(request: ChatRequest):
+async def chat_completions(request: ChatRequest):
     engine = _get_engine()
     if engine is None:
-        return {"error": "Engine not initialised"}
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Engine not initialised",
+        )
 
     # Flatten messages into a single prompt
     prompt_parts = []
@@ -128,7 +147,14 @@ def chat_completions(request: ChatRequest):
         seed=request.seed,
     )
 
-    results = engine.generate(prompt, gen_cfg)
+    try:
+        results = engine.generate(prompt, gen_cfg)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Chat generation failed: {str(e)}",
+        )
+
     return {
         "id": "chatcmpl-local",
         "object": "chat.completion",
@@ -144,16 +170,22 @@ def chat_completions(request: ChatRequest):
 # --- Tokenize / Detokenize ---
 
 @app.post("/tokenize")
-def tokenize_text(request: TokenizeRequest):
+async def tokenize_text(request: TokenizeRequest):
     engine = _get_engine()
     if engine is None:
-        return {"error": "Engine not initialised"}
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Engine not initialised",
+        )
     return engine.tokenize(request.text)
 
 
 @app.post("/detokenize")
-def detokenize_ids(request: DetokenizeRequest):
+async def detokenize_ids(request: DetokenizeRequest):
     engine = _get_engine()
     if engine is None:
-        return {"error": "Engine not initialised"}
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Engine not initialised",
+        )
     return {"text": engine.detokenize(request.ids)}

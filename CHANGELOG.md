@@ -2,20 +2,30 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.0.0] - 2026-07-22 (Vajra-Agent v1.0.0 Real-World Validation Release)
+## [1.0.0] - 2026-07-23 (Vajra v1.0.0 Open Source Production Release)
 
-### Added
-- **Real-World Validation Suite (`tests/test_validation/` & `validation/`)**:
-  - Multi-language repository scanning & indexing validation across Python FastAPI, Node/Next.js, Go, Rust, and mixed-language projects (`test_real_repo_scanning.py`).
-  - 10 Software engineering task validations (`test_engineering_tasks.py`).
-  - End-to-end multi-agent scenario pipeline validations (`test_e2e_scenarios.py`).
-  - Zero-regression core abstraction test suite (`test_regression_suite.py`).
-  - Automated validation runner (`validation/run_validation.py`) producing `validation/validation_report.json`.
-- **Validation Documentation (`docs/agent/validation_report.md`)**:
-  - Detailed quality metrics report, known strengths, known weaknesses, production deployment notes, and recommendations for future releases.
-- **Quality Gate Verification**:
-  - Expanded unit test suite to **103/103 passing tests**.
-  - **100.0% Validation Task Success Rate** with **0 tool execution failures**.
+### Added & Stabilized
+- **Phase 1 (Critical Runtime & Architecture Repair)**:
+  - Canonicalized model exports on `VajraForCausalLM` and `VajraConfig`.
+  - Deprecated redundant model classes with backward compatible aliases.
+  - Enhanced Pydantic configuration alias resolution (`rms_norm_eps` / `rmsnorm_eps`, `head_dim`).
+  - Fixed training data loader import chains and checkpoint managers.
+- **Phase 2 (Security, API Correctness & Production Readiness)**:
+  - Hardened `ShellTool` to eliminate unsafe `shell=True` execution.
+  - Restricted `PythonTool` and `PythonSandbox` `exec()` environment, blocking hazardous builtins and system imports.
+  - Device-agnostic `GradScaler` hardware detection (CUDA, CPU, Apple MPS).
+  - Integrated HuggingFace `AutoConfig` and `AutoModelForCausalLM` registration with `strict=True` weight loading validation.
+  - Hardened Docker containers with non-root `vajra` user (UID/GID 10001).
+- **Phase 3 (Medium Severity & Production Completeness)**:
+  - Added missing `__init__.py` files across all python packages.
+  - Migrated Pydantic V2 configurations to `ConfigDict` and `SettingsConfigDict`.
+  - Implemented production middleware (`CORS`, `X-Request-ID`, execution profiling, error logging).
+  - Implemented working `LocalBackend`, `HTTPBackend`, `HuggingFaceBackend`, and `GitBackend` dataset downloaders.
+  - Converted API endpoints to async with SSE streaming generators.
+  - Clarified label shifting semantics in `VajraForCausalLM.forward`.
+- **Phase 4 (Final Open Source Release Preparation)**:
+  - Updated `SECURITY.md`, `CITATION.cff`, `pyproject.toml` extras, and pytest infrastructure `conftest.py`.
+  - Reached **100% test pass rate (180/180 passed)** and **0 Ruff lint errors**.
 
 ## [0.9.0] - 2026-07-22 (Vajra-Agent Phase 3 — Memory & Knowledge System)
 

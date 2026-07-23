@@ -2,14 +2,14 @@ import csv
 import json
 import time
 from pathlib import Path
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 
 class MetricsTracker:
     """
     Tracks and logs training metrics to console, JSON, CSV.
     Optionally logs to TensorBoard if available.
     """
-    def __init__(self, output_dir: str | Path, log_interval: int = 10):
+    def __init__(self, output_dir: str | Path = "logs", log_interval: int = 10):
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.log_interval = log_interval
@@ -76,6 +76,27 @@ class MetricsTracker:
             for k, v in metrics.items():
                 if isinstance(v, (int, float)):
                     self.tb_writer.add_scalar(k, v, step)
+
+    def record_step(
+        self,
+        step: int,
+        loss: float,
+        lr: float,
+        tokens_in_step: int,
+        samples_in_step: int,
+        grad_norm: float = 0.0,
+        val_loss: Optional[float] = None,
+    ) -> Dict[str, Any]:
+        metrics = {
+            "loss": loss,
+            "learning_rate": lr,
+            "tokens_processed": tokens_in_step,
+            "samples_processed": samples_in_step,
+            "grad_norm": grad_norm,
+            "val_loss": val_loss,
+        }
+        self.log(step, metrics)
+        return metrics
 
     def close(self):
         if self.tb_writer:

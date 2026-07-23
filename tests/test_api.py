@@ -65,3 +65,18 @@ def test_detokenize_endpoint(api_client):
     resp = api_client.post("/detokenize", json={"ids": ids})
     assert resp.status_code == 200
     assert "text" in resp.json()
+
+
+def test_uninitialized_engine_returns_503():
+    from fastapi.testclient import TestClient
+    from api import main
+    old_engine = main._ENGINE
+    main._ENGINE = None
+    try:
+        client = TestClient(main.app)
+        resp = client.post("/generate", json={"prompt": "test"})
+        assert resp.status_code == 503
+        assert resp.json()["detail"] == "Engine not initialised"
+    finally:
+        main._ENGINE = old_engine
+

@@ -16,7 +16,7 @@ Vajra-Agent v1.0 underwent real-world repository scanning, multi-language worksp
 | **Planning Accuracy** | **100.0%** | > 90% | PASS |
 | **Memory Recall Latency** | **6.66 ms** | < 50 ms | PASS |
 | **Multi-Agent Orchestration Latency** | **2.77 ms** | < 100 ms | PASS |
-| **Regression Test Suite** | **103 / 103 Passed** | 100% | PASS |
+| **Regression Test Suite** | **180 / 180 Passed** | 100% | PASS |
 
 ---
 

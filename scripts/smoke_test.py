@@ -67,7 +67,7 @@ def run_smoke_test(temp_dir: str = "smoke_test_tmp"):
 if __name__ == "__main__":
     try:
         run_smoke_test()
-    except Exception as e:
+    except Exception:
         import traceback
         traceback.print_exc()
         sys.exit(1)

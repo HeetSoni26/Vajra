@@ -22,6 +22,8 @@ def main() -> None:
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
     model = AutoModelForCausalLM.from_pretrained(cfg["base_model"], torch_dtype="auto", device_map="auto")
+
+    # Use eval_strategy for transformers >= 4.41 compatibility
     training_args = TrainingArguments(
         output_dir=cfg["output_dir"],
         learning_rate=float(cfg["learning_rate"]),
@@ -35,18 +37,24 @@ def main() -> None:
         logging_steps=10,
         save_steps=500,
         eval_steps=500,
-        evaluation_strategy="steps",
-        report_to="wandb",
+        eval_strategy="steps",
+        report_to=cfg.get("report_to", "none"),
     )
-    trainer = SFTTrainer(
-        model=model,
-        tokenizer=tokenizer,
-        train_dataset=dataset["train"],
-        eval_dataset=dataset["validation"],
-        args=training_args,
-        max_seq_length=int(cfg["max_seq_length"]),
-        dataset_text_field="text",
-    )
+
+    # Pass processing_class for modern TRL compatibility
+    trainer_kwargs = {
+        "model": model,
+        "train_dataset": dataset["train"],
+        "eval_dataset": dataset["validation"],
+        "args": training_args,
+        "max_seq_length": int(cfg["max_seq_length"]),
+        "dataset_text_field": "text",
+    }
+    try:
+        trainer = SFTTrainer(processing_class=tokenizer, **trainer_kwargs)
+    except TypeError:
+        trainer = SFTTrainer(tokenizer=tokenizer, **trainer_kwargs)
+
     trainer.train()
     trainer.save_model(cfg["output_dir"])
 

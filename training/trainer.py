@@ -17,30 +17,53 @@ from utils.logging import setup_logger
 logger = setup_logger("trainer")
 
 
-def resolve_precision_and_scaler(precision_mode: str) -> tuple[torch.dtype, bool, Any]:
+def resolve_precision_and_scaler(precision_mode: str, device: str | torch.device | None = None) -> tuple[torch.dtype, bool, Any]:
     """Resolve AMP precision dtype, autocast enabled state, and GradScaler based on hardware capabilities."""
     mode = precision_mode.lower()
 
+    if device is None:
+        if torch.cuda.is_available():
+            device_type = "cuda"
+        elif hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+            device_type = "mps"
+        else:
+            device_type = "cpu"
+    else:
+        dev_str = str(device).lower()
+        if "cuda" in dev_str:
+            device_type = "cuda"
+        elif "mps" in dev_str:
+            device_type = "mps"
+        else:
+            device_type = "cpu"
+
+    scaler_device = "cuda" if device_type == "cuda" else "cpu"
+
     if mode == "bf16":
-        if torch.cuda.is_available() and torch.cuda.is_bf16_supported():
-            return torch.bfloat16, True, torch.amp.GradScaler("cuda", enabled=False)
+        if device_type == "cuda" and torch.cuda.is_bf16_supported():
+            return torch.bfloat16, True, torch.amp.GradScaler(scaler_device, enabled=False)
+        elif device_type == "mps":
+            return torch.bfloat16, True, torch.amp.GradScaler(scaler_device, enabled=False)
         else:
             logger.warning("BF16 precision requested but hardware does not support BF16. Falling back to FP32.")
-            return torch.float32, False, torch.amp.GradScaler("cuda", enabled=False)
+            return torch.float32, False, torch.amp.GradScaler(scaler_device, enabled=False)
 
     elif mode == "fp16":
-        if torch.cuda.is_available():
+        if device_type == "cuda":
             return torch.float16, True, torch.amp.GradScaler("cuda", enabled=True)
+        elif device_type == "mps":
+            return torch.float16, True, torch.amp.GradScaler("cpu", enabled=False)
         else:
             logger.warning("FP16 precision requested but CUDA is unavailable. Falling back to FP32.")
-            return torch.float32, False, torch.amp.GradScaler("cuda", enabled=False)
+            return torch.float32, False, torch.amp.GradScaler("cpu", enabled=False)
 
     # FP32 default
-    return torch.float32, False, torch.amp.GradScaler("cuda", enabled=False)
+    return torch.float32, False, torch.amp.GradScaler(scaler_device, enabled=False)
+
 
 
 class Trainer:
-    """Production-grade single/multi-node training engine supporting DDP, AMP (BF16/FP16/FP32), and step profiling."""
+    """Production-grade single-node (multi-GPU DDP) training engine supporting AMP (BF16/FP16/FP32) and step profiling."""
 
     def __init__(
         self,

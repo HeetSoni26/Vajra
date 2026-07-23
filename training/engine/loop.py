@@ -29,7 +29,10 @@ class TrainingEngine:
         self.samples_processed = 0
         
         # AMP
-        self.scaler = torch.amp.GradScaler(device="cuda", enabled=(self.config.mixed_precision == "fp16"))
+        device_type = "cuda" if torch.cuda.is_available() else ("mps" if hasattr(torch.backends, "mps") and torch.backends.mps.is_available() else "cpu")
+        scaler_device = "cuda" if device_type == "cuda" else "cpu"
+        scaler_enabled = (self.config.mixed_precision == "fp16") and (device_type == "cuda")
+        self.scaler = torch.amp.GradScaler(device=scaler_device, enabled=scaler_enabled)
         self.dtype = torch.bfloat16 if self.config.mixed_precision == "bf16" else (torch.float16 if self.config.mixed_precision == "fp16" else torch.float32)
         
     def train(self, resume_from_checkpoint: Optional[str | Path] = None):

@@ -1,8 +1,7 @@
-"""Hugging Face compatibility adapter layer for FoundationLM.
+"""Hugging Face compatibility adapter layer for FoundationLM & VajraForCausalLM.
 
 This module provides lightweight adapters that convert between Hugging Face
-objects and the native FoundationLM implementation.  The core FoundationLM
-and ModelConfig classes remain unchanged — this is an interoperability layer.
+objects and native Vajra/FoundationLM implementations.
 """
 
 from __future__ import annotations
@@ -14,18 +13,26 @@ from typing import Any
 
 import torch
 
-from model import FoundationLM, ModelConfig
+from model import VajraForCausalLM, VajraConfig, FoundationLM
 from utils.file_utils import write_json
 from utils.logging import setup_logger
 
 logger = setup_logger("hf_compat")
 
+try:
+    from transformers import AutoConfig, AutoModelForCausalLM
+    AutoConfig.register("vajra", VajraConfig)
+    AutoConfig.register("vajra-lm", VajraConfig)
+    AutoModelForCausalLM.register(VajraConfig, VajraForCausalLM)
+except Exception:
+    pass
 
-def _model_config_to_hf_dict(cfg: ModelConfig) -> dict[str, Any]:
-    """Convert a native ModelConfig to a Hugging Face config.json dict."""
+
+def _model_config_to_hf_dict(cfg: VajraConfig) -> dict[str, Any]:
+    """Convert a native VajraConfig to a Hugging Face config.json dict."""
     return {
-        "architectures": ["FoundationLMForCausalLM"],
-        "model_type": "vajra-lm",
+        "architectures": ["VajraForCausalLM"],
+        "model_type": "vajra",
         "hidden_size": cfg.hidden_size,
         "intermediate_size": cfg.intermediate_size,
         "max_position_embeddings": cfg.max_position_embeddings,
@@ -41,10 +48,10 @@ def _model_config_to_hf_dict(cfg: ModelConfig) -> dict[str, Any]:
     }
 
 
-def _hf_dict_to_model_config(d: dict[str, Any]) -> ModelConfig:
-    """Convert a Hugging Face config.json dict back to a native ModelConfig."""
-    return ModelConfig(
-        model_name=d.get("model_type", "vajra-lm"),
+def _hf_dict_to_model_config(d: dict[str, Any]) -> VajraConfig:
+    """Convert a Hugging Face config.json dict back to a native VajraConfig."""
+    return VajraConfig(
+        model_name=d.get("model_type", "vajra"),
         vocab_size=d["vocab_size"],
         hidden_size=d["hidden_size"],
         num_layers=d.get("num_hidden_layers", d.get("num_layers", 24)),
@@ -54,16 +61,16 @@ def _hf_dict_to_model_config(d: dict[str, Any]) -> ModelConfig:
         max_position_embeddings=d["max_position_embeddings"],
         rope_theta=d.get("rope_theta", 10000.0),
         rms_norm_eps=d.get("rms_norm_eps", 1e-6),
-        tie_word_embeddings=d.get("tie_word_embeddings", True),
+        tie_word_embeddings=d.get("tie_word_embeddings", False),
     )
 
 
 def save_pretrained(
-    model: FoundationLM,
+    model: VajraForCausalLM | FoundationLM,
     output_dir: str | Path,
     tokenizer_dir: str | Path | None = None,
 ) -> dict[str, Any]:
-    """Export a FoundationLM model to a Hugging Face-compatible directory.
+    """Export a VajraForCausalLM/FoundationLM model to a Hugging Face-compatible directory.
 
     Generates:
       - config.json
@@ -101,8 +108,7 @@ def save_pretrained(
     # 3. Model weights — prefer safetensors
     state_dict = model.state_dict()
 
-    # Handle tied weights: safetensors doesn't support shared tensors,
-    # so remove lm_head.weight if it shares memory with embed_tokens.weight
+    # Handle tied weights: safetensors doesn't support shared tensors
     if cfg.tie_word_embeddings and "lm_head.weight" in state_dict:
         state_dict = {k: v for k, v in state_dict.items() if k != "lm_head.weight"}
 
@@ -134,7 +140,7 @@ def save_pretrained(
     # 6. tokenizer_config.json
     tok_config = {
         "tokenizer_class": "PreTrainedTokenizerFast",
-        "model_type": "vajra-lm",
+        "model_type": "vajra",
         "bos_token": "<s>",
         "eos_token": "</s>",
         "unk_token": "<unk>",
@@ -160,15 +166,16 @@ def save_pretrained(
 def load_pretrained(
     model_dir: str | Path,
     device: torch.device | str = "cpu",
-) -> tuple[FoundationLM, ModelConfig]:
-    """Load a FoundationLM model from a Hugging Face-compatible directory.
+    strict: bool = True,
+) -> tuple[VajraForCausalLM, VajraConfig]:
+    """Load a VajraForCausalLM model from a Hugging Face-compatible directory.
 
     Returns:
         Tuple of ``(model, config)``.
     """
     model_dir = Path(model_dir)
 
-    # Load config.json -> ModelConfig
+    # Load config.json -> VajraConfig
     config_path = model_dir / "config.json"
     if not config_path.exists():
         raise FileNotFoundError(f"config.json not found in {model_dir}")
@@ -176,7 +183,7 @@ def load_pretrained(
     model_cfg = _hf_dict_to_model_config(hf_dict)
 
     # Instantiate model
-    model = FoundationLM(model_cfg)
+    model = VajraForCausalLM(model_cfg)
 
     # Load weights
     safetensors_path = model_dir / "model.safetensors"
@@ -194,11 +201,21 @@ def load_pretrained(
         logger.warning(f"No weights file found in {model_dir}. Returning randomly initialized model.")
         return model.to(device), model_cfg
 
-    model.load_state_dict(state_dict, strict=False)
+    if model_cfg.tie_word_embeddings and "lm_head.weight" not in state_dict and "model.embed_tokens.weight" in state_dict:
+        state_dict["lm_head.weight"] = state_dict["model.embed_tokens.weight"]
+
+    incompatible = model.load_state_dict(state_dict, strict=strict)
+    if incompatible.missing_keys or incompatible.unexpected_keys:
+        msg = f"State dict mismatch: missing keys={incompatible.missing_keys}, unexpected keys={incompatible.unexpected_keys}"
+        if strict:
+            raise RuntimeError(msg)
+        else:
+            logger.warning(msg)
+
     model = model.to(device)
     model.eval()
 
-    logger.info(f"Loaded FoundationLM from HF directory: {model_dir}")
+    logger.info(f"Loaded VajraForCausalLM from HF directory: {model_dir}")
     return model, model_cfg
 
 
@@ -211,8 +228,8 @@ def convert_checkpoint_to_hf(
     """Convert a training checkpoint (.pt) to a Hugging Face directory."""
     from training.checkpoint import load_checkpoint
 
-    model_cfg = ModelConfig.from_yaml(model_config_path)
-    model = FoundationLM(model_cfg)
+    model_cfg = VajraConfig.from_yaml(model_config_path)
+    model = VajraForCausalLM(model_cfg)
 
     ckpt_path = Path(checkpoint_path)
     if ckpt_path.exists():
@@ -228,7 +245,7 @@ def convert_hf_to_checkpoint(
     """Convert a Hugging Face directory back to a training checkpoint (.pt)."""
     from training.checkpoint import save_checkpoint as _save_ckpt
 
-    model, model_cfg = load_pretrained(hf_dir, device="cpu")
+    model, model_cfg = load_pretrained(hf_dir, device="cpu", strict=True)
     output_path = Path(output_path)
     _save_ckpt(output_path, model, step=0, tokens_seen=0)
 
@@ -238,5 +255,5 @@ def convert_hf_to_checkpoint(
         "output": str(output_path),
         "num_parameters": sum(p.numel() for p in model.parameters()),
     }
-    logger.info(f"HF -> FoundationLM checkpoint conversion complete: {output_path}")
+    logger.info(f"HF -> VajraForCausalLM checkpoint conversion complete: {output_path}")
     return report

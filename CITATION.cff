@@ -1,8 +1,17 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 authors:
-  - family-names: "Vajra-LM Team"
-title: "Foundation LM: Open-Source Vajra Language Model Framework"
-version: 0.6.0
-date-released: 2026-07-22
-url: "https://github.com/vajra-lm/vajra-lm"
+  - family-names: "Vajra AI Team"
+    given-names: "Core Contributors"
+title: "Vajra: Open-Source Foundation Model & Autonomous Multi-Agent Ecosystem"
+version: 1.0.0
+date-released: 2026-07-23
+repository-code: "https://github.com/vajra-ai/vajra"
+url: "https://github.com/vajra-ai/vajra"
+license: Apache-2.0
+keywords:
+  - language-models
+  - autonomous-agents
+  - multi-agent-systems
+  - transformers
+  - deep-learning

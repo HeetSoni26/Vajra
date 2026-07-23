@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Dict, List, Optional
 from datetime import datetime
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 class DatasetStatus(str, Enum):
     REGISTERED = "registered"
@@ -80,9 +80,9 @@ class DatasetMetadata(BaseModel):
     status: DatasetStatus = Field(default=DatasetStatus.REGISTERED, description="Current tracking status.")
     last_updated: datetime = Field(default_factory=datetime.utcnow, description="Last update timestamp.")
     
-    class Config:
-        use_enum_values = True
-        json_schema_extra = {
+    model_config = ConfigDict(
+        use_enum_values=True,
+        json_schema_extra={
             "example": {
                 "name": "sample_code_dataset",
                 "version": "1.0.0",
@@ -95,3 +95,4 @@ class DatasetMetadata(BaseModel):
                 "dataset_type": "pretraining"
             }
         }
+    )

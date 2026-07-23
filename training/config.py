@@ -33,6 +33,7 @@ class TrainingConfig(BaseModel):
     
     # Logging
     logging_steps: int = 10
+    report_to: str = "none" # none, wandb, tensorboard
     
     def save(self, path: Path | str):
         path = Path(path)

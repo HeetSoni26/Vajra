@@ -15,4 +15,12 @@ COPY training ./training
 RUN python3.11 -m pip install --upgrade pip && python3.11 -m pip install -e .[dev,data,serve]
 
 COPY . .
+
+# Security hardening: Create non-root user and assign permissions
+RUN groupadd -g 10001 vajra && \
+    useradd -u 10001 -g vajra -m -s /bin/bash vajra && \
+    chown -R vajra:vajra /app
+
+USER vajra
+
 CMD ["pytest", "-q"]

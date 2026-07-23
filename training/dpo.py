@@ -23,6 +23,8 @@ def main() -> None:
         tokenizer.pad_token = tokenizer.eos_token
     model = AutoModelForCausalLM.from_pretrained(cfg["sft_model"], torch_dtype="auto", device_map="auto")
     ref_model = AutoModelForCausalLM.from_pretrained(cfg["reference_model"], torch_dtype="auto", device_map="auto")
+
+    # Use eval_strategy for transformers >= 4.41 compatibility
     training_args = TrainingArguments(
         output_dir=cfg["output_dir"],
         learning_rate=float(cfg["learning_rate"]),
@@ -35,20 +37,25 @@ def main() -> None:
         logging_steps=10,
         save_steps=500,
         eval_steps=500,
-        evaluation_strategy="steps",
-        report_to="wandb",
+        eval_strategy="steps",
+        report_to=cfg.get("report_to", "none"),
     )
-    trainer = DPOTrainer(
-        model=model,
-        ref_model=ref_model,
-        args=training_args,
-        beta=float(cfg["beta"]),
-        train_dataset=dataset["train"],
-        eval_dataset=dataset["validation"],
-        tokenizer=tokenizer,
-        max_length=int(cfg["max_seq_length"]),
-        max_prompt_length=int(cfg["max_prompt_length"]),
-    )
+
+    trainer_kwargs = {
+        "model": model,
+        "ref_model": ref_model,
+        "args": training_args,
+        "beta": float(cfg["beta"]),
+        "train_dataset": dataset["train"],
+        "eval_dataset": dataset["validation"],
+        "max_length": int(cfg["max_seq_length"]),
+        "max_prompt_length": int(cfg["max_prompt_length"]),
+    }
+    try:
+        trainer = DPOTrainer(processing_class=tokenizer, **trainer_kwargs)
+    except TypeError:
+        trainer = DPOTrainer(tokenizer=tokenizer, **trainer_kwargs)
+
     trainer.train()
     trainer.save_model(cfg["output_dir"])
 

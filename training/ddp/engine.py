@@ -59,8 +59,10 @@ class DDPTrainingEngine:
         self.scheduler = create_scheduler(self.optimizer, self.config)
 
         # AMP scaler
+        device_type = "cuda" if self.device.type == "cuda" else "cpu"
+        scaler_enabled = (config.mixed_precision == "fp16") and (device_type == "cuda")
         self.scaler = torch.amp.GradScaler(
-            device="cuda", enabled=(config.mixed_precision == "fp16")
+            device=device_type, enabled=scaler_enabled
         )
         self.dtype = (
             torch.bfloat16

@@ -58,11 +58,11 @@ def test_precision_and_scaler_resolution():
 
 def test_gradient_checkpointing_numerical_equivalence(model_cfg: ModelConfig):
     torch.manual_seed(1337)
-    cfg_standard = ModelConfig(**{**model_cfg.__dict__, "use_gradient_checkpointing": False})
+    cfg_standard = ModelConfig(**{**model_cfg.model_dump(), "use_gradient_checkpointing": False})
     model_std = FoundationLM(cfg_standard)
 
     torch.manual_seed(1337)
-    cfg_ckpt = ModelConfig(**{**model_cfg.__dict__, "use_gradient_checkpointing": True})
+    cfg_ckpt = ModelConfig(**{**model_cfg.model_dump(), "use_gradient_checkpointing": True})
     model_ckpt = FoundationLM(cfg_ckpt)
 
     input_ids = torch.randint(0, 100, (2, 16))

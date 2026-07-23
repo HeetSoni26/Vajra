@@ -1,6 +1,5 @@
 import logging
 from typing import Optional
-from tokenizer.tokenizers.hf_bpe import HFBpeTokenizer
 
 from model.modeling import VajraForCausalLM
 from training.production.engine import ProductionTrainingEngine

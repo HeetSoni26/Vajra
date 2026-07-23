@@ -1,6 +1,6 @@
 import os
 from typing import Optional
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field
 
 class DatasetConfig(BaseSettings):
@@ -8,6 +8,12 @@ class DatasetConfig(BaseSettings):
     Global configuration for the Vajra Dataset Collection Framework.
     Values can be overridden by environment variables prefixed with VAJRA_DATASET_.
     """
+    model_config = SettingsConfigDict(
+        env_prefix="VAJRA_DATASET_",
+        env_file=".env",
+        extra="ignore"
+    )
+
     # Directories
     download_dir: str = Field(
         default=os.path.join(os.getcwd(), "data", "raw"),
@@ -51,11 +57,6 @@ class DatasetConfig(BaseSettings):
         default="INFO",
         description="Logging verbosity (DEBUG, INFO, WARNING, ERROR)."
     )
-
-    class Config:
-        env_prefix = "VAJRA_DATASET_"
-        env_file = ".env"
-        extra = "ignore"
 
 # Global configuration instance
 config = DatasetConfig()
