@@ -188,7 +188,7 @@ class Trainer:
             self.optimizer.zero_grad(set_to_none=True)
             opt_time = time.time() - opt_start_t
 
-            # Calculate throughput & step timing breakdown
+            # Calculate throughput, timing, and memory
             batch_size, seq_len = input_ids.shape
             tokens_in_step = batch_size * seq_len * self.grad_accum_steps
             samples_in_step = batch_size * self.grad_accum_steps
@@ -205,6 +205,18 @@ class Trainer:
             step_loss = self.accumulated_loss
             self.accumulated_loss = 0.0
             metrics["loss"] = step_loss
+            
+            # GPU Memory Monitoring
+            if torch.cuda.is_available():
+                metrics["gpu_mem_allocated_mb"] = torch.cuda.memory_allocated() / (1024**2)
+                metrics["gpu_mem_reserved_mb"] = torch.cuda.memory_reserved() / (1024**2)
+            
+            # ETA Calculation
+            steps_remaining = self.total_steps - step
+            if "tokens_per_sec" in metrics and metrics["tokens_per_sec"] > 0:
+                time_per_step = tokens_in_step / metrics["tokens_per_sec"]
+                metrics["eta_hours"] = (steps_remaining * time_per_step) / 3600.0
+
             metrics["timing"] = {
                 "step_time_ms": round((time.time() - step_start_t) * 1000, 2),
                 "forward_time_ms": round(fwd_time * 1000, 2),
