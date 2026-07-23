@@ -1,0 +1,19 @@
+raw_dir: data/raw
+processed_dir: data/processed
+tokenized_dir: data/tokenized
+tokenizer_path: tokenizer/v1.0
+language:
+  keep_language: en
+  min_confidence: 0.65
+quality:
+  min_words: 5
+  max_words: 100000
+  max_char_word_ratio: 10.0
+  min_alnum_ratio: 0.60
+  max_repetition_ratio: 0.30
+dedup:
+  shingle_size: 13
+  minhash_threshold: 0.80
+packing:
+  sequence_length: 4096
+  separator_token: "<|sep|>"

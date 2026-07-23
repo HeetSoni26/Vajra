@@ -1,0 +1,9 @@
+domain_weights:
+  web: 0.35
+  code: 0.25
+  math: 0.10
+  science: 0.10
+  books: 0.08
+  wikipedia: 0.05
+  technical: 0.05
+  other: 0.02

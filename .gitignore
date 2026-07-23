@@ -28,7 +28,7 @@ Thumbs.db
 # Project Specific
 .cache/
 logs/
-data/
+/data/
 checkpoints/
 wandb/
 
