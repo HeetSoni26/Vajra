@@ -14,6 +14,7 @@ __pycache__/
 .coverage
 build/
 dist/
+vajra_lm-*/
 
 # IDEs
 .vscode/

@@ -1,15 +1,25 @@
-name: vajra-lm
+name: vajra
 channels:
   - pytorch
   - nvidia
+  - defaults
   - conda-forge
 dependencies:
   - python=3.11
-  - pytorch=2.3
-  - pytorch-cuda=12.1
-  - numpy
-  - pip
   - pip:
-      - -e .[dev,data,serve,align,eval]
-      - flash-attn==2.5.9.post1
-
+      - torch>=2.3
+      - transformers>=4.40
+      - tokenizers>=0.19
+      - datasets>=2.19
+      - safetensors>=0.4
+      - numpy>=1.26
+      - pyyaml>=6.0
+      - tqdm>=4.66
+      - pydantic>=2.0
+      - pydantic-settings>=2.0
+      - requests>=2.28
+      - fastapi>=0.111
+      - uvicorn>=0.29
+      - pytest>=8
+      - ruff>=0.4
+      - -e .[all]

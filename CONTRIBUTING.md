@@ -6,8 +6,8 @@ Thank you for your interest in contributing to Vajra-LM and Vajra-Agent!
 
 1. Clone the repository and navigate to root:
    ```bash
-   git clone https://github.com/vajra-lm/vajra-lm.git
-   cd vajra-lm
+   git clone https://github.com/HeetSoni26/Vajra.git
+   cd Vajra
    ```
 
 2. Install in editable mode with development dependencies:

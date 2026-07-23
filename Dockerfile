@@ -12,7 +12,7 @@ WORKDIR /app
 COPY pyproject.toml README.md ./
 COPY model ./model
 COPY training ./training
-RUN python3.11 -m pip install --upgrade pip && python3.11 -m pip install -e .[dev,data,serve]
+RUN python3.11 -m pip install --upgrade pip && python3.11 -m pip install -e .[all]
 
 COPY . .
 
@@ -23,4 +23,7 @@ RUN groupadd -g 10001 vajra && \
 
 USER vajra
 
-CMD ["pytest", "-q"]
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
+  CMD python3.11 -c "import model, training" || exit 1
+
+CMD ["python3.11", "-m", "scripts.smoke_test"]

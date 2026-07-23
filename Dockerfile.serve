@@ -1,14 +1,19 @@
 FROM nvidia/cuda:12.1.1-cudnn8-runtime-ubuntu22.04
 
 ENV DEBIAN_FRONTEND=noninteractive PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1
-RUN apt-get update && apt-get install -y --no-install-recommends python3.11 python3-pip git ca-certificates \
+RUN apt-get update && apt-get install -y --no-install-recommends python3.11 python3-pip git curl ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
-COPY requirements-serve.txt .
-RUN python3.11 -m pip install --upgrade pip && python3.11 -m pip install -r requirements-serve.txt
+COPY pyproject.toml README.md ./
 COPY api ./api
 COPY inference ./inference
 COPY model ./model
+COPY vajra_agent ./vajra_agent
+COPY tokenizer ./tokenizer
+COPY dataset ./dataset
+COPY training ./training
+RUN python3.11 -m pip install --upgrade pip && python3.11 -m pip install -e .[serve]
+
 ENV MODEL_PATH=/app/model_weights
 EXPOSE 8000
 
@@ -18,5 +23,8 @@ RUN groupadd -g 10001 vajra && \
     chown -R vajra:vajra /app
 
 USER vajra
+
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
+  CMD curl -f http://localhost:8000/health || python3.11 -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')" || exit 1
 
 CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -1,12 +1,15 @@
 # Vajra
 
 <div align="center">
+  <a href="https://github.com/HeetSoni26/Vajra/actions/workflows/ci.yml">
+    <img src="https://github.com/HeetSoni26/Vajra/actions/workflows/ci.yml/badge.svg" alt="Vajra CI">
+  </a>
   <img src="https://img.shields.io/badge/Vajra-v1.0.0-blue.svg" alt="Version">
   <img src="https://img.shields.io/badge/License-Apache%202.0-green.svg" alt="License">
   <img src="https://img.shields.io/badge/Python-3.10%2B-blue.svg" alt="Python">
 </div>
 
-**Vajra** (formerly Foundation) is a production-ready, open-source AI ecosystem combining a high-performance foundation language model (**Vajra-LM**) with an advanced autonomous agent framework (**Vajra-Agent**).
+**Vajra** is a production-ready, open-source AI ecosystem combining a high-performance foundation language model (**Vajra-LM**) with an advanced autonomous agent framework (**Vajra-Agent**).
 
 ## 🌟 Vision
 
@@ -15,11 +18,11 @@ Vajra provides an end-to-end framework where the model (Vajra-LM) "thinks" and t
 ## 🚀 Major Features
 
 ### Vajra-LM
-*   **Decoder-Only Transformer**: Highly optimized LLaMA-style architecture.
+*   **Decoder-Only Transformer**: Highly optimized LLaMA-style architecture with Grouped-Query Attention (GQA), SwiGLU, RMSNorm, and RoPE.
 *   **Advanced Training**: Native support for DDP, AMP, and Gradient Checkpointing.
 *   **Production Inference**: KV Caching and high-throughput generation.
-*   **Hugging Face Compatibility**: Seamlessly use Vajra models with HF pipelines.
-*   **API Ready**: Built-in FastAPI integration for production deployment.
+*   **Hugging Face Compatibility**: Seamlessly use Vajra models with HF pipelines (`AutoConfig`, `AutoModelForCausalLM`).
+*   **API Ready**: Built-in FastAPI integration for production deployment with SSE streaming.
 
 ### Vajra-Agent
 *   **Coding Intelligence**: Task Planning, Repository Scanning, Python Sandboxing, and Automated Verification.
@@ -30,7 +33,7 @@ Vajra provides an end-to-end framework where the model (Vajra-LM) "thinks" and t
 ## 📁 Repository Structure
 
 ```text
-vajra/
+Vajra/
 ├── vajra_agent/        # The Vajra Autonomous Agent Framework
 ├── model/              # Vajra-LM core architecture
 ├── api/                # FastAPI serving endpoints
@@ -45,8 +48,8 @@ vajra/
 
 ```bash
 # Clone the repository
-git clone https://github.com/vajra-ai/vajra.git
-cd vajra
+git clone https://github.com/HeetSoni26/Vajra.git
+cd Vajra
 
 # Install with all dependencies
 pip install -e .[all]

@@ -40,8 +40,11 @@ vajra-lm = "cli.main:main"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["*"]
-exclude = ["tests*", "docs*", "notebooks*", "scripts*"]
+include = ["api*", "cli*", "dataset*", "evaluation*", "experiments*", "inference*", "model*", "release*", "tokenizer*", "training*", "utils*", "vajra_agent*"]
+exclude = ["tests*", "docs*", "benchmarks*", "deployment*", "notebooks*", "scripts*"]
+
+[tool.setuptools.package-data]
+"*" = ["py.typed"]
 
 [tool.ruff]
 line-length = 100
