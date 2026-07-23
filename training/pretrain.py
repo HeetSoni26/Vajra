@@ -17,6 +17,7 @@ from training.trainer import Trainer
 from utils.environment import get_device, get_git_hash, set_seed
 from utils.file_utils import read_json, write_json
 from utils.logging import create_experiment_dir, setup_logger
+from training.training_logger import TrainingLogger
 
 logger = setup_logger("pretrain_runner")
 
@@ -205,11 +206,22 @@ def main() -> None:
         start_step = 0
         tokens_seen = 0
 
+        # Setup Unified Logger
+        training_logger = TrainingLogger(
+            log_dir=exp_dir,
+            run_name=getattr(model_cfg, "model_name", "vajra-run"),
+            use_tensorboard=True,
+            use_wandb=True,
+            wandb_project=cfg.get("wandb_project"),
+            wandb_config={**cfg, **model_summary},
+            rank=rank,
+        )
+
         # Resume from checkpoint if requested
         if args.resume:
             latest_ckpt = exp_dir / "latest.pt"
             if latest_ckpt.exists():
-                state = trainer.checkpoint_manager.load_latest(trainer.raw_model, optimizer)
+                state = trainer.checkpoint_manager.load_latest(trainer.raw_model, optimizer, restore_rng=True)
                 start_step = state.get("step", 0)
                 tokens_seen = state.get("tokens_seen", 0)
                 if rank == 0:
@@ -258,14 +270,16 @@ def main() -> None:
                         tokens_seen=tokens_seen,
                         metrics={"val_loss": step_metrics.get("val_loss", step_metrics["loss"])},
                     )
+                    training_logger.log_checkpoint(global_step, ckpt_path.name)
                     logger.info(f"Checkpoint saved at step {global_step} -> {ckpt_path.name}")
 
                 if is_distributed:
                     dist.barrier()
 
                 history.append(step_metrics)
-
+                
                 if rank == 0:
+                    training_logger.log_step(global_step, step_metrics)
                     logger.info(
                         f"Step {global_step:4d}/{max_steps} | Loss: {step_metrics['loss']:.4f} | "
                         f"LR: {step_metrics['learning_rate']:.2e} | Tokens/sec: {step_metrics['tokens_per_sec']:,}"
@@ -282,14 +296,15 @@ def main() -> None:
                 "tokens_processed": tokens_seen,
                 "final_train_loss": history[-1]["loss"] if history else None,
                 "final_val_loss": history[-1].get("val_loss") if history else None,
-                "history": history,
             }
-            write_json(summary, exp_dir / "training_summary.json")
+            training_logger.log_summary(summary)
             generate_training_curves(history, exp_dir)
 
-            logger.info(f"Pretraining Run Complete! Total Time: {total_training_time}s | Summary: {exp_dir / 'training_summary.json'}")
+            logger.info(f"Pretraining Run Complete! Total Time: {total_training_time}s")
 
     finally:
+        if 'training_logger' in locals():
+            training_logger.close()
         cleanup_ddp_environment(is_distributed)
 
 

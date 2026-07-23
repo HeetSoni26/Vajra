@@ -1,5 +1,8 @@
+# Vajra-370M Model Configuration
+# ~370M parameters | Production pretraining target
+# vocab_size aligned to tokenizer/v1.0 (65536 BPE tokens)
 model_name: vajra-lm-370m
-vocab_size: 32000
+vocab_size: 65536
 hidden_size: 1024
 num_layers: 24
 num_attention_heads: 16

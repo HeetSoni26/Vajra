@@ -1,5 +1,6 @@
 # Vajra-370M Pretraining Configuration
-# ~370M parameters, production pretraining target
+# Target: ~15B tokens (Chinchilla-optimal for ~370M params)
+# Suitable for: 4x A100 80GB (DDP) or 8x RTX A6000
 model_config: configs/model/model_370m.yaml
 data_dir: data/tokenized
 output_dir: checkpoints/pretrain_370m
@@ -21,4 +22,5 @@ max_tokens: 15000000000
 save_every_steps: 2000
 eval_every_steps: 1000
 precision: bf16
+scheduler: cosine
 wandb_project: vajra-lm-370m

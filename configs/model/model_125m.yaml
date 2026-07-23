@@ -1,5 +1,8 @@
+# Vajra-125M Model Configuration
+# ~125M parameters | Initial pretraining experiments
+# vocab_size aligned to tokenizer/v1.0 (65536 BPE tokens)
 model_name: vajra-lm-125m
-vocab_size: 32000
+vocab_size: 65536
 hidden_size: 768
 num_layers: 12
 num_attention_heads: 12
@@ -8,5 +11,5 @@ intermediate_size: 2048
 max_position_embeddings: 2048
 rope_theta: 10000.0
 rms_norm_eps: 1.0e-6
-tie_word_embeddings: true
+tie_word_embeddings: false
 use_flash_attention: false

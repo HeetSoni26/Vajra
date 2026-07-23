@@ -1,11 +1,14 @@
+# Vajra-Tiny Model Configuration
+# ~18M parameters | Production pretraining target for the first real run
+# vocab_size aligned to tokenizer/v1.0 (65536 BPE tokens)
 model_name: vajra-lm-tiny
-vocab_size: 297
-hidden_size: 128
-num_layers: 4
-num_attention_heads: 4
-num_key_value_heads: 2
-intermediate_size: 384
-max_position_embeddings: 512
+vocab_size: 65536
+hidden_size: 512
+num_layers: 8
+num_attention_heads: 8
+num_key_value_heads: 4
+intermediate_size: 1376
+max_position_embeddings: 2048
 rope_theta: 10000.0
 rms_norm_eps: 1.0e-6
 tie_word_embeddings: true
