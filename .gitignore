@@ -26,11 +26,11 @@ dist/
 Thumbs.db
 
 # Project Specific
-.cache/
-logs/
+/.cache/
+/logs/
 /data/
-checkpoints/
-wandb/
+/checkpoints/
+/wandb/
 
 # Weights
 *.safetensors
