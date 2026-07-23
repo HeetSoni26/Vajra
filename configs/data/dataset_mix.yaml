@@ -1,3 +1,12 @@
+# Vajra Pretraining Data Mixture Configuration
+# Defines domain weights and sampling strategies for each model tier.
+#
+# Domain weights must sum to 1.0.
+# Quality tier determines the filtering strictness applied during data ingestion.
+
+# ──────────────────────────────────────────────────────────────────────────
+# Default domain weights (shared across all model sizes unless overridden)
+# ──────────────────────────────────────────────────────────────────────────
 domain_weights:
   web: 0.35
   code: 0.25
@@ -7,3 +16,42 @@ domain_weights:
   wikipedia: 0.05
   technical: 0.05
   other: 0.02
+
+# ──────────────────────────────────────────────────────────────────────────
+# Per-tier overrides
+# ──────────────────────────────────────────────────────────────────────────
+tiers:
+  vajra-tiny:
+    description: "Miniature model for pipeline testing and CI validation."
+    total_tokens_target: 10000000       # 10M tokens
+    quality_tier: standard
+    overrides: {}
+
+  vajra-125m:
+    description: "Small model for initial experiments and hyperparameter search."
+    total_tokens_target: 5000000000     # 5B tokens (Chinchilla-optimal ≈ 2.5B)
+    quality_tier: high
+    overrides:
+      code: 0.20
+      math: 0.12
+      science: 0.12
+      web: 0.36
+
+  vajra-370m:
+    description: "Production model for full pretraining."
+    total_tokens_target: 15000000000    # 15B tokens (Chinchilla-optimal ≈ 7.4B)
+    quality_tier: high
+    overrides:
+      code: 0.22
+      math: 0.12
+      science: 0.12
+      web: 0.34
+
+# ──────────────────────────────────────────────────────────────────────────
+# Sampling strategy
+# ──────────────────────────────────────────────────────────────────────────
+sampling:
+  strategy: temperature    # uniform | temperature | proportional
+  temperature: 0.7         # Lower = more uniform, higher = more skewed to weights
+  epoch_aware: true        # Avoid repeating data within an epoch
+  shuffle_seed: 42

@@ -1,0 +1,129 @@
+# Vajra Pretraining Data Source Registry
+# Defines all available data sources with metadata, licensing, and download configuration.
+
+sources:
+  - name: fineweb-edu
+    url: https://huggingface.co/datasets/HuggingFaceFW/fineweb-edu
+    domain: web
+    license: ODC-By-1.0
+    format: parquet
+    estimated_size_gb: 500.0
+    language: en
+    description: High-quality educational web content filtered from CommonCrawl.
+    tags: [pretraining, web, educational]
+    enabled: true
+    priority: 1
+    quality_tier: high
+    download_method: hf
+
+  - name: cc-refined
+    url: https://huggingface.co/datasets/tiiuae/falcon-refinedweb
+    domain: web
+    license: ODC-By-1.0
+    format: parquet
+    estimated_size_gb: 600.0
+    language: en
+    description: Refined web corpus with deduplication and quality filtering.
+    tags: [pretraining, web]
+    enabled: true
+    priority: 2
+    quality_tier: standard
+    download_method: hf
+
+  - name: the-stack-v2-dedup
+    url: https://huggingface.co/datasets/bigcode/the-stack-v2-dedup
+    domain: code
+    license: Various
+    format: parquet
+    estimated_size_gb: 300.0
+    language: en
+    description: Deduplicated source code across 600+ programming languages.
+    tags: [pretraining, code]
+    enabled: true
+    priority: 1
+    quality_tier: high
+    download_method: hf
+
+  - name: open-web-math
+    url: https://huggingface.co/datasets/open-web-math/open-web-math
+    domain: math
+    license: CC-BY-SA-4.0
+    format: parquet
+    estimated_size_gb: 14.0
+    language: en
+    description: Mathematical web content curated for LLM pretraining.
+    tags: [pretraining, math]
+    enabled: true
+    priority: 1
+    quality_tier: high
+    download_method: hf
+
+  - name: arxiv-abstracts
+    url: https://huggingface.co/datasets/ccdv/arxiv-abstract
+    domain: science
+    license: CC0-1.0
+    format: parquet
+    estimated_size_gb: 3.0
+    language: en
+    description: ArXiv paper abstracts across all scientific domains.
+    tags: [pretraining, science, academic]
+    enabled: true
+    priority: 2
+    quality_tier: standard
+    download_method: hf
+
+  - name: peS2o
+    url: https://huggingface.co/datasets/allenai/peS2o
+    domain: science
+    license: ODC-By-1.0
+    format: parquet
+    estimated_size_gb: 50.0
+    language: en
+    description: Scientific paper corpus from Semantic Scholar.
+    tags: [pretraining, science]
+    enabled: true
+    priority: 1
+    quality_tier: high
+    download_method: hf
+
+  - name: gutenberg
+    url: https://huggingface.co/datasets/manu/project_gutenberg
+    domain: books
+    license: Public Domain
+    format: parquet
+    estimated_size_gb: 8.0
+    language: en
+    description: Public domain books from Project Gutenberg.
+    tags: [pretraining, books, literature]
+    enabled: true
+    priority: 1
+    quality_tier: standard
+    download_method: hf
+
+  - name: wikipedia-en
+    url: https://huggingface.co/datasets/wikimedia/wikipedia
+    domain: wikipedia
+    license: CC-BY-SA-4.0
+    format: parquet
+    estimated_size_gb: 21.0
+    language: en
+    description: English Wikipedia articles (latest dump).
+    tags: [pretraining, wikipedia, knowledge]
+    enabled: true
+    priority: 1
+    quality_tier: high
+    download_method: hf
+
+  - name: stackexchange
+    url: https://huggingface.co/datasets/HuggingFaceTB/stack-exchange-preferences
+    domain: technical
+    license: CC-BY-SA-4.0
+    format: parquet
+    estimated_size_gb: 10.0
+    language: en
+    description: Stack Exchange Q&A pairs across technical domains.
+    tags: [pretraining, technical, qa]
+    enabled: true
+    priority: 1
+    quality_tier: standard
+    download_method: hf

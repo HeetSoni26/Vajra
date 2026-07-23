@@ -26,6 +26,15 @@ All notable changes to this project will be documented in this file.
 - **Phase 4 (Final Open Source Release Preparation)**:
   - Updated `SECURITY.md`, `CITATION.cff`, `pyproject.toml` extras, and pytest infrastructure `conftest.py`.
   - Reached **100% test pass rate (180/180 passed)** and **0 Ruff lint errors**.
+- **Phase 5 (Dataset Engineering & Training Preparation)**:
+  - Added `DataSourceRegistry` with 9 curated open pretraining sources (FineWeb-Edu, The Stack v2, OpenWebMath, peS2o, Wikipedia, Gutenberg, etc.), YAML serialisation, domain/tag/license filtering, and download manifest generation.
+  - Added `SyntheticDataGenerator` for 7-domain synthetic corpus generation (CI/dev, reproducible, no downloads required).
+  - Added `DatasetStatistics` engine: token distribution, vocab coverage, top-K frequency analysis, and integrity validation.
+  - Added training preset configs for **Vajra-125M** and **Vajra-370M** (model YAML + training YAML, Chinchilla-scaled token targets).
+  - Added `configs/data/sources.yaml` and enhanced `configs/data/dataset_mix.yaml` with per-tier weight overrides and sampling strategy.
+  - Added `scripts/prepare_dataset.py`: end-to-end orchestrator (synthetic + production modes).
+  - Added `scripts/verify_training_readiness.py`: 5-stage pre-flight verification (model, dataset, forward/backward, optimizer, checkpoint round-trip).
+  - Expanded unit test suite to **213/213 passing tests** (33 new Phase 5 tests added).
 
 ## [0.9.0] - 2026-07-22 (Vajra-Agent Phase 3 — Memory & Knowledge System)
 
