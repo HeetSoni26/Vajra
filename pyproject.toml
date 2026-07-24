@@ -50,5 +50,9 @@ exclude = ["tests*", "docs*", "benchmarks*", "deployment*", "notebooks*", "scrip
 line-length = 100
 target-version = "py310"
 
+[tool.ruff.lint]
+select = ["E", "F"]
+ignore = ["F401", "F841"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
