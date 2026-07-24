@@ -11,12 +11,18 @@ def main() -> None:
     parser.add_argument("--dry_run", action="store_true")
     args = parser.parse_args()
     cmd = [
-        "python", "main.py",
-        "--model", args.model_path,
-        "--tasks", args.task,
-        "--n_samples", "20",
-        "--batch_size", "10",
-        "--temperature", "0.2",
+        "python",
+        "main.py",
+        "--model",
+        args.model_path,
+        "--tasks",
+        args.task,
+        "--n_samples",
+        "20",
+        "--batch_size",
+        "10",
+        "--temperature",
+        "0.2",
         "--allow_code_execution",
     ]
     print(" ".join(cmd))

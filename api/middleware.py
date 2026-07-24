@@ -30,11 +30,16 @@ class RequestIDAndLoggingMiddleware(BaseHTTPMiddleware):
             process_time_ms = round((time.perf_counter() - start_time) * 1000, 2)
             response.headers["X-Request-ID"] = request_id
             response.headers["X-Process-Time-Ms"] = str(process_time_ms)
-            logger.info(f"[{request_id}] END {request.method} {request.url.path} -> {response.status_code} ({process_time_ms}ms)")
+            logger.info(
+                f"[{request_id}] END {request.method} {request.url.path} -> {response.status_code} ({process_time_ms}ms)"
+            )
             return response
         except Exception as exc:
             process_time_ms = round((time.perf_counter() - start_time) * 1000, 2)
-            logger.error(f"[{request_id}] ERROR {request.method} {request.url.path} -> Exception: {exc} ({process_time_ms}ms)", exc_info=True)
+            logger.error(
+                f"[{request_id}] ERROR {request.method} {request.url.path} -> Exception: {exc} ({process_time_ms}ms)",
+                exc_info=True,
+            )
             raise exc
 
 

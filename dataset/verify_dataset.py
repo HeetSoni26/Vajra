@@ -62,7 +62,9 @@ def verify_dataset(
                 ("pad", getattr(tokenizer, "pad_token_id", 0)),
             ]:
                 if token_id is not None:
-                    special_token_stats[f"{token_name}_token_count"] = all_sample_tokens.count(token_id)
+                    special_token_stats[f"{token_name}_token_count"] = all_sample_tokens.count(
+                        token_id
+                    )
         except Exception as e:
             logger.warning(f"Could not load tokenizer at {tokenizer_path}: {e}")
 

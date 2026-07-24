@@ -10,8 +10,12 @@ def test_retrieval_engine_search():
     store = InMemoryVectorStore()
     engine = RetrievalEngine(embedder=embedder, vector_store=store)
 
-    rec1 = VectorRecord(text="FastAPI backend setup", vector=embedder.embed_text("FastAPI backend setup"))
-    rec2 = VectorRecord(text="React frontend design", vector=embedder.embed_text("React frontend design"))
+    rec1 = VectorRecord(
+        text="FastAPI backend setup", vector=embedder.embed_text("FastAPI backend setup")
+    )
+    rec2 = VectorRecord(
+        text="React frontend design", vector=embedder.embed_text("React frontend design")
+    )
     store.add(rec1)
     store.add(rec2)
 

@@ -41,7 +41,9 @@ def test_agent_tool_calling_loop():
 
 def test_agent_max_iterations_cap():
     # Infinite tool loop mock
-    infinite_tool_response = '```json\n{"tool": "python_tool", "arguments": {"code": "print(1)"}}\n```'
+    infinite_tool_response = (
+        '```json\n{"tool": "python_tool", "arguments": {"code": "print(1)"}}\n```'
+    )
     reasoner = MockReasoner(lambda p: infinite_tool_response)
 
     config = AgentConfig(max_iterations=3, verbose=False)

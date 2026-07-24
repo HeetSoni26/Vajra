@@ -34,7 +34,9 @@ def main():
     jm = JobManager()
 
     job = jm.submit_job("Background indexing & compilation", fn=lambda: "Indexed 100% of workspace")
-    am.create_artifact(kind="plan", name="saas_master_plan", content="Phase 1: Auth, Phase 2: Billing")
+    am.create_artifact(
+        kind="plan", name="saas_master_plan", content="Phase 1: Auth, Phase 2: Billing"
+    )
 
     # 4. MemoryManager Repository Indexing
     memory = MemoryManager()
@@ -56,7 +58,9 @@ def main():
     engine.setup_default_team()
 
     workflow = SaaSBuildWorkflow(engine=engine)
-    response = workflow.execute(feature_description="Build JWT authentication and Stripe payments billing system")
+    response = workflow.execute(
+        feature_description="Build JWT authentication and Stripe payments billing system"
+    )
 
     tracer.end_span(span2)
     tracer.finish()
@@ -65,7 +69,9 @@ def main():
     print("\n--- System Execution Report ---")
     print(f"Workflow Iterations: {response.iterations}")
     print(f"Job Status: {job.status}")
-    print(f"Latest Artifact: {am.get_latest_artifact('saas_master_plan').name} v{am.get_latest_artifact('saas_master_plan').version}")
+    print(
+        f"Latest Artifact: {am.get_latest_artifact('saas_master_plan').name} v{am.get_latest_artifact('saas_master_plan').version}"
+    )
     print(f"Indexed Repository Framework: {memory.project_context.repo_context.framework}")
     print(f"Trace Duration: {tracer.to_dict()['duration_s']}s")
     print("\nFinal Output Summary:")

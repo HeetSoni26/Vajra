@@ -35,7 +35,11 @@ class DatasetPipelineRunner:
 
     def __init__(self, config_path: str | Path = "configs/data/preprocessing.yaml") -> None:
         self.config_path = Path(config_path)
-        self.config = read_json(self.config_path) if self.config_path.suffix == ".json" else self._load_yaml(self.config_path)
+        self.config = (
+            read_json(self.config_path)
+            if self.config_path.suffix == ".json"
+            else self._load_yaml(self.config_path)
+        )
 
         self.raw_dir = ensure_dir(self.config.get("raw_dir", "data/raw"))
         self.processed_dir = ensure_dir(self.config.get("processed_dir", "data/processed"))
@@ -64,7 +68,9 @@ class DatasetPipelineRunner:
     def run(self, force_rebuild: bool = False) -> dict[str, Any]:
         """Run dataset pipeline end-to-end with resume support."""
         pipeline_start_time = time.time()
-        state = self.load_state() if not force_rebuild else {"completed_stages": [], "stage_data": {}}
+        state = (
+            self.load_state() if not force_rebuild else {"completed_stages": [], "stage_data": {}}
+        )
 
         # ----------------------------------------------------
         # STAGE 1: Ingestion, Cleaning & Deduplication
@@ -111,11 +117,13 @@ class DatasetPipelineRunner:
                     duplicate_count += 1
                     continue
 
-                cleaned_docs.append({
-                    "doc_id": doc["doc_id"],
-                    "text": norm_text,
-                    "source_file": doc["source_file"],
-                })
+                cleaned_docs.append(
+                    {
+                        "doc_id": doc["doc_id"],
+                        "text": norm_text,
+                        "source_file": doc["source_file"],
+                    }
+                )
 
             s1_duration = max(0.001, time.time() - s1_start)
             stage1_metrics = {
@@ -149,7 +157,9 @@ class DatasetPipelineRunner:
             s2_start = time.time()
 
             # Ensure tokenizer is available or fallback
-            tok_dir = self.tokenizer_path if Path(self.tokenizer_path).exists() else "tokenizer/v1.0"
+            tok_dir = (
+                self.tokenizer_path if Path(self.tokenizer_path).exists() else "tokenizer/v1.0"
+            )
             tokenizer_engine = DatasetTokenizer(tok_dir)
 
             tokens, tok_metrics = tokenizer_engine.tokenize_documents(cleaned_docs)
@@ -228,7 +238,9 @@ class DatasetPipelineRunner:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Dataset Pipeline Runner")
     parser.add_argument("--config", default="configs/data/preprocessing.yaml")
-    parser.add_argument("--force_rebuild", action="store_true", help="Ignore pipeline_state.json and rebuild")
+    parser.add_argument(
+        "--force_rebuild", action="store_true", help="Ignore pipeline_state.json and rebuild"
+    )
     args = parser.parse_args()
 
     runner = DatasetPipelineRunner(args.config)

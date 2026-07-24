@@ -12,7 +12,9 @@ class DownloadBackend(ABC):
     """Abstract base class for all download backends."""
 
     @abstractmethod
-    def download(self, metadata: DatasetMetadata, target_dir: Path, filename: str, resume_offset: int = 0) -> None:
+    def download(
+        self, metadata: DatasetMetadata, target_dir: Path, filename: str, resume_offset: int = 0
+    ) -> None:
         """Downloads a specific file from the dataset to the target directory."""
         pass
 
@@ -20,14 +22,18 @@ class DownloadBackend(ABC):
 class HTTPBackend(DownloadBackend):
     """Downloads datasets over standard HTTP/HTTPS using streaming urllib requests."""
 
-    def download(self, metadata: DatasetMetadata, target_dir: Path, filename: str, resume_offset: int = 0) -> None:
+    def download(
+        self, metadata: DatasetMetadata, target_dir: Path, filename: str, resume_offset: int = 0
+    ) -> None:
         target_dir.mkdir(parents=True, exist_ok=True)
         out_path = target_dir / filename
         url = metadata.source
         if not url.endswith(filename):
             url = f"{url.rstrip('/')}/{filename}"
 
-        logger.info(f"[HTTPBackend] Downloading {filename} from {url} to {out_path} (offset: {resume_offset})")
+        logger.info(
+            f"[HTTPBackend] Downloading {filename} from {url} to {out_path} (offset: {resume_offset})"
+        )
 
         req = urllib.request.Request(url)
         if resume_offset > 0 and out_path.exists():
@@ -48,13 +54,18 @@ class HTTPBackend(DownloadBackend):
 class HuggingFaceBackend(DownloadBackend):
     """Downloads datasets from the Hugging Face Hub using huggingface_hub or HTTPS CDN fallback."""
 
-    def download(self, metadata: DatasetMetadata, target_dir: Path, filename: str, resume_offset: int = 0) -> None:
+    def download(
+        self, metadata: DatasetMetadata, target_dir: Path, filename: str, resume_offset: int = 0
+    ) -> None:
         target_dir.mkdir(parents=True, exist_ok=True)
         out_path = target_dir / filename
 
         try:
             from huggingface_hub import hf_hub_download
-            logger.info(f"[HuggingFaceBackend] Downloading {filename} from HF repo {metadata.source}")
+
+            logger.info(
+                f"[HuggingFaceBackend] Downloading {filename} from HF repo {metadata.source}"
+            )
             downloaded = hf_hub_download(
                 repo_id=metadata.source,
                 filename=filename,
@@ -67,7 +78,9 @@ class HuggingFaceBackend(DownloadBackend):
         except ImportError:
             # Fallback to direct HF CDN download
             url = f"https://huggingface.co/datasets/{metadata.source}/resolve/main/{filename}"
-            logger.info(f"[HuggingFaceBackend] huggingface_hub unavailable, using CDN fallback: {url}")
+            logger.info(
+                f"[HuggingFaceBackend] huggingface_hub unavailable, using CDN fallback: {url}"
+            )
             http_backend = HTTPBackend()
             http_backend.download(metadata, target_dir, filename, resume_offset)
 
@@ -75,7 +88,9 @@ class HuggingFaceBackend(DownloadBackend):
 class GitBackend(DownloadBackend):
     """Downloads datasets hosted as Git repositories via safe git clone/pull commands."""
 
-    def download(self, metadata: DatasetMetadata, target_dir: Path, filename: str, resume_offset: int = 0) -> None:
+    def download(
+        self, metadata: DatasetMetadata, target_dir: Path, filename: str, resume_offset: int = 0
+    ) -> None:
         target_dir.mkdir(parents=True, exist_ok=True)
         logger.info(f"[GitBackend] Cloning/pulling repository {metadata.source} to {target_dir}")
 
@@ -94,7 +109,9 @@ class GitBackend(DownloadBackend):
 class LocalBackend(DownloadBackend):
     """Copies or links datasets from a local file path."""
 
-    def download(self, metadata: DatasetMetadata, target_dir: Path, filename: str, resume_offset: int = 0) -> None:
+    def download(
+        self, metadata: DatasetMetadata, target_dir: Path, filename: str, resume_offset: int = 0
+    ) -> None:
         target_dir.mkdir(parents=True, exist_ok=True)
         src_path = Path(metadata.source)
 

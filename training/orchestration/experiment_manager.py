@@ -2,6 +2,7 @@
 Experiment lifecycle management for Vajra.
 Tracks experiment metadata, checkpoint history, provider history, and training summaries.
 """
+
 from __future__ import annotations
 
 import json
@@ -78,9 +79,7 @@ class ExperimentManager:
     def _save(self) -> None:
         self._record["state"] = self.state.value
         self._record["updated_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ")
-        self.registry_path.write_text(
-            json.dumps(self._record, indent=2), encoding="utf-8"
-        )
+        self.registry_path.write_text(json.dumps(self._record, indent=2), encoding="utf-8")
 
     # ── State Transitions ──────────────────────────────────────
 
@@ -99,23 +98,27 @@ class ExperimentManager:
     # ── Checkpoint Registry ────────────────────────────────────
 
     def record_checkpoint(self, step: int, tokens_seen: int, path: str, metrics: dict) -> None:
-        self._record["checkpoint_history"].append({
-            "step": step,
-            "tokens_seen": tokens_seen,
-            "path": str(path),
-            "metrics": metrics,
-            "saved_at": time.strftime("%Y-%m-%dT%H:%M:%SZ"),
-        })
+        self._record["checkpoint_history"].append(
+            {
+                "step": step,
+                "tokens_seen": tokens_seen,
+                "path": str(path),
+                "metrics": metrics,
+                "saved_at": time.strftime("%Y-%m-%dT%H:%M:%SZ"),
+            }
+        )
         self._save()
 
     # ── Resume Registry ────────────────────────────────────────
 
     def record_resume(self, from_step: int, from_exp: str) -> None:
-        self._record["resume_history"].append({
-            "from_step": from_step,
-            "from_experiment": from_exp,
-            "resumed_at": time.strftime("%Y-%m-%dT%H:%M:%SZ"),
-        })
+        self._record["resume_history"].append(
+            {
+                "from_step": from_step,
+                "from_experiment": from_exp,
+                "resumed_at": time.strftime("%Y-%m-%dT%H:%M:%SZ"),
+            }
+        )
         self._save()
 
     # ── Provider Info ──────────────────────────────────────────

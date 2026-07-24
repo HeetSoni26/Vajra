@@ -21,6 +21,7 @@ logger = setup_logger("hf_compat")
 
 try:
     from transformers import AutoConfig, AutoModelForCausalLM
+
     AutoConfig.register("vajra", VajraConfig)
     AutoConfig.register("vajra-lm", VajraConfig)
     AutoModelForCausalLM.register(VajraConfig, VajraForCausalLM)
@@ -114,6 +115,7 @@ def save_pretrained(
 
     try:
         from safetensors.torch import save_file as st_save
+
         st_save(state_dict, str(output_dir / "model.safetensors"))
         weights_file = "model.safetensors"
     except ImportError:
@@ -192,16 +194,23 @@ def load_pretrained(
     if safetensors_path.exists():
         try:
             from safetensors.torch import load_file as st_load
+
             state_dict = st_load(str(safetensors_path), device=str(device))
         except ImportError:
             raise ImportError("safetensors package required to load model.safetensors")
     elif bin_path.exists():
         state_dict = torch.load(bin_path, map_location=device, weights_only=True)
     else:
-        logger.warning(f"No weights file found in {model_dir}. Returning randomly initialized model.")
+        logger.warning(
+            f"No weights file found in {model_dir}. Returning randomly initialized model."
+        )
         return model.to(device), model_cfg
 
-    if model_cfg.tie_word_embeddings and "lm_head.weight" not in state_dict and "model.embed_tokens.weight" in state_dict:
+    if (
+        model_cfg.tie_word_embeddings
+        and "lm_head.weight" not in state_dict
+        and "model.embed_tokens.weight" in state_dict
+    ):
         state_dict["lm_head.weight"] = state_dict["model.embed_tokens.weight"]
 
     incompatible = model.load_state_dict(state_dict, strict=strict)

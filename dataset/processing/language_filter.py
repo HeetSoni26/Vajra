@@ -2,7 +2,7 @@
 
 
 def main():
-    print('Language filtering stage placeholder.')
+    print("Language filtering stage placeholder.")
 
 
 if __name__ == "__main__":

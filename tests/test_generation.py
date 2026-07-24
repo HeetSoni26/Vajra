@@ -34,6 +34,7 @@ def tiny_model():
 
 # --- KV Cache Tests ---
 
+
 def test_kv_cache_update_and_reset():
     cache = KVCache(num_layers=2, max_batch_size=1, max_seq_len=64)
     assert cache.seq_len == 0
@@ -66,6 +67,7 @@ def test_kv_cache_batch():
 
 
 # --- Sampling Tests ---
+
 
 def test_greedy_decoding():
     logits = torch.tensor([[1.0, 5.0, 2.0]])
@@ -105,6 +107,7 @@ def test_repetition_penalty():
 
 
 # --- Forward Pass with KV Cache ---
+
 
 def test_model_forward_with_kv_cache(tiny_model):
     model = tiny_model
@@ -154,32 +157,39 @@ def test_kv_cache_correctness(tiny_model):
     logits_cached = out_cached["logits"][:, -1, :]
 
     # Logits must match
-    assert torch.allclose(logits_full, logits_cached, atol=1e-4), \
+    assert torch.allclose(logits_full, logits_cached, atol=1e-4), (
         f"Max diff: {(logits_full - logits_cached).abs().max().item()}"
+    )
 
     cache.reset()
 
 
 # --- Batch Generation ---
 
+
 def test_batch_generation(tiny_model):
     """Test generating from multiple prompts simultaneously."""
     from unittest.mock import MagicMock
+
     tok = MagicMock()
     tok.encode = lambda text: MagicMock(ids=list(range(len(text) % 10 + 2)))
     tok.decode = lambda ids: "generated"
     tok.eos_token_id = None
 
     engine = InferenceEngine(tiny_model, tok, torch.device("cpu"))
-    results = engine.generate(["Hello", "World"], GenerationConfig(max_new_tokens=5, do_sample=False, use_kv_cache=True))
+    results = engine.generate(
+        ["Hello", "World"], GenerationConfig(max_new_tokens=5, do_sample=False, use_kv_cache=True)
+    )
     assert len(results) == 2
 
 
 # --- Streaming Generation ---
 
+
 def test_streaming_generation(tiny_model):
     """Test streaming token-by-token generation."""
     from unittest.mock import MagicMock
+
     tok = MagicMock()
     tok.encode = lambda text: MagicMock(ids=[1, 2, 3])
     tok.decode = lambda ids: "t"
@@ -193,6 +203,7 @@ def test_streaming_generation(tiny_model):
 
 
 # --- Backward Compatibility ---
+
 
 def test_training_forward_still_works(tiny_model):
     """Ensure the model forward pass for training (no KV cache) still works."""

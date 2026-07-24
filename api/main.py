@@ -30,6 +30,7 @@ async def lifespan(app: FastAPI):
     checkpoint = os.environ.get("FLM_CHECKPOINT", "")
 
     from inference.engine import InferenceEngine
+
     _ENGINE = InferenceEngine.from_config(config_path, checkpoint or None)
     app.state.engine = _ENGINE
     yield
@@ -47,6 +48,7 @@ setup_middleware(app)
 
 
 # --- Health & Model Info ---
+
 
 @app.get("/health")
 async def health():
@@ -75,6 +77,7 @@ async def model_info():
 
 # --- Generation ---
 
+
 @app.post("/v1/completions")
 @app.post("/generate")
 async def completions(request: CompletionRequest):
@@ -86,6 +89,7 @@ async def completions(request: CompletionRequest):
         )
 
     from inference.engine import GenerationConfig
+
     gen_cfg = GenerationConfig(
         max_new_tokens=request.max_tokens,
         temperature=request.temperature,
@@ -97,10 +101,12 @@ async def completions(request: CompletionRequest):
     )
 
     if request.stream:
+
         async def _async_stream():
             for token_text in engine.generate_stream(request.prompt, gen_cfg):
                 yield f"data: {token_text}\n\n"
             yield "data: [DONE]\n\n"
+
         return StreamingResponse(_async_stream(), media_type="text/event-stream")
 
     try:
@@ -121,6 +127,7 @@ async def completions(request: CompletionRequest):
 
 # --- Chat ---
 
+
 @app.post("/v1/chat/completions")
 async def chat_completions(request: ChatRequest):
     engine = _get_engine()
@@ -137,6 +144,7 @@ async def chat_completions(request: ChatRequest):
     prompt = "".join(prompt_parts) + "<|assistant|>"
 
     from inference.engine import GenerationConfig
+
     gen_cfg = GenerationConfig(
         max_new_tokens=request.max_tokens,
         temperature=request.temperature,
@@ -159,15 +167,18 @@ async def chat_completions(request: ChatRequest):
         "id": "chatcmpl-local",
         "object": "chat.completion",
         "model": engine.model_info()["model_name"],
-        "choices": [{
-            "index": 0,
-            "message": {"role": "assistant", "content": results[0]},
-            "finish_reason": "stop",
-        }],
+        "choices": [
+            {
+                "index": 0,
+                "message": {"role": "assistant", "content": results[0]},
+                "finish_reason": "stop",
+            }
+        ],
     }
 
 
 # --- Tokenize / Detokenize ---
+
 
 @app.post("/tokenize")
 async def tokenize_text(request: TokenizeRequest):

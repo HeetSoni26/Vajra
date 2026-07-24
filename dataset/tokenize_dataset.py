@@ -21,7 +21,9 @@ class DatasetTokenizer:
         self.tokenizer = AutoTokenizer.from_pretrained(self.tokenizer_dir)
         self.eos_token_id = getattr(self.tokenizer, "eos_token_id", 2) or 2
 
-    def tokenize_documents(self, documents: list[dict[str, Any]]) -> tuple[list[int], dict[str, Any]]:
+    def tokenize_documents(
+        self, documents: list[dict[str, Any]]
+    ) -> tuple[list[int], dict[str, Any]]:
         """Tokenize a list of documents, appending EOS token after each document."""
         all_tokens: list[int] = []
         start_time = time.time()
@@ -47,7 +49,9 @@ class DatasetTokenizer:
             "max_doc_token_length": max(doc_lengths) if doc_lengths else 0,
         }
 
-        logger.info(f"Tokenized {len(doc_lengths)} documents -> {len(all_tokens):,} tokens ({tokens_per_sec:,} tokens/sec)")
+        logger.info(
+            f"Tokenized {len(doc_lengths)} documents -> {len(all_tokens):,} tokens ({tokens_per_sec:,} tokens/sec)"
+        )
         return all_tokens, metrics
 
 
@@ -67,7 +71,13 @@ def main() -> None:
     ids = np.array(tokens, dtype=np.uint32)
     Path(args.output).parent.mkdir(parents=True, exist_ok=True)
     ids.tofile(args.output)
-    print({"tokens": int(ids.size), "output": args.output, "tokens_per_sec": metrics["tokens_per_sec"]})
+    print(
+        {
+            "tokens": int(ids.size),
+            "output": args.output,
+            "tokens_per_sec": metrics["tokens_per_sec"],
+        }
+    )
 
 
 if __name__ == "__main__":

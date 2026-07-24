@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Any
 from pydantic import BaseModel, ConfigDict, model_validator
 
+
 class VajraConfig(BaseModel):
     model_config = ConfigDict(extra="ignore", populate_by_name=True)
 
@@ -49,7 +50,7 @@ class VajraConfig(BaseModel):
         return self.hidden_size // self.num_attention_heads
 
     @classmethod
-    def from_pretrained(cls, path: Path | str) -> 'VajraConfig':
+    def from_pretrained(cls, path: Path | str) -> "VajraConfig":
         path = Path(path)
         config_file = path / "config.json" if path.is_dir() else path
         with open(config_file, "r", encoding="utf-8") as f:
@@ -67,8 +68,9 @@ class VajraConfig(BaseModel):
             f.write(self.model_dump_json(indent=2))
 
     @classmethod
-    def from_yaml(cls, path: Path | str) -> 'VajraConfig':
+    def from_yaml(cls, path: Path | str) -> "VajraConfig":
         import yaml
+
         path = Path(path)
         with open(path, "r", encoding="utf-8") as f:
             data = yaml.safe_load(f)
@@ -76,6 +78,7 @@ class VajraConfig(BaseModel):
 
     def to_yaml(self, path: Path | str):
         import yaml
+
         path = Path(path)
         path.parent.mkdir(parents=True, exist_ok=True)
         with open(path, "w", encoding="utf-8") as f:
@@ -89,21 +92,37 @@ ModelConfig = VajraConfig
 def get_preset(name: str) -> VajraConfig:
     presets = {
         "Vajra-370M": VajraConfig(
-            vocab_size=102400, hidden_size=1024, intermediate_size=4096,
-            num_layers=24, num_attention_heads=16, num_key_value_heads=4
+            vocab_size=102400,
+            hidden_size=1024,
+            intermediate_size=4096,
+            num_layers=24,
+            num_attention_heads=16,
+            num_key_value_heads=4,
         ),
         "Vajra-1B": VajraConfig(
-            vocab_size=102400, hidden_size=2048, intermediate_size=8192,
-            num_layers=22, num_attention_heads=32, num_key_value_heads=8
+            vocab_size=102400,
+            hidden_size=2048,
+            intermediate_size=8192,
+            num_layers=22,
+            num_attention_heads=32,
+            num_key_value_heads=8,
         ),
         "Vajra-3B": VajraConfig(
-            vocab_size=102400, hidden_size=3072, intermediate_size=12288,
-            num_layers=32, num_attention_heads=32, num_key_value_heads=8
+            vocab_size=102400,
+            hidden_size=3072,
+            intermediate_size=12288,
+            num_layers=32,
+            num_attention_heads=32,
+            num_key_value_heads=8,
         ),
         "Vajra-7B": VajraConfig(
-            vocab_size=102400, hidden_size=4096, intermediate_size=14336,
-            num_layers=32, num_attention_heads=32, num_key_value_heads=8
-        )
+            vocab_size=102400,
+            hidden_size=4096,
+            intermediate_size=14336,
+            num_layers=32,
+            num_attention_heads=32,
+            num_key_value_heads=8,
+        ),
     }
     if name not in presets:
         raise ValueError(f"Preset {name} not found.")

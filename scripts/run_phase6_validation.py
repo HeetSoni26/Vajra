@@ -28,13 +28,14 @@ logger = setup_logger("phase6_validation")
 
 def validate_tokenizer() -> dict:
     from tokenizers import Tokenizer
+
     tok_path = Path("tokenizer/v1.0/tokenizer.json")
     tokenizer = Tokenizer.from_file(str(tok_path))
     text = "Vajra-LM tokenizer test sequence."
     encoded = tokenizer.encode(text)
     decoded = tokenizer.decode(encoded.ids)
     vocab = tokenizer.get_vocab()
-    
+
     return {
         "status": "PASSED",
         "original_text": text,
@@ -70,11 +71,11 @@ def validate_dataset_and_pipeline(tmp_dir: Path) -> dict:
 def validate_training_and_checkpoints(tmp_dir: Path) -> dict:
     data_dir = tmp_dir / "data" / "tokenized"
     ckpt_dir = tmp_dir / "checkpoints"
-    
+
     model_cfg = ModelConfig.from_yaml("configs/model/model_tiny_validation.yaml")
     model = FoundationLM(model_cfg)
     optimizer = build_optimizer(model, lr=1e-3, weight_decay=0.01)
-    
+
     train_loader, val_loader = create_dataloaders(data_dir, sequence_length=32, micro_batch_size=2)
     trainer = Trainer(
         model=model,
@@ -83,10 +84,10 @@ def validate_training_and_checkpoints(tmp_dir: Path) -> dict:
         checkpoint_dir=ckpt_dir,
         precision="fp32",
     )
-    
+
     train_iter = iter(train_loader)
     history = []
-    
+
     start_t = time.time()
     for step in range(1, 11):
         try:
@@ -98,20 +99,22 @@ def validate_training_and_checkpoints(tmp_dir: Path) -> dict:
         if metrics:
             history.append(metrics)
             if step % 5 == 0:
-                trainer.checkpoint_manager.save(step=step, model=model, optimizer=optimizer, tokens_seen=step*64)
+                trainer.checkpoint_manager.save(
+                    step=step, model=model, optimizer=optimizer, tokens_seen=step * 64
+                )
     duration = time.time() - start_t
-    
+
     # Validation Evaluation
     val_stats = trainer.evaluate(val_loader) if val_loader else {}
-    
+
     # Test Resume from latest
     latest_ckpt = ckpt_dir / "latest.pt"
     assert latest_ckpt.exists(), "latest.pt missing!"
-    
+
     resumed_model = FoundationLM(model_cfg)
     resumed_opt = build_optimizer(resumed_model, lr=1e-3, weight_decay=0.01)
     state = load_checkpoint(latest_ckpt, resumed_model, resumed_opt)
-    
+
     return {
         "status": "PASSED",
         "steps_completed": len(history),
@@ -128,21 +131,27 @@ def validate_training_and_checkpoints(tmp_dir: Path) -> dict:
 def validate_inference_and_export(tmp_dir: Path) -> dict:
     model_cfg = ModelConfig.from_yaml("configs/model/model_tiny_validation.yaml")
     causal_model = VajraForCausalLM(model_cfg)
-    
+
     export_dir = tmp_dir / "hf_export"
     save_report = save_pretrained(causal_model, export_dir, tokenizer_dir="tokenizer/v1.0")
-    
+
     reloaded_model, reloaded_cfg = load_pretrained(export_dir, device="cpu")
-    
+
     from tokenizers import Tokenizer
+
     tokenizer = Tokenizer.from_file("tokenizer/v1.0/tokenizer.json")
-    
+
     engine = InferenceEngine(reloaded_model, tokenizer, device=torch.device("cpu"))
-    
-    gen_greedy = engine.generate("Test prompt", GenerationConfig(max_new_tokens=10, do_sample=False))
-    gen_sample = engine.generate("Test prompt", GenerationConfig(max_new_tokens=10, do_sample=True, temperature=0.7, top_p=0.9))
+
+    gen_greedy = engine.generate(
+        "Test prompt", GenerationConfig(max_new_tokens=10, do_sample=False)
+    )
+    gen_sample = engine.generate(
+        "Test prompt",
+        GenerationConfig(max_new_tokens=10, do_sample=True, temperature=0.7, top_p=0.9),
+    )
     stream_tokens = list(engine.generate_stream("Test prompt", GenerationConfig(max_new_tokens=5)))
-    
+
     return {
         "status": "PASSED",
         "export_files": save_report["files_created"],
@@ -156,7 +165,7 @@ def validate_inference_and_export(tmp_dir: Path) -> dict:
 def validate_failure_recovery(tmp_dir: Path) -> dict:
     ckpt_dir = tmp_dir / "recovery_checkpoints"
     ckpt_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # 1. Missing checkpoint exception test
     mgr = CheckpointManager(checkpoint_dir=ckpt_dir)
     missing_handled = False
@@ -164,7 +173,7 @@ def validate_failure_recovery(tmp_dir: Path) -> dict:
         mgr.load_latest(None)
     except FileNotFoundError:
         missing_handled = True
-        
+
     return {
         "status": "PASSED",
         "missing_checkpoint_exception_handled": missing_handled,
@@ -176,14 +185,14 @@ def run_all_validation() -> dict:
     if tmp_dir.exists():
         shutil.rmtree(tmp_dir, ignore_errors=True)
     tmp_dir.mkdir(parents=True, exist_ok=True)
-    
+
     try:
         tok_res = validate_tokenizer()
         ds_res = validate_dataset_and_pipeline(tmp_dir)
         train_res = validate_training_and_checkpoints(tmp_dir)
         inf_res = validate_inference_and_export(tmp_dir)
         rec_res = validate_failure_recovery(tmp_dir)
-        
+
         report = {
             "phase": "Phase 6 — End-to-End Training Pipeline Validation",
             "overall_status": "SUCCESS",
@@ -193,10 +202,10 @@ def run_all_validation() -> dict:
             "inference_export_validation": inf_res,
             "failure_recovery_validation": rec_res,
         }
-        
+
         with open(tmp_dir / "phase6_report.json", "w") as f:
             json.dump(report, f, indent=2)
-            
+
         return report
     finally:
         if tmp_dir.exists():

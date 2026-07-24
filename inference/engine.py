@@ -234,11 +234,17 @@ class InferenceEngine:
         generated = input_ids
         start_pos = 0
 
-        with torch.amp.autocast(device_type=self.device.type, dtype=self.dtype, enabled=(self.dtype != torch.float32)):
+        with torch.amp.autocast(
+            device_type=self.device.type, dtype=self.dtype, enabled=(self.dtype != torch.float32)
+        ):
             if kv_cache is not None:
                 # Prefill: process entire prompt
                 out = self.model(input_ids, kv_cache=kv_cache, start_pos=0)
-                logits = out["logits"][:, -1, :] if isinstance(out, dict) else (out[0][:, -1, :] if isinstance(out, (tuple, list)) else out[:, -1, :])
+                logits = (
+                    out["logits"][:, -1, :]
+                    if isinstance(out, dict)
+                    else (out[0][:, -1, :] if isinstance(out, (tuple, list)) else out[:, -1, :])
+                )
                 next_token = _sample_next_token(logits, gen_cfg, generated)
                 generated = torch.cat([generated, next_token], dim=-1)
                 start_pos = input_ids.shape[1]
@@ -246,7 +252,11 @@ class InferenceEngine:
                 # Decode: one token at a time
                 for _ in range(gen_cfg.max_new_tokens - 1):
                     out = self.model(next_token, kv_cache=kv_cache, start_pos=start_pos)
-                    logits = out["logits"][:, -1, :] if isinstance(out, dict) else (out[0][:, -1, :] if isinstance(out, (tuple, list)) else out[:, -1, :])
+                    logits = (
+                        out["logits"][:, -1, :]
+                        if isinstance(out, dict)
+                        else (out[0][:, -1, :] if isinstance(out, (tuple, list)) else out[:, -1, :])
+                    )
                     next_token = _sample_next_token(logits, gen_cfg, generated)
                     generated = torch.cat([generated, next_token], dim=-1)
                     start_pos += 1
@@ -258,7 +268,11 @@ class InferenceEngine:
                 # No KV cache — recompute full context each step
                 for _ in range(gen_cfg.max_new_tokens):
                     out = self.model(generated)
-                    logits = out["logits"][:, -1, :] if isinstance(out, dict) else (out[0][:, -1, :] if isinstance(out, (tuple, list)) else out[:, -1, :])
+                    logits = (
+                        out["logits"][:, -1, :]
+                        if isinstance(out, dict)
+                        else (out[0][:, -1, :] if isinstance(out, (tuple, list)) else out[:, -1, :])
+                    )
                     next_token = _sample_next_token(logits, gen_cfg, generated)
                     generated = torch.cat([generated, next_token], dim=-1)
 
@@ -317,11 +331,17 @@ class InferenceEngine:
         start_pos = 0
         prev_ids: list[int] = list(encoded)
 
-        with torch.amp.autocast(device_type=self.device.type, dtype=self.dtype, enabled=(self.dtype != torch.float32)):
+        with torch.amp.autocast(
+            device_type=self.device.type, dtype=self.dtype, enabled=(self.dtype != torch.float32)
+        ):
             if kv_cache is not None:
                 # Prefill
                 out = self.model(input_ids, kv_cache=kv_cache, start_pos=0)
-                logits = out["logits"][:, -1, :] if isinstance(out, dict) else (out[0][:, -1, :] if isinstance(out, (tuple, list)) else out[:, -1, :])
+                logits = (
+                    out["logits"][:, -1, :]
+                    if isinstance(out, dict)
+                    else (out[0][:, -1, :] if isinstance(out, (tuple, list)) else out[:, -1, :])
+                )
                 next_token = _sample_next_token(logits, gen_cfg, generated)
                 tok_id = int(next_token[0, 0])
                 if tok_id in stop_ids:
@@ -335,7 +355,11 @@ class InferenceEngine:
 
                 for _ in range(gen_cfg.max_new_tokens - 1):
                     out = self.model(next_token, kv_cache=kv_cache, start_pos=start_pos)
-                    logits = out["logits"][:, -1, :] if isinstance(out, dict) else (out[0][:, -1, :] if isinstance(out, (tuple, list)) else out[:, -1, :])
+                    logits = (
+                        out["logits"][:, -1, :]
+                        if isinstance(out, dict)
+                        else (out[0][:, -1, :] if isinstance(out, (tuple, list)) else out[:, -1, :])
+                    )
                     next_token = _sample_next_token(logits, gen_cfg, generated)
                     tok_id = int(next_token[0, 0])
                     if tok_id in stop_ids:
@@ -347,7 +371,11 @@ class InferenceEngine:
             else:
                 for _ in range(gen_cfg.max_new_tokens):
                     out = self.model(generated)
-                    logits = out["logits"][:, -1, :] if isinstance(out, dict) else (out[0][:, -1, :] if isinstance(out, (tuple, list)) else out[:, -1, :])
+                    logits = (
+                        out["logits"][:, -1, :]
+                        if isinstance(out, dict)
+                        else (out[0][:, -1, :] if isinstance(out, (tuple, list)) else out[:, -1, :])
+                    )
                     next_token = _sample_next_token(logits, gen_cfg, generated)
                     tok_id = int(next_token[0, 0])
                     if tok_id in stop_ids:

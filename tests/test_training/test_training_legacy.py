@@ -35,7 +35,9 @@ def mock_token_data(tmp_path: Path) -> Path:
 
 
 def test_memmap_dataset_and_dataloaders(mock_token_data: Path):
-    train_loader, val_loader = create_dataloaders(mock_token_data, sequence_length=32, micro_batch_size=4)
+    train_loader, val_loader = create_dataloaders(
+        mock_token_data, sequence_length=32, micro_batch_size=4
+    )
     assert train_loader is not None
     assert val_loader is not None
 
@@ -64,7 +66,9 @@ def test_optimizer_and_cosine_scheduler(tiny_model_cfg: ModelConfig):
 def test_trainer_step_and_early_failure(tiny_model_cfg: ModelConfig):
     model = FoundationLM(tiny_model_cfg)
     optimizer = build_optimizer(model, lr=1e-3, weight_decay=0.01)
-    trainer = Trainer(model, optimizer, grad_clip=1.0, grad_accum_steps=1, warmup_steps=5, total_steps=20)
+    trainer = Trainer(
+        model, optimizer, grad_clip=1.0, grad_accum_steps=1, warmup_steps=5, total_steps=20
+    )
 
     batch = {
         "input_ids": torch.randint(0, 100, (2, 32)),

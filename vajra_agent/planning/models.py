@@ -73,7 +73,9 @@ class Plan:
 
     def update_completion_status(self) -> None:
         """Check if all steps are completed or skipped."""
-        self.is_completed = all(s.status in (StepStatus.COMPLETED, StepStatus.SKIPPED) for s in self.steps)
+        self.is_completed = all(
+            s.status in (StepStatus.COMPLETED, StepStatus.SKIPPED) for s in self.steps
+        )
 
     def to_dict(self) -> dict[str, Any]:
         return {

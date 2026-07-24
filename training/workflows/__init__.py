@@ -8,5 +8,5 @@ __all__ = [
     "get_vajra_tiny_preset",
     "TrainingSessionManager",
     "TextGenerationPipeline",
-    "TrainingReportGenerator"
+    "TrainingReportGenerator",
 ]

@@ -7,7 +7,9 @@ from vajra_agent import MemoryManager, MultiAgentEngine, TaskGraph
 def test_stress_large_repository_indexing(tmp_path: Path):
     # Generate 50 mock files
     for i in range(50):
-        (tmp_path / f"module_{i}.py").write_text(f"class Class_{i}:\n    def method_{i}(self):\n        pass\n", encoding="utf-8")
+        (tmp_path / f"module_{i}.py").write_text(
+            f"class Class_{i}:\n    def method_{i}(self):\n        pass\n", encoding="utf-8"
+        )
 
     mem = MemoryManager()
     mem.index_repository(tmp_path)

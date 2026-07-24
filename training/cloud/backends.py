@@ -20,7 +20,9 @@ class StorageBackend(abc.ABC):
     """Abstract interface for all cloud storage providers."""
 
     @abc.abstractmethod
-    def upload_folder(self, local_dir: str | Path, remote_path: str, run_as_future: bool = True) -> Any:
+    def upload_folder(
+        self, local_dir: str | Path, remote_path: str, run_as_future: bool = True
+    ) -> Any:
         pass
 
     @abc.abstractmethod
@@ -38,7 +40,7 @@ class HuggingFaceBackend(StorageBackend):
     def __init__(self, repo_id: str, private: bool = True, token: str | None = None) -> None:
         self.repo_id = repo_id
         self.api = HfApi(token=token or os.environ.get("HF_TOKEN"))
-        
+
         # Ensure repository exists
         try:
             self.api.create_repo(repo_id=self.repo_id, private=private, exist_ok=True)
@@ -46,7 +48,9 @@ class HuggingFaceBackend(StorageBackend):
         except Exception as e:
             logger.warning(f"Failed to verify/create HF repo {self.repo_id}: {e}")
 
-    def upload_folder(self, local_dir: str | Path, remote_path: str, run_as_future: bool = True) -> Any:
+    def upload_folder(
+        self, local_dir: str | Path, remote_path: str, run_as_future: bool = True
+    ) -> Any:
         """Upload a folder to Hugging Face in the background."""
         logger.info(f"Initiating background upload of {local_dir} to {self.repo_id}/{remote_path}")
         try:
@@ -91,22 +95,25 @@ class HuggingFaceBackend(StorageBackend):
 
 class LocalBackend(StorageBackend):
     """Dummy backend for local testing and fallback."""
+
     def __init__(self, target_dir: str | Path) -> None:
         self.target_dir = Path(target_dir)
         self.target_dir.mkdir(parents=True, exist_ok=True)
 
-    def upload_folder(self, local_dir: str | Path, remote_path: str, run_as_future: bool = True) -> Any:
+    def upload_folder(
+        self, local_dir: str | Path, remote_path: str, run_as_future: bool = True
+    ) -> Any:
         import shutil
         import concurrent.futures
-        
+
         target = self.target_dir / remote_path
-        
+
         def _copy():
             if target.exists():
                 shutil.rmtree(target)
             shutil.copytree(local_dir, target)
             logger.info(f"Local Sync: Copied {local_dir} to {target}")
-            
+
         if run_as_future:
             pool = concurrent.futures.ThreadPoolExecutor(max_workers=1)
             return pool.submit(_copy)
@@ -116,10 +123,11 @@ class LocalBackend(StorageBackend):
 
     def download_file(self, remote_path: str, local_dir: str | Path) -> Path:
         import shutil
+
         src = self.target_dir / remote_path
         if not src.exists():
             raise FileNotFoundError(f"Local Sync missing: {src}")
-        
+
         dst = Path(local_dir) / src.name
         dst.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(src, dst)

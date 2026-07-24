@@ -55,9 +55,7 @@ def test_evaluate_all(tiny_model, tmp_path):
         tokens.tofile(data_dir / name)
 
     evaluator = ModelEvaluator(tiny_model, torch.device("cpu"))
-    report = evaluator.evaluate_all(
-        data_dir, sequence_length=32, batch_size=2, max_batches=3
-    )
+    report = evaluator.evaluate_all(data_dir, sequence_length=32, batch_size=2, max_batches=3)
 
     assert "splits" in report
     assert len(report["splits"]) == 3

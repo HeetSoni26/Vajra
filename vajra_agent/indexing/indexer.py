@@ -36,7 +36,16 @@ class WorkspaceIndexer:
 
     @staticmethod
     def _should_ignore(path: Path) -> bool:
-        ignore_dirs = {".git", ".pytest_cache", ".ruff_cache", "__pycache__", "venv", ".venv", "dist", "build"}
+        ignore_dirs = {
+            ".git",
+            ".pytest_cache",
+            ".ruff_cache",
+            "__pycache__",
+            "venv",
+            ".venv",
+            "dist",
+            "build",
+        }
         return any(part in ignore_dirs for part in path.parts)
 
     @classmethod

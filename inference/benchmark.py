@@ -72,35 +72,92 @@ def run_generation_benchmark(
     benchmarks: list[dict[str, Any]] = []
 
     # 1. Greedy — KV Cache ON
-    benchmarks.append(_bench_single(engine, prompt, GenerationConfig(
-        max_new_tokens=max_tokens, temperature=0.0, do_sample=False, use_kv_cache=True,
-    ), "greedy_kv_cache_on"))
+    benchmarks.append(
+        _bench_single(
+            engine,
+            prompt,
+            GenerationConfig(
+                max_new_tokens=max_tokens,
+                temperature=0.0,
+                do_sample=False,
+                use_kv_cache=True,
+            ),
+            "greedy_kv_cache_on",
+        )
+    )
 
     # 2. Greedy — KV Cache OFF
-    benchmarks.append(_bench_single(engine, prompt, GenerationConfig(
-        max_new_tokens=max_tokens, temperature=0.0, do_sample=False, use_kv_cache=False,
-    ), "greedy_kv_cache_off"))
+    benchmarks.append(
+        _bench_single(
+            engine,
+            prompt,
+            GenerationConfig(
+                max_new_tokens=max_tokens,
+                temperature=0.0,
+                do_sample=False,
+                use_kv_cache=False,
+            ),
+            "greedy_kv_cache_off",
+        )
+    )
 
     # 3. Top-K (k=50, T=0.8)
-    benchmarks.append(_bench_single(engine, prompt, GenerationConfig(
-        max_new_tokens=max_tokens, temperature=0.8, top_k=50, do_sample=True, use_kv_cache=True, seed=42,
-    ), "top_k_50"))
+    benchmarks.append(
+        _bench_single(
+            engine,
+            prompt,
+            GenerationConfig(
+                max_new_tokens=max_tokens,
+                temperature=0.8,
+                top_k=50,
+                do_sample=True,
+                use_kv_cache=True,
+                seed=42,
+            ),
+            "top_k_50",
+        )
+    )
 
     # 4. Top-P (p=0.9, T=0.8)
-    benchmarks.append(_bench_single(engine, prompt, GenerationConfig(
-        max_new_tokens=max_tokens, temperature=0.8, top_p=0.9, do_sample=True, use_kv_cache=True, seed=42,
-    ), "top_p_0.9"))
+    benchmarks.append(
+        _bench_single(
+            engine,
+            prompt,
+            GenerationConfig(
+                max_new_tokens=max_tokens,
+                temperature=0.8,
+                top_p=0.9,
+                do_sample=True,
+                use_kv_cache=True,
+                seed=42,
+            ),
+            "top_p_0.9",
+        )
+    )
 
     # 5. Temperature sweep
     for temp in [0.3, 0.7, 1.0, 1.5]:
-        benchmarks.append(_bench_single(engine, prompt, GenerationConfig(
-            max_new_tokens=max_tokens, temperature=temp, do_sample=True, use_kv_cache=True, seed=42,
-        ), f"temperature_{temp}"))
+        benchmarks.append(
+            _bench_single(
+                engine,
+                prompt,
+                GenerationConfig(
+                    max_new_tokens=max_tokens,
+                    temperature=temp,
+                    do_sample=True,
+                    use_kv_cache=True,
+                    seed=42,
+                ),
+                f"temperature_{temp}",
+            )
+        )
 
     # KV Cache speedup
     kv_on = next(b for b in benchmarks if b["label"] == "greedy_kv_cache_on")
     kv_off = next(b for b in benchmarks if b["label"] == "greedy_kv_cache_off")
-    kv_speedup = round(kv_off["average_total_time_ms"] / max(kv_on["average_total_time_ms"], 0.01), 2)
+    kv_speedup = round(
+        kv_off["average_total_time_ms"] / max(kv_on["average_total_time_ms"], 0.01), 2
+    )
 
     mem_info = get_memory_info()
 
@@ -129,6 +186,7 @@ def main() -> None:
     args = parser.parse_args()
 
     import json
+
     report = run_generation_benchmark(args.config, args.output)
     print(json.dumps(report, indent=2))
 

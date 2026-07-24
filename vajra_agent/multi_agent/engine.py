@@ -32,11 +32,15 @@ class MultiAgentEngine:
 
     def setup_default_team(self) -> None:
         """Convenience method setting up default software engineering agent team."""
-        self.add_agent(ArchitectAgent(MockReasoner(["Architectural design approved."])), role="ArchitectAgent")
+        self.add_agent(
+            ArchitectAgent(MockReasoner(["Architectural design approved."])), role="ArchitectAgent"
+        )
         self.add_agent(PlannerAgent(MockReasoner(["Plan generated."])), role="PlannerAgent")
         self.add_agent(CoderAgent(MockReasoner(["Code implemented."])), role="CoderAgent")
         self.add_agent(TesterAgent(MockReasoner(["Unit tests passed."])), role="TesterAgent")
-        self.add_agent(ReviewerAgent(MockReasoner(["Review passed cleanly."])), role="ReviewerAgent")
+        self.add_agent(
+            ReviewerAgent(MockReasoner(["Review passed cleanly."])), role="ReviewerAgent"
+        )
 
     def run(self, prompt: str, task_graph: TaskGraph | None = None) -> AgentResponse:
         """Run multi-agent collaboration for a user prompt."""
@@ -46,11 +50,25 @@ class MultiAgentEngine:
         if task_graph is None:
             # Build default multi-stage task graph
             task_graph = TaskGraph()
-            t1 = task_graph.add_task(f"Design architecture for: {prompt}", agent_role="ArchitectAgent")
-            t2 = task_graph.add_task(f"Decompose plan for: {prompt}", agent_role="PlannerAgent", dependencies=[t1.id])
-            t3 = task_graph.add_task(f"Implement solution for: {prompt}", agent_role="CoderAgent", dependencies=[t2.id])
-            t4 = task_graph.add_task(f"Verify and test solution for: {prompt}", agent_role="TesterAgent", dependencies=[t3.id])
-            task_graph.add_task(f"Review code and output for: {prompt}", agent_role="ReviewerAgent", dependencies=[t4.id])
+            t1 = task_graph.add_task(
+                f"Design architecture for: {prompt}", agent_role="ArchitectAgent"
+            )
+            t2 = task_graph.add_task(
+                f"Decompose plan for: {prompt}", agent_role="PlannerAgent", dependencies=[t1.id]
+            )
+            t3 = task_graph.add_task(
+                f"Implement solution for: {prompt}", agent_role="CoderAgent", dependencies=[t2.id]
+            )
+            t4 = task_graph.add_task(
+                f"Verify and test solution for: {prompt}",
+                agent_role="TesterAgent",
+                dependencies=[t3.id],
+            )
+            task_graph.add_task(
+                f"Review code and output for: {prompt}",
+                agent_role="ReviewerAgent",
+                dependencies=[t4.id],
+            )
 
         res_dict = self.orchestrator.execute_task_graph(task_graph)
         summary_out = res_dict.get("summary", "Multi-agent execution complete.")

@@ -8,7 +8,9 @@ from typing import Any
 from transformers import AutoTokenizer
 
 
-def compute_tokenizer_metrics(tokenizer: Any, text_samples: list[str], name: str = "tokenizer") -> dict[str, Any]:
+def compute_tokenizer_metrics(
+    tokenizer: Any, text_samples: list[str], name: str = "tokenizer"
+) -> dict[str, Any]:
     """Compute detailed evaluation metrics for a given tokenizer."""
     total_chars = 0
     total_words = 0
@@ -36,7 +38,11 @@ def compute_tokenizer_metrics(tokenizer: Any, text_samples: list[str], name: str
             roundtrip_successes += 1
 
     num_samples = max(1, len(text_samples))
-    vocab_size = getattr(tokenizer, "vocab_size", len(tokenizer.get_vocab()) if hasattr(tokenizer, "get_vocab") else 0)
+    vocab_size = getattr(
+        tokenizer,
+        "vocab_size",
+        len(tokenizer.get_vocab()) if hasattr(tokenizer, "get_vocab") else 0,
+    )
 
     return {
         "name": name,
@@ -56,7 +62,9 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Analyze and benchmark trained tokenizer.")
     parser.add_argument("--tokenizer_dir", default="tokenizer/v1.0")
     parser.add_argument("--sample_file", default="data/tokenizer_corpus/sample.jsonl")
-    parser.add_argument("--baseline", default="gpt2", help="Baseline HuggingFace model/tokenizer to compare against")
+    parser.add_argument(
+        "--baseline", default="gpt2", help="Baseline HuggingFace model/tokenizer to compare against"
+    )
     parser.add_argument("--output_report", default="tokenizer/v1.0/validation_report.json")
     args = parser.parse_args()
 
@@ -88,7 +96,9 @@ def main() -> None:
     baseline_metrics: dict[str, Any] | None = None
     try:
         baseline_tok = AutoTokenizer.from_pretrained(args.baseline)
-        baseline_metrics = compute_tokenizer_metrics(baseline_tok, texts, name=f"Baseline ({args.baseline})")
+        baseline_metrics = compute_tokenizer_metrics(
+            baseline_tok, texts, name=f"Baseline ({args.baseline})"
+        )
     except Exception as e:
         print(f"Warning: Could not load baseline tokenizer '{args.baseline}': {e}")
 

@@ -146,9 +146,7 @@ class ModelEvaluator:
         for split_name in ["val.bin", "test.bin", "train.bin"]:
             split_path = data_dir / split_name
             if split_path.exists() and split_path.stat().st_size > 0:
-                result = self.evaluate_dataset(
-                    split_path, sequence_length, batch_size, max_batches
-                )
+                result = self.evaluate_dataset(split_path, sequence_length, batch_size, max_batches)
                 report["splits"][split_name] = result
 
         report["model_info"] = {

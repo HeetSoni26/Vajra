@@ -46,12 +46,14 @@ def verify_model(model_cfg_path: str | Path) -> dict[str, Any]:
         "model_name": getattr(cfg, "model_name", "vajra"),
         "total_parameters": total_params,
         "trainable_parameters": trainable_params,
-        "parameter_mb": round(total_params * 4 / (1024 ** 2), 2),  # FP32
+        "parameter_mb": round(total_params * 4 / (1024**2), 2),  # FP32
         "num_layers": cfg.num_layers,
         "hidden_size": cfg.hidden_size,
         "vocab_size": cfg.vocab_size,
     }
-    logger.info(f"✓ Model instantiated: {total_params:,} parameters ({result['parameter_mb']} MB FP32)")
+    logger.info(
+        f"✓ Model instantiated: {total_params:,} parameters ({result['parameter_mb']} MB FP32)"
+    )
     return result
 
 
@@ -91,7 +93,9 @@ def verify_dataset(data_dir: str | Path, sequence_length: int, batch_size: int) 
         "labels_shape": list(labels.shape),
         "dtype": str(input_ids.dtype),
     }
-    logger.info(f"✓ Dataset loaded: {len(train_loader)} train batches, shape={list(input_ids.shape)}")
+    logger.info(
+        f"✓ Dataset loaded: {len(train_loader)} train batches, shape={list(input_ids.shape)}"
+    )
     return result
 
 
@@ -146,7 +150,7 @@ def verify_forward_backward(
 
     logger.info(
         f"✓ Forward/backward pass: loss={loss_value:.4f}, "
-        f"fwd={fwd_time*1000:.1f}ms, bwd={bwd_time*1000:.1f}ms"
+        f"fwd={fwd_time * 1000:.1f}ms, bwd={bwd_time * 1000:.1f}ms"
     )
     return result
 
@@ -176,7 +180,9 @@ def verify_optimizer(model_cfg_path: str | Path) -> dict[str, Any]:
             "step_500": round(lr_at_500, 8),
         },
     }
-    logger.info(f"✓ Optimizer: {type(optimizer).__name__} with {len(optimizer.param_groups)} param groups")
+    logger.info(
+        f"✓ Optimizer: {type(optimizer).__name__} with {len(optimizer.param_groups)} param groups"
+    )
     return result
 
 
@@ -255,7 +261,13 @@ def run_full_verification(config_path: str | Path) -> dict[str, Any]:
         except Exception as e:
             results.append({"check": "forward_backward", "passed": False, "error": str(e)})
     else:
-        results.append({"check": "forward_backward", "passed": False, "error": "Skipped: dataset not available"})
+        results.append(
+            {
+                "check": "forward_backward",
+                "passed": False,
+                "error": "Skipped: dataset not available",
+            }
+        )
 
     # 4. Optimizer / scheduler
     try:
@@ -269,6 +281,7 @@ def run_full_verification(config_path: str | Path) -> dict[str, Any]:
         results.append(verify_checkpoint_roundtrip(model_cfg_path, tmp_dir))
         # Clean up tmp dir
         import shutil
+
         if tmp_dir.exists():
             shutil.rmtree(tmp_dir, ignore_errors=True)
     except Exception as e:
@@ -287,7 +300,9 @@ def run_full_verification(config_path: str | Path) -> dict[str, Any]:
     }
 
     logger.info("=" * 60)
-    logger.info(f"Result: {passed}/{total} checks passed — {'READY' if all_passed else 'NOT READY'}")
+    logger.info(
+        f"Result: {passed}/{total} checks passed — {'READY' if all_passed else 'NOT READY'}"
+    )
     logger.info("=" * 60)
 
     return report
@@ -295,8 +310,9 @@ def run_full_verification(config_path: str | Path) -> dict[str, Any]:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Training Readiness Verification")
-    parser.add_argument("--config", default="configs/training/pretrain_tiny.yaml",
-                        help="Training config YAML file")
+    parser.add_argument(
+        "--config", default="configs/training/pretrain_tiny.yaml", help="Training config YAML file"
+    )
     parser.add_argument("--output", default=None, help="Output report JSON path")
     args = parser.parse_args()
 
@@ -304,6 +320,7 @@ def main() -> None:
 
     if args.output:
         from utils.file_utils import write_json
+
         write_json(report, args.output)
 
     print(json.dumps(report, indent=2))

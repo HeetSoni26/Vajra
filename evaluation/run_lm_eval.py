@@ -16,12 +16,19 @@ def main() -> None:
     cfg = yaml.safe_load(Path(args.config).read_text())
     tasks = list(cfg.get("primary", {}).keys())
     cmd = [
-        "python", "-m", "lm_eval",
-        "--model", "hf",
-        "--model_args", f"pretrained={args.model_path},dtype=bfloat16",
-        "--tasks", ",".join(tasks),
-        "--batch_size", "8",
-        "--output_path", args.output_path,
+        "python",
+        "-m",
+        "lm_eval",
+        "--model",
+        "hf",
+        "--model_args",
+        f"pretrained={args.model_path},dtype=bfloat16",
+        "--tasks",
+        ",".join(tasks),
+        "--batch_size",
+        "8",
+        "--output_path",
+        args.output_path,
         "--log_samples",
     ]
     print(" ".join(cmd))

@@ -44,7 +44,9 @@ def test_ingest_normalize_and_clean(tmp_path: Path):
 
 def test_binary_dataset_builder(tmp_path: Path):
     out_dir = tmp_path / "tokenized"
-    builder = BinaryDatasetBuilder(output_dir=out_dir, val_ratio=0.10, test_ratio=0.10, sequence_length=32)
+    builder = BinaryDatasetBuilder(
+        output_dir=out_dir, val_ratio=0.10, test_ratio=0.10, sequence_length=32
+    )
     sample_tokens = list(range(100))
 
     stats = builder.build_binary_dataset(sample_tokens)

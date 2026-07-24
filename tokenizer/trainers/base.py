@@ -3,10 +3,12 @@ from typing import Iterable, List
 from tokenizer.configs.settings import TokenizerConfig
 from tokenizer.tokenizers.base import BaseTokenizer
 
+
 class BaseTrainer(ABC):
     """
     Abstract interface for training tokenizers.
     """
+
     def __init__(self, config: TokenizerConfig):
         self.config = config
 
@@ -17,7 +19,7 @@ class BaseTrainer(ABC):
         Returns the trained BaseTokenizer instance.
         """
         pass
-        
+
     @abstractmethod
     def train_from_files(self, file_paths: List[str]) -> BaseTokenizer:
         """

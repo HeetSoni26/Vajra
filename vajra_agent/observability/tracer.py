@@ -48,7 +48,9 @@ class ExecutionTrace:
             "spans": [
                 {
                     "name": s.name,
-                    "duration_ms": round((s.end_time - s.start_time) * 1000, 2) if s.end_time else 0.0,
+                    "duration_ms": round((s.end_time - s.start_time) * 1000, 2)
+                    if s.end_time
+                    else 0.0,
                     "status": s.status,
                     "metadata": s.metadata,
                 }

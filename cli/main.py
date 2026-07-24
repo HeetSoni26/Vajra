@@ -97,7 +97,9 @@ def cmd_tokenize(args: argparse.Namespace) -> None:
         print(tokenizer.decode(ids))
     else:
         enc = tokenizer.encode(args.text)
-        print(json.dumps({"ids": enc.ids, "tokens": enc.tokens, "num_tokens": len(enc.ids)}, indent=2))
+        print(
+            json.dumps({"ids": enc.ids, "tokens": enc.tokens, "num_tokens": len(enc.ids)}, indent=2)
+        )
 
 
 def cmd_profile(args: argparse.Namespace) -> None:

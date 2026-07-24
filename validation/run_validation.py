@@ -85,5 +85,7 @@ if __name__ == "__main__":
     print(f"Tool Execution Failures: {results['tool_execution_failures_count']}")
     print(f"Planning Accuracy: {results['planning_accuracy_pct']}%")
     print(f"Memory Retrieval Latency: {results['memory_recall_latency_ms']} ms")
-    print(f"Multi-Agent Orchestration Latency: {results['multi_agent_orchestration_latency_ms']} ms")
+    print(
+        f"Multi-Agent Orchestration Latency: {results['multi_agent_orchestration_latency_ms']} ms"
+    )
     print(f"Total Validation Run Duration: {results['total_validation_time_s']} s")

@@ -15,5 +15,5 @@ __all__ = [
     "ArtifactManager",
     "SearchEngine",
     "ComparisonEngine",
-    "ExportManager"
+    "ExportManager",
 ]

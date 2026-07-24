@@ -1,6 +1,6 @@
 """
 Cloud synchronization orchestrator for Vajra.
-Automatically uploads checkpoints and metadata in the background, 
+Automatically uploads checkpoints and metadata in the background,
 and downloads remote checkpoints upon resume if local data is missing.
 """
 
@@ -26,11 +26,11 @@ class CloudSyncManager:
         self.config = self._load_config()
         self.enabled = self.config.get("enable_sync", False)
         self.backend = self._init_backend() if self.enabled else None
-        
+
         self.retry_limit = self.config.get("retry_limit", 3)
         self.retry_interval = self.config.get("retry_interval", 10)
         self.background = self.config.get("background_upload", True)
-        
+
         self._active_upload = None
 
     def _load_config(self) -> dict[str, Any]:
@@ -68,7 +68,7 @@ class CloudSyncManager:
         logger.info(f"Background Upload Started for {exp_dir.name}")
         logger.info("Training Continues")
         logger.info("=" * 48)
-        
+
         # Simple retry wrapper for the upload operation
         def _upload_with_retry():
             attempts = 0
@@ -87,11 +87,12 @@ class CloudSyncManager:
                         time.sleep(self.retry_interval)
             logger.error(f"Upload completely failed after {self.retry_limit} attempts.")
 
-        # HuggingFaceBackend's run_as_future handles threading, but for retry logic 
+        # HuggingFaceBackend's run_as_future handles threading, but for retry logic
         # we can just use a separate thread or rely on the backend.
         # Since we want our retry logic to run in background, we'll dispatch it if needed.
         if self.background:
             import concurrent.futures
+
             pool = concurrent.futures.ThreadPoolExecutor(max_workers=1)
             self._active_upload = pool.submit(_upload_with_retry)
         else:
@@ -101,7 +102,7 @@ class CloudSyncManager:
         """List all experiments available on the remote backend."""
         if not self.enabled or self.backend is None:
             return []
-            
+
         try:
             files = self.backend.list_files("experiments/")
             # Extract unique experiment names from file paths (e.g. experiments/exp_1/latest.pt -> exp_1)
@@ -110,7 +111,7 @@ class CloudSyncManager:
                 parts = Path(f).parts
                 if len(parts) >= 2 and parts[0] == "experiments":
                     exps.add(parts[1])
-            
+
             sorted_exps = sorted(list(exps), reverse=True)
             return sorted_exps
         except Exception as e:
@@ -121,23 +122,23 @@ class CloudSyncManager:
         """Download an experiment from the remote backend to local."""
         if not self.enabled or self.backend is None:
             return None
-            
+
         local_exp_dir = Path(local_base_dir) / exp_name
         remote_prefix = f"experiments/{exp_name}"
-        
+
         logger.info(f"Downloading remote experiment {exp_name}...")
         try:
             files = self.backend.list_files(remote_prefix)
             if not files:
                 logger.warning(f"No files found for remote experiment {exp_name}")
                 return None
-                
+
             for remote_file in files:
                 # relative to remote_prefix
                 rel_path = Path(remote_file).relative_to(remote_prefix)
                 local_path = local_exp_dir / rel_path
                 self.backend.download_file(remote_file, local_path.parent)
-                
+
             logger.info(f"Successfully downloaded {exp_name}")
             return local_exp_dir
         except Exception as e:

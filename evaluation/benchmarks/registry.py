@@ -3,8 +3,10 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class BenchmarkAdapter:
     """Base class for benchmark adapters."""
+
     def __init__(self, name: str):
         self.name = name
 
@@ -17,6 +19,7 @@ class BenchmarkAdapter:
 
 class BenchmarkRegistry:
     """Registry for managing available benchmarks."""
+
     _adapters: Dict[str, Type[BenchmarkAdapter]] = {}
 
     @classmethod
@@ -24,6 +27,7 @@ class BenchmarkRegistry:
         def decorator(adapter_class: Type[BenchmarkAdapter]):
             cls._adapters[name] = adapter_class
             return adapter_class
+
         return decorator
 
     @classmethod

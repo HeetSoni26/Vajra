@@ -166,7 +166,9 @@ class FoundationAgent:
                     break
             else:
                 if self.config.verbose:
-                    logger.info(f"[Iter {iteration}] Executing tool '{call.tool_name}' with args {call.arguments}")
+                    logger.info(
+                        f"[Iter {iteration}] Executing tool '{call.tool_name}' with args {call.arguments}"
+                    )
 
                 res = tool.run(**call.arguments)
                 state.record_tool_result(res)

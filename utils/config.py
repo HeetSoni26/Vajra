@@ -25,7 +25,7 @@ def apply_cli_overrides(config: dict[str, Any], overrides: list[str]) -> dict[st
             continue
         key_path, raw_val = item.split("=", 1)
         keys = key_path.strip().split(".")
-        
+
         # Parse scalar types (int, float, bool, str)
         val: Any = raw_val.strip()
         if val.lower() == "true":

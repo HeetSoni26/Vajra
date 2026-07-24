@@ -82,7 +82,7 @@ class DatasetStatistics:
             "file": str(file_path.name),
             "token_count": token_count,
             "file_size_bytes": file_size,
-            "file_size_mb": round(file_size / (1024 ** 2), 2),
+            "file_size_mb": round(file_size / (1024**2), 2),
             "unique_tokens_in_sample": unique_tokens,
             "min_token_id": int(sample.min()),
             "max_token_id": int(sample.max()),
@@ -102,6 +102,7 @@ class DatasetStatistics:
 
         # Token frequency distribution (top-20)
         from collections import Counter
+
         freq = Counter(sample_tokens)
         top_tokens = freq.most_common(20)
 
@@ -124,11 +125,13 @@ class DatasetStatistics:
         for split in ["train.bin"]:
             path = self.tokenized_dir / split
             passed = path.exists() and path.stat().st_size > 0
-            checks.append({
-                "check": f"{split}_exists",
-                "passed": passed,
-                "detail": f"{'Found' if passed else 'MISSING'}: {split}",
-            })
+            checks.append(
+                {
+                    "check": f"{split}_exists",
+                    "passed": passed,
+                    "detail": f"{'Found' if passed else 'MISSING'}: {split}",
+                }
+            )
             if not passed:
                 all_passed = False
 
@@ -142,11 +145,13 @@ class DatasetStatistics:
             sample = arr[:sample_size]
             max_id = int(sample.max())
             passed = max_id < self.vocab_size
-            checks.append({
-                "check": f"{split}_vocab_range",
-                "passed": passed,
-                "detail": f"Max token ID: {max_id}, vocab_size: {self.vocab_size}",
-            })
+            checks.append(
+                {
+                    "check": f"{split}_vocab_range",
+                    "passed": passed,
+                    "detail": f"Max token ID: {max_id}, vocab_size: {self.vocab_size}",
+                }
+            )
             if not passed:
                 all_passed = False
 
@@ -156,13 +161,15 @@ class DatasetStatistics:
             if not path.exists():
                 continue
             arr = np.memmap(path, dtype=np.uint32, mode="r")
-            sample = arr[:min(1000, len(arr))]
+            sample = arr[: min(1000, len(arr))]
             has_nonzero = bool(np.any(sample > 0))
-            checks.append({
-                "check": f"{split}_non_zero",
-                "passed": has_nonzero,
-                "detail": f"{'Has non-zero tokens' if has_nonzero else 'ALL ZEROS — likely corrupt'}",
-            })
+            checks.append(
+                {
+                    "check": f"{split}_non_zero",
+                    "passed": has_nonzero,
+                    "detail": f"{'Has non-zero tokens' if has_nonzero else 'ALL ZEROS — likely corrupt'}",
+                }
+            )
             if not has_nonzero:
                 all_passed = False
 
@@ -175,11 +182,13 @@ class DatasetStatistics:
             if train_path.exists():
                 actual_count = len(np.memmap(train_path, dtype=np.uint32, mode="r"))
                 passed = train_meta_count == actual_count
-                checks.append({
-                    "check": "metadata_consistency",
-                    "passed": passed,
-                    "detail": f"metadata={train_meta_count}, actual={actual_count}",
-                })
+                checks.append(
+                    {
+                        "check": "metadata_consistency",
+                        "passed": passed,
+                        "detail": f"metadata={train_meta_count}, actual={actual_count}",
+                    }
+                )
                 if not passed:
                     all_passed = False
 

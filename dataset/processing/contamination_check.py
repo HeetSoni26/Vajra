@@ -2,7 +2,7 @@
 
 
 def main():
-    print('Benchmark contamination check placeholder.')
+    print("Benchmark contamination check placeholder.")
 
 
 if __name__ == "__main__":

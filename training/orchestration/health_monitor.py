@@ -2,6 +2,7 @@
 Health monitoring for Vajra production training.
 Monitors GPU, CPU, RAM, disk, loss spikes, gradient explosions, and OOM conditions.
 """
+
 from __future__ import annotations
 
 import math
@@ -99,6 +100,7 @@ class HealthMonitor:
         stats: dict[str, float] = {}
         try:
             import psutil
+
             stats["cpu_pct"] = psutil.cpu_percent(interval=None)
             vm = psutil.virtual_memory()
             stats["ram_used_gb"] = vm.used / (1024**3)
@@ -162,7 +164,7 @@ class HealthMonitor:
             if avg > 0 and train_loss > avg * self.loss_spike_factor:
                 snap.warnings.append(
                     f"Loss spike detected: {train_loss:.4f} vs avg {avg:.4f} "
-                    f"(factor {train_loss/avg:.1f}x)."
+                    f"(factor {train_loss / avg:.1f}x)."
                 )
         if not math.isnan(train_loss) and not math.isinf(train_loss):
             self.loss_history.append(train_loss)

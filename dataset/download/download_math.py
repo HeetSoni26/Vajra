@@ -2,7 +2,7 @@
 
 
 def main():
-    print('Math dataset downloader placeholder.')
+    print("Math dataset downloader placeholder.")
 
 
 if __name__ == "__main__":

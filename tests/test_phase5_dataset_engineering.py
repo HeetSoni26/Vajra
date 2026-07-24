@@ -18,11 +18,13 @@ import pytest
 # DataSourceRegistry tests
 # ──────────────────────────────────────────────────────────────────────────────
 
+
 class TestDataSourceRegistry:
     """Tests for DataSourceRegistry and DataSource."""
 
     def test_register_and_get(self):
         from dataset.sources.registry import DataSourceRegistry, DataSource
+
         registry = DataSourceRegistry()
         src = DataSource(
             name="test-src",
@@ -38,45 +40,73 @@ class TestDataSourceRegistry:
 
     def test_list_all(self):
         from dataset.sources.registry import DataSourceRegistry, DataSource
+
         registry = DataSourceRegistry()
         for i in range(3):
-            registry.register(DataSource(
-                name=f"src-{i}", url=f"https://example.com/{i}",
-                domain="web", license="CC0-1.0",
-            ))
+            registry.register(
+                DataSource(
+                    name=f"src-{i}",
+                    url=f"https://example.com/{i}",
+                    domain="web",
+                    license="CC0-1.0",
+                )
+            )
         assert len(registry.list_all()) == 3
 
     def test_list_enabled(self):
         from dataset.sources.registry import DataSourceRegistry, DataSource
+
         registry = DataSourceRegistry()
-        registry.register(DataSource(name="enabled", url="https://a.com", domain="web", license="CC0", enabled=True))
-        registry.register(DataSource(name="disabled", url="https://b.com", domain="web", license="CC0", enabled=False))
+        registry.register(
+            DataSource(
+                name="enabled", url="https://a.com", domain="web", license="CC0", enabled=True
+            )
+        )
+        registry.register(
+            DataSource(
+                name="disabled", url="https://b.com", domain="web", license="CC0", enabled=False
+            )
+        )
         enabled = registry.list_enabled()
         assert len(enabled) == 1
         assert enabled[0].name == "enabled"
 
     def test_filter_by_domain(self):
         from dataset.sources.registry import DataSourceRegistry, DataSource
+
         registry = DataSourceRegistry()
-        registry.register(DataSource(name="web-src", url="https://a.com", domain="web", license="CC0"))
-        registry.register(DataSource(name="code-src", url="https://b.com", domain="code", license="MIT"))
+        registry.register(
+            DataSource(name="web-src", url="https://a.com", domain="web", license="CC0")
+        )
+        registry.register(
+            DataSource(name="code-src", url="https://b.com", domain="code", license="MIT")
+        )
         web = registry.filter_by_domain("web")
         assert len(web) == 1
         assert web[0].name == "web-src"
 
     def test_filter_by_tag(self):
         from dataset.sources.registry import DataSourceRegistry, DataSource
+
         registry = DataSourceRegistry()
-        registry.register(DataSource(
-            name="tagged", url="https://a.com", domain="math", license="CC0",
-            tags=["pretraining", "math"],
-        ))
-        registry.register(DataSource(name="untagged", url="https://b.com", domain="web", license="CC0"))
+        registry.register(
+            DataSource(
+                name="tagged",
+                url="https://a.com",
+                domain="math",
+                license="CC0",
+                tags=["pretraining", "math"],
+            )
+        )
+        registry.register(
+            DataSource(name="untagged", url="https://b.com", domain="web", license="CC0")
+        )
         result = registry.filter_by_tag("math")
         assert len(result) == 1
 
     def test_summary(self):
         from dataset.sources.registry import create_default_registry
+
         registry = create_default_registry()
         summary = registry.summary()
         assert "total_sources" in summary
@@ -86,6 +116,7 @@ class TestDataSourceRegistry:
 
     def test_deregister(self):
         from dataset.sources.registry import DataSourceRegistry, DataSource
+
         registry = DataSourceRegistry()
         registry.register(DataSource(name="tmp", url="https://x.com", domain="web", license="CC0"))
         registry.deregister("tmp")
@@ -93,11 +124,17 @@ class TestDataSourceRegistry:
 
     def test_save_and_load_yaml(self):
         from dataset.sources.registry import DataSourceRegistry, DataSource
+
         registry = DataSourceRegistry()
-        registry.register(DataSource(
-            name="yaml-test", url="https://example.com", domain="science",
-            license="CC-BY-4.0", tags=["test"],
-        ))
+        registry.register(
+            DataSource(
+                name="yaml-test",
+                url="https://example.com",
+                domain="science",
+                license="CC-BY-4.0",
+                tags=["test"],
+            )
+        )
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "sources.yaml"
             registry.save_yaml(path)
@@ -112,6 +149,7 @@ class TestDataSourceRegistry:
 
     def test_download_manifest(self):
         from dataset.sources.registry import create_default_registry
+
         registry = create_default_registry()
         manifest = registry.generate_download_manifest()
         assert len(manifest) > 0
@@ -120,6 +158,7 @@ class TestDataSourceRegistry:
 
     def test_create_default_registry(self):
         from dataset.sources.registry import create_default_registry
+
         registry = create_default_registry()
         assert registry.get("fineweb-edu") is not None
         assert registry.get("wikipedia-en") is not None
@@ -128,10 +167,16 @@ class TestDataSourceRegistry:
 
     def test_datasource_to_dict_roundtrip(self):
         from dataset.sources.registry import DataSource
+
         src = DataSource(
-            name="roundtrip", url="https://rt.com", domain="code",
-            license="MIT", format="parquet", estimated_size_gb=10.5,
-            tags=["a", "b"], quality_tier="high",
+            name="roundtrip",
+            url="https://rt.com",
+            domain="code",
+            license="MIT",
+            format="parquet",
+            estimated_size_gb=10.5,
+            tags=["a", "b"],
+            quality_tier="high",
         )
         d = src.to_dict()
         src2 = DataSource.from_dict(d)
@@ -144,16 +189,19 @@ class TestDataSourceRegistry:
 # Synthetic data generation tests
 # ──────────────────────────────────────────────────────────────────────────────
 
+
 class TestSyntheticDataGenerator:
     """Tests for synthetic corpus generation."""
 
     def test_generate_documents_count(self):
         from dataset.sources.synthetic import generate_synthetic_documents
+
         docs = generate_synthetic_documents(num_documents=50, seed=42)
         assert len(docs) == 50
 
     def test_generate_documents_structure(self):
         from dataset.sources.synthetic import generate_synthetic_documents
+
         docs = generate_synthetic_documents(num_documents=10, seed=1)
         for doc in docs:
             assert "doc_id" in doc
@@ -163,6 +211,7 @@ class TestSyntheticDataGenerator:
 
     def test_domain_distribution(self):
         from dataset.sources.synthetic import generate_synthetic_documents
+
         docs = generate_synthetic_documents(num_documents=200, seed=42)
         domains = set(d["domain"] for d in docs)
         # Should have multiple domains
@@ -170,6 +219,7 @@ class TestSyntheticDataGenerator:
 
     def test_custom_domain_weights(self):
         from dataset.sources.synthetic import generate_synthetic_documents
+
         docs = generate_synthetic_documents(
             num_documents=100,
             domain_weights={"code": 1.0},
@@ -179,12 +229,14 @@ class TestSyntheticDataGenerator:
 
     def test_reproducibility(self):
         from dataset.sources.synthetic import generate_synthetic_documents
+
         docs1 = generate_synthetic_documents(num_documents=20, seed=42)
         docs2 = generate_synthetic_documents(num_documents=20, seed=42)
         assert docs1[0]["text"] == docs2[0]["text"]
 
     def test_write_synthetic_corpus(self):
         from dataset.sources.synthetic import write_synthetic_corpus
+
         with tempfile.TemporaryDirectory() as tmp:
             stats = write_synthetic_corpus(output_dir=tmp, num_documents=30, seed=42)
             assert stats["total_documents"] == 30
@@ -204,6 +256,7 @@ class TestSyntheticDataGenerator:
 # ──────────────────────────────────────────────────────────────────────────────
 # DatasetStatistics tests
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class TestDatasetStatistics:
     """Tests for dataset statistics and integrity validation."""
@@ -230,11 +283,13 @@ class TestDatasetStatistics:
             },
         }
         import json
+
         (tmp_path / "metadata.json").write_text(json.dumps(meta))
         return tmp_path
 
     def test_compute_statistics_runs(self, synthetic_tokenized_dir):
         from dataset.statistics import DatasetStatistics
+
         engine = DatasetStatistics(synthetic_tokenized_dir, vocab_size=200)
         stats = engine.compute_statistics()
         assert "splits" in stats
@@ -243,6 +298,7 @@ class TestDatasetStatistics:
 
     def test_aggregate_stats(self, synthetic_tokenized_dir):
         from dataset.statistics import DatasetStatistics
+
         engine = DatasetStatistics(synthetic_tokenized_dir, vocab_size=200)
         stats = engine.compute_statistics()
         agg = stats["aggregate"]
@@ -253,18 +309,21 @@ class TestDatasetStatistics:
 
     def test_integrity_validation_passes(self, synthetic_tokenized_dir):
         from dataset.statistics import DatasetStatistics
+
         engine = DatasetStatistics(synthetic_tokenized_dir, vocab_size=200)
         result = engine.validate_integrity()
         assert result["all_passed"] is True
 
     def test_integrity_fails_missing_train(self, tmp_path):
         from dataset.statistics import DatasetStatistics
+
         engine = DatasetStatistics(tmp_path, vocab_size=200)
         result = engine.validate_integrity()
         assert result["all_passed"] is False
 
     def test_generate_report(self, synthetic_tokenized_dir):
         from dataset.statistics import DatasetStatistics
+
         engine = DatasetStatistics(synthetic_tokenized_dir, vocab_size=200)
         report = engine.generate_report()
         assert "statistics" in report
@@ -276,6 +335,7 @@ class TestDatasetStatistics:
 # ──────────────────────────────────────────────────────────────────────────────
 # Training configs tests
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class TestTrainingConfigs:
     """Tests for training configuration files."""
@@ -294,6 +354,7 @@ class TestTrainingConfigs:
 
     def test_model_tiny_config_loadable(self):
         import yaml
+
         path = Path("configs/model/model_tiny.yaml")
         cfg = yaml.safe_load(path.read_text())
         assert "hidden_size" in cfg
@@ -301,6 +362,7 @@ class TestTrainingConfigs:
 
     def test_model_125m_config_loadable(self):
         import yaml
+
         path = Path("configs/model/model_125m.yaml")
         cfg = yaml.safe_load(path.read_text())
         assert cfg["hidden_size"] == 768
@@ -308,6 +370,7 @@ class TestTrainingConfigs:
 
     def test_model_370m_config_loadable(self):
         import yaml
+
         path = Path("configs/model/model_370m.yaml")
         cfg = yaml.safe_load(path.read_text())
         assert cfg["hidden_size"] == 1024
@@ -315,6 +378,7 @@ class TestTrainingConfigs:
 
     def test_model_configs_instantiable(self):
         from model.config import VajraConfig
+
         for name in ["model_tiny", "model_125m", "model_370m"]:
             cfg_path = Path(f"configs/model/{name}.yaml")
             cfg = VajraConfig.from_yaml(cfg_path)
@@ -323,6 +387,7 @@ class TestTrainingConfigs:
 
     def test_dataset_mix_config_loadable(self):
         import yaml
+
         path = Path("configs/data/dataset_mix.yaml")
         cfg = yaml.safe_load(path.read_text())
         assert "domain_weights" in cfg
@@ -333,6 +398,7 @@ class TestTrainingConfigs:
 
     def test_sources_config_loadable(self):
         import yaml
+
         path = Path("configs/data/sources.yaml")
         cfg = yaml.safe_load(path.read_text())
         assert "sources" in cfg
@@ -347,12 +413,14 @@ class TestTrainingConfigs:
 # Prepare dataset script tests
 # ──────────────────────────────────────────────────────────────────────────────
 
+
 class TestPrepareDataset:
     """Tests for the prepare_dataset script."""
 
     def test_prepare_synthetic_pipeline(self, tmp_path):
         """Full synthetic pipeline: generate → clean → tokenize → binary build."""
         from scripts.prepare_dataset import prepare_synthetic
+
         result = prepare_synthetic(
             output_dir=tmp_path,
             num_docs=50,
@@ -371,6 +439,7 @@ class TestPrepareDataset:
     def test_synthetic_train_bin_loadable(self, tmp_path):
         """Verify train.bin produced by synthetic pipeline is loadable."""
         from scripts.prepare_dataset import prepare_synthetic
+
         prepare_synthetic(
             output_dir=tmp_path,
             num_docs=30,

@@ -4,14 +4,15 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class NumericalStabilityWatchdog:
     """Monitors gradients and loss for NaNs/Infs during training."""
-    
+
     def __init__(self, nan_detection: bool = True, inf_detection: bool = True):
         self.nan_detection = nan_detection
         self.inf_detection = inf_detection
         self.skip_requested = False
-        
+
     def check_loss(self, loss_val: float) -> bool:
         """Returns True if loss is stable, False if NaN/Inf."""
         if self.nan_detection and math.isnan(loss_val):
@@ -21,7 +22,7 @@ class NumericalStabilityWatchdog:
             logger.warning("Watchdog detected Inf loss!")
             return False
         return True
-        
+
     def check_gradients(self, model: torch.nn.Module) -> bool:
         """Checks for NaN/Inf in gradients. Returns True if stable."""
         self.skip_requested = False

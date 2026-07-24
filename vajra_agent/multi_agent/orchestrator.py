@@ -51,11 +51,15 @@ class Orchestrator:
                     agent = next(iter(self.agents.values())) if self.agents else None
 
                 if not agent:
-                    task_graph.mark_failed(task.id, f"No agent registered for role '{task.agent_role}'")
+                    task_graph.mark_failed(
+                        task.id, f"No agent registered for role '{task.agent_role}'"
+                    )
                     continue
 
                 task.status = TaskStatus.RUNNING
-                logger.info(f"Orchestrator dispatching task '{task.description}' to role '{task.agent_role}'")
+                logger.info(
+                    f"Orchestrator dispatching task '{task.description}' to role '{task.agent_role}'"
+                )
 
                 try:
                     res = agent.run(task.description)
@@ -74,10 +78,18 @@ class Orchestrator:
                 except Exception as e:
                     task.retry_count += 1
                     if task.retry_count <= max_retries:
-                        logger.warning(f"Task '{task.id}' failed, retrying ({task.retry_count}/{max_retries})...")
+                        logger.warning(
+                            f"Task '{task.id}' failed, retrying ({task.retry_count}/{max_retries})..."
+                        )
                         task.status = TaskStatus.READY
                     else:
                         task_graph.mark_failed(task.id, str(e))
 
-        summary = "\n\n".join([f"### [{node.agent_role}] Task: {node.description}\n{node.output}" for node in task_graph.nodes.values() if node.status == TaskStatus.COMPLETED])
+        summary = "\n\n".join(
+            [
+                f"### [{node.agent_role}] Task: {node.description}\n{node.output}"
+                for node in task_graph.nodes.values()
+                if node.status == TaskStatus.COMPLETED
+            ]
+        )
         return {"outputs": outputs, "summary": summary}

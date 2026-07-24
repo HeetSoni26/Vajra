@@ -5,10 +5,17 @@ from vajra_agent.mcp import MCPClient, ToolAdapter, Transport
 
 
 class MockTransport(Transport):
-    def connect(self) -> None: pass
-    def disconnect(self) -> None: pass
-    def send_message(self, message: dict[str, Any]) -> None: pass
-    def receive_message(self) -> dict[str, Any]: return {}
+    def connect(self) -> None:
+        pass
+
+    def disconnect(self) -> None:
+        pass
+
+    def send_message(self, message: dict[str, Any]) -> None:
+        pass
+
+    def receive_message(self) -> dict[str, Any]:
+        return {}
 
 
 class MockMCPClient(MCPClient):

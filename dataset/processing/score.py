@@ -2,7 +2,7 @@
 
 
 def main():
-    print('Document scoring stage placeholder.')
+    print("Document scoring stage placeholder.")
 
 
 if __name__ == "__main__":

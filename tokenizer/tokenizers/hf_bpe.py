@@ -12,13 +12,15 @@ try:
 except ImportError:
     pass  # Allow offline linting if missing
 
+
 class HFBpeTokenizer(BaseTokenizer):
     """
     A production-grade BPE tokenizer backend utilizing the Rust-backed Hugging Face tokenizers library.
     """
-    def __init__(self, config: TokenizerConfig, hf_tokenizer: Optional['Tokenizer'] = None):
+
+    def __init__(self, config: TokenizerConfig, hf_tokenizer: Optional["Tokenizer"] = None):
         super().__init__(config)
-        
+
         if hf_tokenizer is not None:
             self._tokenizer = hf_tokenizer
         else:
@@ -29,19 +31,22 @@ class HFBpeTokenizer(BaseTokenizer):
         # 1. Normalization
         if self.config.enable_normalization:
             self._tokenizer.normalizer = Sequence([NFD(), StripAccents()])
-            
+
         # 2. Pre-tokenization
         if self.config.enable_pre_tokenization:
             self._tokenizer.pre_tokenizer = Whitespace()
-            
+
         # 3. Post-processing (Template)
         self._tokenizer.post_processor = TemplateProcessing(
             single=f"{self.config.bos_token} $A {self.config.eos_token}",
             pair=f"{self.config.bos_token} $A {self.config.eos_token} $B:1 {self.config.eos_token}:1",
             special_tokens=[
-                (self.config.bos_token, self.config.vocab_size + 1), # Placeholder IDs, overridden on train
-                (self.config.eos_token, self.config.vocab_size + 2)
-            ]
+                (
+                    self.config.bos_token,
+                    self.config.vocab_size + 1,
+                ),  # Placeholder IDs, overridden on train
+                (self.config.eos_token, self.config.vocab_size + 2),
+            ],
         )
 
     def encode(self, text: str) -> List[int]:
@@ -60,12 +65,12 @@ class HFBpeTokenizer(BaseTokenizer):
         self._tokenizer.save(path)
 
     @classmethod
-    def from_pretrained(cls, save_directory: str) -> 'HFBpeTokenizer':
+    def from_pretrained(cls, save_directory: str) -> "HFBpeTokenizer":
         path = os.path.join(save_directory, "tokenizer.json")
         if not os.path.exists(path):
             raise FileNotFoundError(f"Tokenizer not found at {path}")
-            
+
         hf_tokenizer = Tokenizer.from_file(path)
-        config = TokenizerConfig() # Ideally load config.json here too
-        
+        config = TokenizerConfig()  # Ideally load config.json here too
+
         return cls(config=config, hf_tokenizer=hf_tokenizer)

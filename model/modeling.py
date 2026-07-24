@@ -8,14 +8,15 @@ from model.layers.rmsnorm import RMSNorm
 from model.layers.rope import RotaryEmbedding
 from model.blocks import VajraBlock
 
+
 class VajraModel(nn.Module):
     def __init__(self, config: VajraConfig):
         super().__init__()
         self.config = config
         self.vocab_size = config.vocab_size
-        
+
         self.embed_tokens = nn.Embedding(config.vocab_size, config.hidden_size)
-        
+
         self.layers = nn.ModuleList([VajraBlock(config) for _ in range(config.num_layers)])
         self.norm = RMSNorm(config.hidden_size, eps=config.rmsnorm_eps)
         self.rotary_emb = RotaryEmbedding(
@@ -55,21 +56,24 @@ class VajraModel(nn.Module):
             if past_key_values is not None and past_key_values[0] is not None:
                 past_key_values_length = past_key_values[0][0].shape[1]
             position_ids = torch.arange(
-                past_key_values_length, seq_len + past_key_values_length, dtype=torch.long, device=device
+                past_key_values_length,
+                seq_len + past_key_values_length,
+                dtype=torch.long,
+                device=device,
             )
             position_ids = position_ids.unsqueeze(0).view(-1, seq_len)
 
         hidden_states = self.embed_tokens(input_ids)
-        
+
         # Prepare RoPE
         kv_seq_len = hidden_states.shape[1]
         if past_key_values is not None and past_key_values[0] is not None:
             kv_seq_len += past_key_values[0][0].shape[1]
         elif start_pos > 0:
             kv_seq_len += start_pos
-            
+
         cos, sin = self.rotary_emb(hidden_states, seq_len=kv_seq_len)
-        
+
         # Prepare causal attention mask
         if seq_len > 1 or attention_mask is not None:
             attn_mask = self._prepare_decoder_attention_mask(
@@ -80,15 +84,19 @@ class VajraModel(nn.Module):
 
         next_decoder_cache = () if use_cache else None
 
-        use_checkpointing = getattr(self.config, "use_gradient_checkpointing", False) and self.training
+        use_checkpointing = (
+            getattr(self.config, "use_gradient_checkpointing", False) and self.training
+        )
 
         for idx, decoder_layer in enumerate(self.layers):
             past_key_value = past_key_values[idx] if past_key_values is not None else None
 
             if use_checkpointing:
+
                 def create_custom_forward(module):
                     def custom_forward(*inputs):
                         return module(*inputs)
+
                     return custom_forward
 
                 layer_outputs = torch.utils.checkpoint.checkpoint(
@@ -133,30 +141,41 @@ class VajraModel(nn.Module):
 
         return hidden_states, next_decoder_cache
 
-    def _prepare_decoder_attention_mask(self, attention_mask, input_shape, inputs_embeds, past_key_values_length):
+    def _prepare_decoder_attention_mask(
+        self, attention_mask, input_shape, inputs_embeds, past_key_values_length
+    ):
         # Create causal mask
         # [bsz, seq_len] -> [bsz, 1, tgt_seq_len, src_seq_len]
         bsz, tgt_len = input_shape
         device = inputs_embeds.device
-        
+
         mask = torch.full((tgt_len, tgt_len), torch.finfo(inputs_embeds.dtype).min, device=device)
         mask_cond = torch.arange(mask.size(-1), device=device)
         mask.masked_fill_(mask_cond < (mask_cond + 1).view(mask.size(-1), 1), 0)
         mask = mask.to(inputs_embeds.dtype)
-        
+
         if past_key_values_length > tgt_len:
-            mask = torch.cat([torch.zeros(tgt_len, past_key_values_length - tgt_len, dtype=mask.dtype, device=device), mask], dim=-1)
-            
+            mask = torch.cat(
+                [
+                    torch.zeros(
+                        tgt_len, past_key_values_length - tgt_len, dtype=mask.dtype, device=device
+                    ),
+                    mask,
+                ],
+                dim=-1,
+            )
+
         mask = mask[None, None, :, :].expand(bsz, 1, tgt_len, past_key_values_length)
 
         if attention_mask is not None:
             # attention_mask is [bsz, src_seq_len]
-            attention_mask = attention_mask.unsqueeze(1).unsqueeze(2) # [bsz, 1, 1, src_seq_len]
+            attention_mask = attention_mask.unsqueeze(1).unsqueeze(2)  # [bsz, 1, 1, src_seq_len]
             # convert 0 to min, 1 to 0
             attention_mask = (1.0 - attention_mask) * torch.finfo(inputs_embeds.dtype).min
             mask = mask + attention_mask
 
         return mask
+
 
 class VajraForCausalLM(nn.Module):
     def __init__(self, config: VajraConfig):
@@ -164,7 +183,7 @@ class VajraForCausalLM(nn.Module):
         self.config = config
         self.model = VajraModel(config)
         self.lm_head = nn.Linear(config.hidden_size, config.vocab_size, bias=False)
-        
+
         if config.tie_word_embeddings:
             self.lm_head.weight = self.model.embed_tokens.weight
 
@@ -180,7 +199,7 @@ class VajraForCausalLM(nn.Module):
         start_pos: int = 0,
         **kwargs,
     ) -> Union[Tuple[torch.Tensor, ...], dict]:
-        
+
         hidden_states, past_key_values = self.model(
             input_ids=input_ids,
             attention_mask=attention_mask,
@@ -208,13 +227,25 @@ class VajraForCausalLM(nn.Module):
             return {"loss": loss, "logits": logits, "past_key_values": past_key_values}
         return {"logits": logits, "past_key_values": past_key_values}
 
-    def save_pretrained(self, save_directory: Union[str, Path], tokenizer_dir: Optional[Union[str, Path]] = None, **kwargs) -> dict:
+    def save_pretrained(
+        self,
+        save_directory: Union[str, Path],
+        tokenizer_dir: Optional[Union[str, Path]] = None,
+        **kwargs,
+    ) -> dict:
         from inference.hf_compat import save_pretrained as _save_pretrained
+
         return _save_pretrained(self, save_directory, tokenizer_dir=tokenizer_dir)
 
     @classmethod
-    def from_pretrained(cls, pretrained_model_name_or_path: Union[str, Path], device: Union[torch.device, str] = "cpu", strict: bool = True, **kwargs) -> "VajraForCausalLM":
+    def from_pretrained(
+        cls,
+        pretrained_model_name_or_path: Union[str, Path],
+        device: Union[torch.device, str] = "cpu",
+        strict: bool = True,
+        **kwargs,
+    ) -> "VajraForCausalLM":
         from inference.hf_compat import load_pretrained as _load_pretrained
+
         model, _ = _load_pretrained(pretrained_model_name_or_path, device=device, strict=strict)
         return model
-

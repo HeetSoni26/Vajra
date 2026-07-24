@@ -5,7 +5,9 @@ from pathlib import Path
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Validate/export a HuggingFace-compatible checkpoint directory.")
+    parser = argparse.ArgumentParser(
+        description="Validate/export a HuggingFace-compatible checkpoint directory."
+    )
     parser.add_argument("--model_dir", default="checkpoints/final/hf")
     args = parser.parse_args()
     required = ["config.json", "tokenizer_config.json"]

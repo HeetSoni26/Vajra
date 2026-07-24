@@ -19,7 +19,9 @@ def test_reflection_engine_success_critique():
 
 def test_reflection_engine_failure_critique():
     state = AgentState()
-    state.record_tool_result(ToolExecutionResult(tool_name="file_tool", success=False, output=None, error="File missing"))
+    state.record_tool_result(
+        ToolExecutionResult(tool_name="file_tool", success=False, output=None, error="File missing")
+    )
     state.current_iteration = 1
 
     ver = VerificationReport(passed=False, failures=["pytest failed"])

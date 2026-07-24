@@ -35,7 +35,9 @@ def test_validate_full_end_to_end_engineering_scenario(tmp_path: Path):
     t1 = graph.add_task("Analyze codebase app.py", agent_role="ResearchAgent")
     t2 = graph.add_task("Design refactored API", agent_role="ArchitectAgent", dependencies=[t1.id])
     t3 = graph.add_task("Implement refactored code", agent_role="CoderAgent", dependencies=[t2.id])
-    t4 = graph.add_task("Verify implementation with pytest", agent_role="TesterAgent", dependencies=[t3.id])
+    t4 = graph.add_task(
+        "Verify implementation with pytest", agent_role="TesterAgent", dependencies=[t3.id]
+    )
     graph.add_task("Review final output", agent_role="ReviewerAgent", dependencies=[t4.id])
 
     res = engine.run("Full E2E Engineering Scenario", task_graph=graph)

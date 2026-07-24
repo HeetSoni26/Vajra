@@ -70,9 +70,7 @@ def test_save_and_load_pretrained(tiny_model, tmp_path):
     loaded_model, loaded_cfg = load_pretrained(hf_dir)
 
     # Verify weight equality
-    for (n1, p1), (n2, p2) in zip(
-        tiny_model.named_parameters(), loaded_model.named_parameters()
-    ):
+    for (n1, p1), (n2, p2) in zip(tiny_model.named_parameters(), loaded_model.named_parameters()):
         assert n1 == n2
         assert torch.allclose(p1, p2, atol=1e-6), f"Weight mismatch at {n1}"
 
@@ -86,6 +84,7 @@ def test_checkpoint_roundtrip_conversion(tiny_model, tmp_path):
     # Write a temporary model config YAML
     model_yaml = tmp_path / "model_cfg.yaml"
     import yaml
+
     cfg_dict = {
         "model_name": "hf-test",
         "vocab_size": 100,
@@ -115,7 +114,5 @@ def test_checkpoint_roundtrip_conversion(tiny_model, tmp_path):
     restored = FoundationLM(ModelConfig(**cfg_dict))
     load_checkpoint(restored_ckpt, restored)
 
-    for (n1, p1), (n2, p2) in zip(
-        original.named_parameters(), restored.named_parameters()
-    ):
+    for (n1, p1), (n2, p2) in zip(original.named_parameters(), restored.named_parameters()):
         assert torch.allclose(p1, p2, atol=1e-6), f"Roundtrip mismatch at {n1}"

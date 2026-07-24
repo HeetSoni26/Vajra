@@ -6,6 +6,7 @@ from training.config import TrainingConfig
 
 class OptimisationConfig(BaseModel):
     """Configuration for production performance optimizations."""
+
     gradient_checkpointing: bool = False
     compile_model: bool = False
     compile_backend: str = "inductor"
@@ -15,6 +16,7 @@ class OptimisationConfig(BaseModel):
 
 class FaultToleranceConfig(BaseModel):
     """Configuration for numerical stability and fault recovery."""
+
     enable_watchdog: bool = True
     nan_detection: bool = True
     inf_detection: bool = True
@@ -26,6 +28,7 @@ class FaultToleranceConfig(BaseModel):
 
 class ProfilingConfig(BaseModel):
     """Configuration for memory and performance profiling."""
+
     enable_memory_profiling: bool = False
     enable_perf_profiling: bool = False
     profile_steps: List[int] = Field(default_factory=lambda: [10, 50, 100])
@@ -37,6 +40,7 @@ class MultiNodeConfig(BaseModel):
     Abstractions for future multi-node support.
     Currently inactive.
     """
+
     enabled: bool = False
     cluster_env: str = "torchrun"  # e.g., torchrun, slurm
     nodes: int = 1
@@ -47,6 +51,7 @@ class ProductionConfig(TrainingConfig):
     """
     Production-grade training configuration extending the base TrainingConfig.
     """
+
     optimisation: OptimisationConfig = Field(default_factory=OptimisationConfig)
     fault_tolerance: FaultToleranceConfig = Field(default_factory=FaultToleranceConfig)
     profiling: ProfilingConfig = Field(default_factory=ProfilingConfig)

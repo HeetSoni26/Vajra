@@ -2,7 +2,7 @@
 
 
 def main():
-    print('The Stack downloader placeholder.')
+    print("The Stack downloader placeholder.")
 
 
 if __name__ == "__main__":

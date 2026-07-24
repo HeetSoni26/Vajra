@@ -6,7 +6,9 @@ from pathlib import Path
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Create a tiny local tokenizer corpus for smoke tests.")
+    parser = argparse.ArgumentParser(
+        description="Create a tiny local tokenizer corpus for smoke tests."
+    )
     parser.add_argument("--output_dir", default="data/tokenizer_corpus")
     args = parser.parse_args()
     out = Path(args.output_dir)

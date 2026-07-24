@@ -14,7 +14,9 @@ class RepositoryScanner:
     def scan(cls, directory_path: str | Path) -> RepositoryContext:
         root = Path(directory_path).resolve()
         if not root.exists() or not root.is_dir():
-            raise FileNotFoundError(f"Repository path does not exist or is not a directory: {directory_path}")
+            raise FileNotFoundError(
+                f"Repository path does not exist or is not a directory: {directory_path}"
+            )
 
         files = [f for f in root.rglob("*") if f.is_file() and not cls._should_ignore(f)]
         rel_files = [str(f.relative_to(root)) for f in files]
@@ -43,7 +45,17 @@ class RepositoryScanner:
 
     @staticmethod
     def _should_ignore(path: Path) -> bool:
-        ignore_dirs = {".git", ".pytest_cache", ".ruff_cache", "__pycache__", "node_modules", "venv", ".venv", "dist", "build"}
+        ignore_dirs = {
+            ".git",
+            ".pytest_cache",
+            ".ruff_cache",
+            "__pycache__",
+            "node_modules",
+            "venv",
+            ".venv",
+            "dist",
+            "build",
+        }
         return any(part in ignore_dirs for part in path.parts)
 
     @staticmethod
@@ -98,7 +110,9 @@ class RepositoryScanner:
                 return "flask"
         if "package.json" in files:
             try:
-                pkg_data = json.loads((root / "package.json").read_text(encoding="utf-8", errors="ignore"))
+                pkg_data = json.loads(
+                    (root / "package.json").read_text(encoding="utf-8", errors="ignore")
+                )
                 deps = {**pkg_data.get("dependencies", {}), **pkg_data.get("devDependencies", {})}
                 if "react" in deps:
                     return "react"
@@ -119,17 +133,46 @@ class RepositoryScanner:
 
     @staticmethod
     def _find_configs(files: list[str]) -> list[str]:
-        known = {"pyproject.toml", "setup.py", "package.json", "Cargo.toml", "go.mod", "Makefile", "Dockerfile", "configs/config.yaml"}
-        return [f for f in files if f in known or f.endswith(".toml") or f.endswith(".yaml") or f.endswith(".json")]
+        known = {
+            "pyproject.toml",
+            "setup.py",
+            "package.json",
+            "Cargo.toml",
+            "go.mod",
+            "Makefile",
+            "Dockerfile",
+            "configs/config.yaml",
+        }
+        return [
+            f
+            for f in files
+            if f in known or f.endswith(".toml") or f.endswith(".yaml") or f.endswith(".json")
+        ]
 
     @staticmethod
     def _find_dependencies(files: list[str]) -> list[str]:
-        known = {"requirements.txt", "pyproject.toml", "environment.yml", "package.json", "Cargo.toml", "go.mod"}
+        known = {
+            "requirements.txt",
+            "pyproject.toml",
+            "environment.yml",
+            "package.json",
+            "Cargo.toml",
+            "go.mod",
+        }
         return [f for f in files if f in known]
 
     @staticmethod
     def _find_entry_points(files: list[str]) -> list[str]:
-        known = {"main.py", "app.py", "index.js", "index.ts", "src/main.rs", "main.go", "cli/main.py", "api/main.py"}
+        known = {
+            "main.py",
+            "app.py",
+            "index.js",
+            "index.ts",
+            "src/main.rs",
+            "main.go",
+            "cli/main.py",
+            "api/main.py",
+        }
         return [f for f in files if f in known]
 
     @staticmethod

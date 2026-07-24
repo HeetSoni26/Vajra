@@ -2,7 +2,7 @@
 
 
 def main():
-    print('ArXiv downloader placeholder.')
+    print("ArXiv downloader placeholder.")
 
 
 if __name__ == "__main__":

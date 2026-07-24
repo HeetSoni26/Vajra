@@ -56,7 +56,9 @@ def cmd_train_ddp(args):
 def cmd_dry_run(args):
     print("DDP dry-run: verifying configuration and imports...")
     ddp_config = DDPConfig(enabled=True, backend="gloo")
-    print(f"DDPConfig: backend={ddp_config.backend}, master={ddp_config.master_addr}:{ddp_config.master_port}")
+    print(
+        f"DDPConfig: backend={ddp_config.backend}, master={ddp_config.master_addr}:{ddp_config.master_port}"
+    )
     print("All DDP components imported successfully.")
 
 

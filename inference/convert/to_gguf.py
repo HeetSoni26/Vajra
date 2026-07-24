@@ -14,7 +14,15 @@ def main() -> None:
     parser.add_argument("--dry_run", action="store_true")
     args = parser.parse_args()
     Path(args.outfile).parent.mkdir(parents=True, exist_ok=True)
-    cmd = ["python", str(Path(args.llama_cpp) / "convert_hf_to_gguf.py"), args.model, "--outfile", args.outfile, "--outtype", args.outtype]
+    cmd = [
+        "python",
+        str(Path(args.llama_cpp) / "convert_hf_to_gguf.py"),
+        args.model,
+        "--outfile",
+        args.outfile,
+        "--outtype",
+        args.outtype,
+    ]
     print(" ".join(cmd))
     if not args.dry_run:
         subprocess.run(cmd, check=True)

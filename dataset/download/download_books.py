@@ -2,7 +2,7 @@
 
 
 def main():
-    print('Books downloader placeholder.')
+    print("Books downloader placeholder.")
 
 
 if __name__ == "__main__":

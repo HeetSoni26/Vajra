@@ -11,14 +11,23 @@ from vajra_agent.tools.base import BaseTool
 
 BLOCKED_MODULES = {"subprocess", "ctypes", "pty", "socket", "signal", "shutil"}
 
-def _safe_import(name: str, globals: dict[str, Any] | None = None, locals: dict[str, Any] | None = None, fromlist: tuple[str, ...] = (), level: int = 0) -> Any:
+
+def _safe_import(
+    name: str,
+    globals: dict[str, Any] | None = None,
+    locals: dict[str, Any] | None = None,
+    fromlist: tuple[str, ...] = (),
+    level: int = 0,
+) -> Any:
     base = name.split(".")[0]
     if base in BLOCKED_MODULES:
         raise ImportError(f"Importing restricted module '{name}' is disallowed for security.")
     return __import__(name, globals, locals, fromlist, level)
 
+
 def _get_safe_builtins() -> dict[str, Any]:
     import builtins
+
     safe = {k: getattr(builtins, k) for k in dir(builtins) if not k.startswith("_")}
     # Remove dangerous builtins
     safe.pop("eval", None)
@@ -58,9 +67,7 @@ class PythonTool(BaseTool):
         old_stdout = sys.stdout
         sys.stdout = buffer
 
-        global_namespace: dict[str, Any] = {
-            "__builtins__": _get_safe_builtins()
-        }
+        global_namespace: dict[str, Any] = {"__builtins__": _get_safe_builtins()}
         error = None
 
         try:

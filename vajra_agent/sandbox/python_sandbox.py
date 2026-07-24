@@ -13,14 +13,23 @@ from vajra_agent.sandbox.models import SandboxResult
 
 BLOCKED_MODULES = {"subprocess", "ctypes", "pty", "socket", "signal"}
 
-def _sandbox_import(name: str, globals: dict[str, Any] | None = None, locals: dict[str, Any] | None = None, fromlist: tuple[str, ...] = (), level: int = 0) -> Any:
+
+def _sandbox_import(
+    name: str,
+    globals: dict[str, Any] | None = None,
+    locals: dict[str, Any] | None = None,
+    fromlist: tuple[str, ...] = (),
+    level: int = 0,
+) -> Any:
     base = name.split(".")[0]
     if base in BLOCKED_MODULES:
         raise ImportError(f"Security error: Module '{name}' is restricted in sandbox execution.")
     return __import__(name, globals, locals, fromlist, level)
 
+
 def _get_sandbox_builtins(work_dir: Path) -> dict[str, Any]:
     import builtins
+
     safe = {k: getattr(builtins, k) for k in dir(builtins) if not k.startswith("_")}
     safe.pop("eval", None)
     safe.pop("compile", None)
@@ -28,6 +37,7 @@ def _get_sandbox_builtins(work_dir: Path) -> dict[str, Any]:
 
     # Safe open function bounded to work_dir or relative paths
     raw_open = builtins.open
+
     def safe_open(file: str | Path, mode: str = "r", *args: Any, **kwargs: Any) -> Any:
         file_path = Path(file)
         if not file_path.is_absolute():
@@ -38,7 +48,9 @@ def _get_sandbox_builtins(work_dir: Path) -> dict[str, Any]:
         try:
             file_path.relative_to(work_dir.resolve())
         except ValueError:
-            raise PermissionError(f"Access denied: Path '{file}' is outside sandbox working directory '{work_dir}'.")
+            raise PermissionError(
+                f"Access denied: Path '{file}' is outside sandbox working directory '{work_dir}'."
+            )
         return raw_open(file_path, mode, *args, **kwargs)
 
     safe["open"] = safe_open
@@ -65,7 +77,9 @@ class PythonSandbox:
         # Record snapshot of existing files in work_dir
         before_files = set()
         if self.work_dir.exists():
-            before_files = {str(f.relative_to(self.work_dir)) for f in self.work_dir.rglob("*") if f.is_file()}
+            before_files = {
+                str(f.relative_to(self.work_dir)) for f in self.work_dir.rglob("*") if f.is_file()
+            }
 
         namespace = global_vars or {}
         namespace["__builtins__"] = _get_sandbox_builtins(self.work_dir)
@@ -76,6 +90,7 @@ class PythonSandbox:
         exit_code = 0
 
         import os
+
         old_cwd = Path.cwd()
         if self.work_dir.exists():
             os.chdir(self.work_dir)
@@ -103,7 +118,9 @@ class PythonSandbox:
         # Detect files created during execution
         after_files = set()
         if self.work_dir.exists():
-            after_files = {str(f.relative_to(self.work_dir)) for f in self.work_dir.rglob("*") if f.is_file()}
+            after_files = {
+                str(f.relative_to(self.work_dir)) for f in self.work_dir.rglob("*") if f.is_file()
+            }
 
         new_files = sorted(list(after_files - before_files))
 

@@ -5,9 +5,7 @@ from vajra_agent.workflows import TestGenerationWorkflow
 
 
 def main():
-    responses = [
-        "Generated pytest unit test suite covering 100% of methods in model/config.py."
-    ]
+    responses = ["Generated pytest unit test suite covering 100% of methods in model/config.py."]
     reasoner = MockReasoner(responses)
     agent = FoundationAgent(reasoner)
 

@@ -39,7 +39,9 @@ class RepositoryKnowledgeGraph:
         self.nodes[node.id] = node
 
     def add_edge(self, source_id: str, target_id: str, relationship: str) -> None:
-        self.edges.append(KnowledgeEdge(source_id=source_id, target_id=target_id, relationship=relationship))
+        self.edges.append(
+            KnowledgeEdge(source_id=source_id, target_id=target_id, relationship=relationship)
+        )
 
     def build_from_workspace(self, repo_ctx: RepositoryContext, index: WorkspaceIndex) -> None:
         """Populate graph nodes and edges from RepositoryContext and WorkspaceIndex."""
@@ -55,7 +57,9 @@ class RepositoryKnowledgeGraph:
 
         for sym in index.symbols:
             sym_id = f"{sym.filepath}::{sym.name}"
-            sym_node = KnowledgeNode(id=sym_id, kind=sym.kind, name=sym.name, metadata=sym.to_dict())
+            sym_node = KnowledgeNode(
+                id=sym_id, kind=sym.kind, name=sym.name, metadata=sym.to_dict()
+            )
             self.add_node(sym_node)
             self.add_edge(sym.filepath, sym_id, "defines")
 
@@ -68,5 +72,7 @@ class RepositoryKnowledgeGraph:
             "total_nodes": len(self.nodes),
             "total_edges": len(self.edges),
             "files_count": len([n for n in self.nodes.values() if n.kind == "file"]),
-            "symbols_count": len([n for n in self.nodes.values() if n.kind not in ("project", "file")]),
+            "symbols_count": len(
+                [n for n in self.nodes.values() if n.kind not in ("project", "file")]
+            ),
         }

@@ -3,8 +3,10 @@ from typing import Dict, Any
 from model.modeling import VajraForCausalLM
 from model.config import VajraConfig
 
+
 def count_parameters(model: nn.Module) -> int:
     return sum(p.numel() for p in model.parameters() if p.requires_grad)
+
 
 def summarize_model(model: VajraForCausalLM) -> Dict[str, Any]:
     return {
@@ -16,8 +18,9 @@ def summarize_model(model: VajraForCausalLM) -> Dict[str, Any]:
         "attention_heads": model.config.num_attention_heads,
         "kv_heads": model.config.num_key_value_heads,
         "dtype": model.config.dtype,
-        "device": str(next(model.parameters()).device)
+        "device": str(next(model.parameters()).device),
     }
+
 
 def initialize_weights(model: nn.Module, config: VajraConfig):
     # Initialize weights according to GPT-style standards

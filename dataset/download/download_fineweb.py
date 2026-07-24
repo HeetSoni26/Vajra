@@ -2,7 +2,7 @@
 
 
 def main():
-    print('FineWeb downloader placeholder.')
+    print("FineWeb downloader placeholder.")
 
 
 if __name__ == "__main__":

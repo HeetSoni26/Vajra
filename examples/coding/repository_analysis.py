@@ -14,7 +14,9 @@ def main():
     print(f"  Framework: {ctx.framework}")
     print(f"  Total Files: {ctx.total_files}")
 
-    reasoner = MockReasoner(["Repository analysis completed. Project is a Python FastAPI codebase."])
+    reasoner = MockReasoner(
+        ["Repository analysis completed. Project is a Python FastAPI codebase."]
+    )
     agent = FoundationAgent(reasoner)
 
     wf = RepoAnalysisWorkflow(agent)

@@ -14,7 +14,9 @@ def main():
     agent = FoundationAgent(reasoner)
     agent.register_tool(FileTool())
 
-    response = agent.run("Create a file called test_output.txt with content 'Vajra-Agent in action!'")
+    response = agent.run(
+        "Create a file called test_output.txt with content 'Vajra-Agent in action!'"
+    )
     print("Agent Response:", response.output)
     print("Tool Calls Count:", response.tool_calls_count)
 

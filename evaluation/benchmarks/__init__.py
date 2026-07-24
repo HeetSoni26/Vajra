@@ -9,5 +9,5 @@ __all__ = [
     "BenchmarkAdapter",
     "EvaluationPipeline",
     "BenchmarkReporter",
-    "TrainingBenchmarkIntegration"
+    "TrainingBenchmarkIntegration",
 ]

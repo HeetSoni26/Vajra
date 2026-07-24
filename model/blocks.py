@@ -6,6 +6,7 @@ from model.layers.rmsnorm import RMSNorm
 from model.layers.attention import VajraAttention
 from model.layers.mlp import VajraMLP
 
+
 class VajraBlock(nn.Module):
     def __init__(self, config: VajraConfig):
         super().__init__()

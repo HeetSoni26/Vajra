@@ -3,6 +3,7 @@ import shutil
 import torch
 from pathlib import Path
 
+
 def run_preflight_checks(output_dir: str, dataset_dir: str):
     """Verifies all components are ready for training."""
     print("Running Vajra-370M Pre-flight Validation...")
@@ -11,7 +12,7 @@ def run_preflight_checks(output_dir: str, dataset_dir: str):
     # 1. Tokenizer
     if not Path("tokenizer").exists():
         errors.append("Tokenizer directory is missing.")
-        
+
     # 2. Dataset / Binary Shards
     if not Path(dataset_dir).exists():
         errors.append(f"Dataset directory '{dataset_dir}' is missing.")
@@ -49,7 +50,9 @@ def run_preflight_checks(output_dir: str, dataset_dir: str):
             props = torch.cuda.get_device_properties(i)
             mem_gb = props.total_memory // (2**30)
             if mem_gb < 8:
-                errors.append(f"GPU {i} ({props.name}) has only {mem_gb}GB VRAM. 8GB minimum required.")
+                errors.append(
+                    f"GPU {i} ({props.name}) has only {mem_gb}GB VRAM. 8GB minimum required."
+                )
 
     if errors:
         print("\nPre-flight Checks FAILED!")
@@ -59,11 +62,13 @@ def run_preflight_checks(output_dir: str, dataset_dir: str):
     else:
         print("\nAll systems GO! Pre-flight checks passed successfully.")
 
+
 if __name__ == "__main__":
     import argparse
+
     parser = argparse.ArgumentParser()
     parser.add_argument("--output-dir", default="checkpoints")
     parser.add_argument("--dataset-dir", default="data/tokenized")
     args = parser.parse_args()
-    
+
     run_preflight_checks(args.output_dir, args.dataset_dir)

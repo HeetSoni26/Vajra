@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 
+
 class DDPConfig(BaseModel):
     enabled: bool = False
     backend: str = "nccl"  # nccl for GPU, gloo for CPU

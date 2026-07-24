@@ -35,7 +35,9 @@ def test_regression_core_abstractions():
     assert len(recall_res) == 1
 
     # 4. Function Parser
-    call = FunctionParser.parse('```json\n{"tool": "file_tool", "arguments": {"action": "read"}}\n```')
+    call = FunctionParser.parse(
+        '```json\n{"tool": "file_tool", "arguments": {"action": "read"}}\n```'
+    )
     assert call is not None
     assert call.tool_name == "file_tool"
 

@@ -20,8 +20,12 @@ class MultiNodeLauncher:
         """Sets up rendezvous for multi-node training."""
         if not getattr(self.config, "enabled", False):
             return
-        logger.warning("[Experimental] Multi-node training is currently an experimental / roadmap feature.")
-        raise NotImplementedError("Multi-node cluster setup is an experimental future roadmap feature.")
+        logger.warning(
+            "[Experimental] Multi-node training is currently an experimental / roadmap feature."
+        )
+        raise NotImplementedError(
+            "Multi-node cluster setup is an experimental future roadmap feature."
+        )
 
 
 class CommunicationAbstraction:

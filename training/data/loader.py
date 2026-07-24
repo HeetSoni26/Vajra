@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Union
 from torch.utils.data import DataLoader
 
+
 def create_dataloader(
     data_dir: Union[str, Path],
     batch_size: int = 1,
@@ -17,5 +18,6 @@ def create_dataloader(
         num_workers=num_workers,
     )
     return train_loader
+
 
 __all__ = ["create_dataloader", "create_dataloaders", "MemmapTokenDataset"]

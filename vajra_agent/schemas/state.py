@@ -30,7 +30,7 @@ class AgentState:
     tool_history: list[ToolExecutionResult] = field(default_factory=list)
     metadata: ExecutionMetadata = field(default_factory=ExecutionMetadata)
     runtime_context: dict[str, Any] = field(default_factory=dict)
-    
+
     # Placeholders for future phases (Planner, Reflection, RAG)
     plan_steps: list[str] = field(default_factory=list)
     reflection_notes: list[str] = field(default_factory=list)

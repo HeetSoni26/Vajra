@@ -5,6 +5,7 @@ from typing import Dict, Any
 from dataset.configs.settings import config
 from dataset.utils.logging import logger
 
+
 class CacheManager:
     """
     Manages the cache directory for resumable downloads.
@@ -40,12 +41,14 @@ class CacheManager:
         key = f"{dataset_name}:{filename}"
         return self._state.get(key, {}).get("bytes_downloaded", 0)
 
-    def update_progress(self, dataset_name: str, filename: str, bytes_downloaded: int, completed: bool = False):
+    def update_progress(
+        self, dataset_name: str, filename: str, bytes_downloaded: int, completed: bool = False
+    ):
         """Updates the progress of a file download."""
         key = f"{dataset_name}:{filename}"
         if key not in self._state:
             self._state[key] = {}
-        
+
         self._state[key]["bytes_downloaded"] = bytes_downloaded
         self._state[key]["completed"] = completed
         self._save_state()

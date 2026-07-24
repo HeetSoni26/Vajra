@@ -50,12 +50,16 @@ class ContextBuilder:
 
         # 3. Retrieved Long-Term Memories
         if retrieved_memories:
-            mem_text = "\n".join([f"- [{m.final_score:.2f}] {m.record.text}" for m in retrieved_memories])
+            mem_text = "\n".join(
+                [f"- [{m.final_score:.2f}] {m.record.text}" for m in retrieved_memories]
+            )
             sections.append(f"### Relevant Retrieved Long-Term Memory\n{mem_text}")
 
         # 4. Current Execution Plan
         if state.plan_steps:
-            plan_text = "\n".join([f"Step {i+1}: {step}" for i, step in enumerate(state.plan_steps)])
+            plan_text = "\n".join(
+                [f"Step {i + 1}: {step}" for i, step in enumerate(state.plan_steps)]
+            )
             sections.append(f"### Active Task Plan\n{plan_text}")
 
         # 5. Reflection Notes
@@ -66,5 +70,9 @@ class ContextBuilder:
         context_header = "\n\n".join(sections)
         history_str = state.conversation.format_history_string()
 
-        full_prompt = f"{context_header}\n\n### Conversation History\n{history_str}" if context_header else history_str
+        full_prompt = (
+            f"{context_header}\n\n### Conversation History\n{history_str}"
+            if context_header
+            else history_str
+        )
         return sys_prompt, full_prompt

@@ -64,7 +64,11 @@ class FileTool(BaseTool):
             return [f.name for f in target.iterdir()]
 
         elif action == "exists":
-            return {"exists": target.exists(), "is_file": target.is_file(), "is_dir": target.is_dir()}
+            return {
+                "exists": target.exists(),
+                "is_file": target.is_file(),
+                "is_dir": target.is_dir(),
+            }
 
         else:
             raise ValueError(f"Unknown file action: {action}")

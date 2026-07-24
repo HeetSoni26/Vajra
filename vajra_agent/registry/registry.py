@@ -43,11 +43,13 @@ class ToolRegistry:
         """Generate JSON Schema definitions for all registered tools."""
         schemas = []
         for tool in self._tools.values():
-            schemas.append({
-                "name": tool.name,
-                "description": tool.description,
-                "parameters": tool.input_schema,
-            })
+            schemas.append(
+                {
+                    "name": tool.name,
+                    "description": tool.description,
+                    "parameters": tool.input_schema,
+                }
+            )
         return schemas
 
     def register_plugin_hook(self, hook: PluginHook) -> None:

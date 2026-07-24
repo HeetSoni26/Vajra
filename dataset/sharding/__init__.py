@@ -14,5 +14,5 @@ __all__ = [
     "BinaryShardWriter",
     "BinaryShardReader",
     "ShardingPipeline",
-    "ShardValidator"
+    "ShardValidator",
 ]

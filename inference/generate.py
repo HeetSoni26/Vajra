@@ -16,7 +16,9 @@ def main() -> None:
     tok = AutoTokenizer.from_pretrained(args.model)
     model = AutoModelForCausalLM.from_pretrained(args.model, torch_dtype="auto", device_map="auto")
     inputs = tok(args.prompt, return_tensors="pt").to(model.device)
-    out = model.generate(**inputs, max_new_tokens=args.max_new_tokens, do_sample=True, temperature=0.7)
+    out = model.generate(
+        **inputs, max_new_tokens=args.max_new_tokens, do_sample=True, temperature=0.7
+    )
     print(tok.decode(out[0], skip_special_tokens=False))
 
 

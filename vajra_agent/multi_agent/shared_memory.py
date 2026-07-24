@@ -31,4 +31,6 @@ class SharedMemory:
         """Publish shared observation to team."""
         obs = {"sender": sender_id, "text": text}
         self.shared_observations.append(obs)
-        self.memory_manager.remember(f"[{sender_id}] {text}", metadata={"type": "shared_observation"})
+        self.memory_manager.remember(
+            f"[{sender_id}] {text}", metadata={"type": "shared_observation"}
+        )

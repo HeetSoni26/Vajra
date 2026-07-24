@@ -118,7 +118,9 @@ def generate_training_curves(history: list[dict[str, Any]], exp_dir: Path) -> No
 def main() -> None:
     parser = argparse.ArgumentParser(description="Foundation LM Pretraining Engine")
     parser.add_argument("--config", default="configs/training/pretrain_tiny.yaml")
-    parser.add_argument("--resume", action="store_true", help="Resume from latest checkpoint if available")
+    parser.add_argument(
+        "--resume", action="store_true", help="Resume from latest checkpoint if available"
+    )
     parser.add_argument("--seed", type=int, default=1337)
     args = parser.parse_args()
 
@@ -139,15 +141,19 @@ def main() -> None:
 
         device = get_device()
         if rank == 0:
-            logger.info(f"Using compute device: {device} | Distributed: {is_distributed} (World Size: {world_size})")
+            logger.info(
+                f"Using compute device: {device} | Distributed: {is_distributed} (World Size: {world_size})"
+            )
 
         base_out_dir = Path(cfg.get("output_dir", "checkpoints/run"))
-        
+
         # Resume or Create Experiment Directory
         resume_state = None
         if args.resume:
             resume_manager = ResumeManager(base_dir=base_out_dir.parent)
-            exp_dir, resume_state = resume_manager.find_latest_valid_experiment(prefix=base_out_dir.name + "_")
+            exp_dir, resume_state = resume_manager.find_latest_valid_experiment(
+                prefix=base_out_dir.name + "_"
+            )
         else:
             exp_dir = create_experiment_dir(base_out_dir.parent, name=base_out_dir.name, config=cfg)
 
@@ -248,7 +254,9 @@ def main() -> None:
         eval_every = int(cfg.get("eval_every_steps", 10))
 
         if rank == 0:
-            logger.info(f"Starting Pretraining: {model_summary['total_parameters']:,} parameters | max_steps={max_steps}")
+            logger.info(
+                f"Starting Pretraining: {model_summary['total_parameters']:,} parameters | max_steps={max_steps}"
+            )
 
         start_time = time.time()
         global_step = start_step
@@ -265,8 +273,10 @@ def main() -> None:
                 batch = next(train_iter)
 
             micro_step += 1
-            is_accum_boundary = (micro_step % grad_accum_steps == 0)
-            step_metrics = trainer.train_step(batch, step=global_step, is_accum_step=is_accum_boundary)
+            is_accum_boundary = micro_step % grad_accum_steps == 0
+            step_metrics = trainer.train_step(
+                batch, step=global_step, is_accum_step=is_accum_boundary
+            )
 
             if is_accum_boundary and step_metrics is not None:
                 global_step += 1
@@ -288,7 +298,7 @@ def main() -> None:
                     )
                     training_logger.log_checkpoint(global_step, ckpt_path.name)
                     logger.info(f"Checkpoint saved at step {global_step} -> {ckpt_path.name}")
-                    
+
                     # Trigger background sync to cloud
                     cloud_sync.sync_experiment(exp_dir)
 
@@ -296,7 +306,7 @@ def main() -> None:
                     dist.barrier()
 
                 history.append(step_metrics)
-                
+
                 if rank == 0:
                     training_logger.log_step(global_step, step_metrics)
                     logger.info(
@@ -322,7 +332,7 @@ def main() -> None:
             logger.info(f"Pretraining Run Complete! Total Time: {total_training_time}s")
 
     finally:
-        if 'training_logger' in locals():
+        if "training_logger" in locals():
             training_logger.close()
         cleanup_ddp_environment(is_distributed)
 

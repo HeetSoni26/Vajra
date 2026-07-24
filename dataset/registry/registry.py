@@ -7,6 +7,7 @@ from dataset.metadata.models import DatasetMetadata
 from dataset.utils.exceptions import DatasetRegistrationError
 from dataset.utils.logging import logger
 
+
 class DatasetRegistry:
     """
     Manages the registration and discovery of datasets.
@@ -30,7 +31,7 @@ class DatasetRegistry:
         self._cache.clear()
         if not self.manifests_dir.exists():
             return
-            
+
         for filepath in self.manifests_dir.glob("*.json"):
             try:
                 with open(filepath, "r", encoding="utf-8") as f:

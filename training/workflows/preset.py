@@ -1,9 +1,16 @@
-
 from model.config import VajraConfig
-from training.production.config import ProductionConfig, OptimisationConfig, FaultToleranceConfig, ProfilingConfig
+from training.production.config import (
+    ProductionConfig,
+    OptimisationConfig,
+    FaultToleranceConfig,
+    ProfilingConfig,
+)
 from training.ddp.config import DDPConfig
 
-def get_vajra_370m_preset(output_dir: str, dataset_dir: str) -> (VajraConfig, ProductionConfig, DDPConfig):
+
+def get_vajra_370m_preset(
+    output_dir: str, dataset_dir: str
+) -> (VajraConfig, ProductionConfig, DDPConfig):
     """
     Production-ready preset configuration for training Vajra-370M.
     """
@@ -17,7 +24,7 @@ def get_vajra_370m_preset(output_dir: str, dataset_dir: str) -> (VajraConfig, Pr
         max_position_embeddings=4096,
         rms_norm_eps=1e-6,
     )
-    
+
     train_config = ProductionConfig(
         dataset_dir=dataset_dir,
         output_dir=output_dir,
@@ -35,13 +42,12 @@ def get_vajra_370m_preset(output_dir: str, dataset_dir: str) -> (VajraConfig, Pr
         logging_steps=10,
         eval_steps=1000,
         save_total_limit=5,
-        
         optimisation=OptimisationConfig(
             gradient_checkpointing=True,
             compile_model=True,
             compile_backend="inductor",
             use_flash_attention=True,
-            fused_optimizer=True
+            fused_optimizer=True,
         ),
         fault_tolerance=FaultToleranceConfig(
             enable_watchdog=True,
@@ -50,26 +56,25 @@ def get_vajra_370m_preset(output_dir: str, dataset_dir: str) -> (VajraConfig, Pr
             skip_nan_gradients=True,
             max_retries=3,
             checkpoint_rotation=True,
-            keep_best_checkpoints=3
+            keep_best_checkpoints=3,
         ),
-        profiling=ProfilingConfig(
-            enable_memory_profiling=True,
-            enable_perf_profiling=True
-        )
+        profiling=ProfilingConfig(enable_memory_profiling=True, enable_perf_profiling=True),
     )
-    
+
     ddp_config = DDPConfig(
         enabled=True,
         backend="nccl",
         find_unused_parameters=False,
         static_graph=True,
-        broadcast_buffers=False
+        broadcast_buffers=False,
     )
-    
+
     return model_config, train_config, ddp_config
 
 
-def get_vajra_tiny_preset(output_dir: str, dataset_dir: str) -> (VajraConfig, ProductionConfig, DDPConfig):
+def get_vajra_tiny_preset(
+    output_dir: str, dataset_dir: str
+) -> (VajraConfig, ProductionConfig, DDPConfig):
     """
     Miniature synthetic configuration strictly for fast offline testing.
     """
@@ -80,9 +85,9 @@ def get_vajra_tiny_preset(output_dir: str, dataset_dir: str) -> (VajraConfig, Pr
         num_layers=2,
         num_attention_heads=2,
         num_key_value_heads=2,
-        max_position_embeddings=128
+        max_position_embeddings=128,
     )
-    
+
     train_config = ProductionConfig(
         dataset_dir=dataset_dir,
         output_dir=output_dir,
@@ -101,12 +106,12 @@ def get_vajra_tiny_preset(output_dir: str, dataset_dir: str) -> (VajraConfig, Pr
             gradient_checkpointing=False,
             compile_model=False,
             use_flash_attention=False,
-            fused_optimizer=False
+            fused_optimizer=False,
         ),
         fault_tolerance=FaultToleranceConfig(enable_watchdog=False),
-        profiling=ProfilingConfig(enable_perf_profiling=False, enable_memory_profiling=False)
+        profiling=ProfilingConfig(enable_perf_profiling=False, enable_memory_profiling=False),
     )
-    
+
     ddp_config = DDPConfig(enabled=False, backend="gloo")
-    
+
     return model_config, train_config, ddp_config

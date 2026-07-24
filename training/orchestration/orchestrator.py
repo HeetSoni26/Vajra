@@ -13,6 +13,7 @@ Coordinates:
 
 Signal handling (SIGINT / SIGTERM) is installed to save an emergency checkpoint before exit.
 """
+
 from __future__ import annotations
 
 import signal
@@ -39,7 +40,9 @@ _EMERGENCY_SAVE_REQUESTED = False
 
 def _signal_handler(signum, _frame):  # noqa: ANN001
     global _EMERGENCY_SAVE_REQUESTED
-    logger.warning(f"[SIGNAL] Received signal {signum}. Emergency checkpoint will be saved before exit.")
+    logger.warning(
+        f"[SIGNAL] Received signal {signum}. Emergency checkpoint will be saved before exit."
+    )
     _EMERGENCY_SAVE_REQUESTED = True
 
 
@@ -157,7 +160,7 @@ class TrainingOrchestrator:
                     batch = next(train_iter)
 
                 micro_step += 1
-                is_boundary = (micro_step % grad_accum == 0)
+                is_boundary = micro_step % grad_accum == 0
                 step_metrics = self.trainer.train_step(
                     batch, step=self._global_step, is_accum_step=is_boundary
                 )
@@ -192,8 +195,10 @@ class TrainingOrchestrator:
 
                 # ── Step / time-based checkpointing ───────────
                 time_since_ckpt = (time.time() - last_time_ckpt) / 60.0
-                should_step_ckpt = (self._global_step % self.save_every == 0 or self._global_step == self.max_steps)
-                should_time_ckpt = (time_since_ckpt >= self.time_save_every_minutes)
+                should_step_ckpt = (
+                    self._global_step % self.save_every == 0 or self._global_step == self.max_steps
+                )
+                should_time_ckpt = time_since_ckpt >= self.time_save_every_minutes
 
                 if self.rank == 0 and (should_step_ckpt or should_time_ckpt):
                     self._save_checkpoint(step_metrics)
@@ -252,7 +257,11 @@ class TrainingOrchestrator:
     ) -> None:
         """Save checkpoint and trigger background cloud sync."""
         self.exp_manager.transition(TrainingState.CHECKPOINTING)
-        metrics = {"val_loss": step_metrics.get("val_loss", step_metrics.get("loss", 0.0))} if step_metrics else {}
+        metrics = (
+            {"val_loss": step_metrics.get("val_loss", step_metrics.get("loss", 0.0))}
+            if step_metrics
+            else {}
+        )
         if emergency:
             metrics["emergency"] = True
 

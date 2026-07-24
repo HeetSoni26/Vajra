@@ -29,12 +29,7 @@ def apply_gradient_checkpointing(model: nn.Module) -> nn.Module:
             # torch.utils.checkpoint.checkpoint requires inputs to require_grad.
             # Usually kwargs are not easily passed through old checkpoint APIs,
             # but in recent PyTorch versions kwargs are supported via use_reentrant=False.
-            return checkpoint(
-                original_forward,
-                *args,
-                use_reentrant=False,
-                **kwargs
-            )
+            return checkpoint(original_forward, *args, use_reentrant=False, **kwargs)
 
         layer.forward = checkpointed_forward
 

@@ -1,6 +1,7 @@
 """
 ETA and progress engine for Vajra training.
 """
+
 from __future__ import annotations
 
 import time

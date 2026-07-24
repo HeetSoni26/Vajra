@@ -15,14 +15,22 @@ def main() -> None:
         from transformers import AutoModelForCausalLM, AutoTokenizer, TrainingArguments
         from trl import DPOTrainer
     except ImportError as exc:
-        raise SystemExit("Install alignment dependencies: pip install transformers datasets trl accelerate") from exc
+        raise SystemExit(
+            "Install alignment dependencies: pip install transformers datasets trl accelerate"
+        ) from exc
 
-    dataset = load_dataset("json", data_files={"train": cfg["train_file"], "validation": cfg["validation_file"]})
+    dataset = load_dataset(
+        "json", data_files={"train": cfg["train_file"], "validation": cfg["validation_file"]}
+    )
     tokenizer = AutoTokenizer.from_pretrained(cfg["sft_model"], use_fast=True)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
-    model = AutoModelForCausalLM.from_pretrained(cfg["sft_model"], torch_dtype="auto", device_map="auto")
-    ref_model = AutoModelForCausalLM.from_pretrained(cfg["reference_model"], torch_dtype="auto", device_map="auto")
+    model = AutoModelForCausalLM.from_pretrained(
+        cfg["sft_model"], torch_dtype="auto", device_map="auto"
+    )
+    ref_model = AutoModelForCausalLM.from_pretrained(
+        cfg["reference_model"], torch_dtype="auto", device_map="auto"
+    )
 
     # Use eval_strategy for transformers >= 4.41 compatibility
     training_args = TrainingArguments(

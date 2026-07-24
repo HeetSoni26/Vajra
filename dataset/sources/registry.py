@@ -171,121 +171,139 @@ def create_default_registry() -> DataSourceRegistry:
     registry = DataSourceRegistry()
 
     # ── Web ──
-    registry.register(DataSource(
-        name="fineweb-edu",
-        url="https://huggingface.co/datasets/HuggingFaceFW/fineweb-edu",
-        domain="web",
-        license="ODC-By-1.0",
-        format="parquet",
-        estimated_size_gb=500.0,
-        description="High-quality educational web content filtered from CommonCrawl.",
-        tags=["pretraining", "web", "educational"],
-        quality_tier="high",
-        download_method="hf",
-    ))
-    registry.register(DataSource(
-        name="cc-refined",
-        url="https://huggingface.co/datasets/tiiuae/falcon-refinedweb",
-        domain="web",
-        license="ODC-By-1.0",
-        format="parquet",
-        estimated_size_gb=600.0,
-        description="Refined web corpus with deduplication and quality filtering.",
-        tags=["pretraining", "web"],
-        download_method="hf",
-    ))
+    registry.register(
+        DataSource(
+            name="fineweb-edu",
+            url="https://huggingface.co/datasets/HuggingFaceFW/fineweb-edu",
+            domain="web",
+            license="ODC-By-1.0",
+            format="parquet",
+            estimated_size_gb=500.0,
+            description="High-quality educational web content filtered from CommonCrawl.",
+            tags=["pretraining", "web", "educational"],
+            quality_tier="high",
+            download_method="hf",
+        )
+    )
+    registry.register(
+        DataSource(
+            name="cc-refined",
+            url="https://huggingface.co/datasets/tiiuae/falcon-refinedweb",
+            domain="web",
+            license="ODC-By-1.0",
+            format="parquet",
+            estimated_size_gb=600.0,
+            description="Refined web corpus with deduplication and quality filtering.",
+            tags=["pretraining", "web"],
+            download_method="hf",
+        )
+    )
 
     # ── Code ──
-    registry.register(DataSource(
-        name="the-stack-v2-dedup",
-        url="https://huggingface.co/datasets/bigcode/the-stack-v2-dedup",
-        domain="code",
-        license="Various",
-        format="parquet",
-        estimated_size_gb=300.0,
-        description="Deduplicated source code across 600+ programming languages.",
-        tags=["pretraining", "code"],
-        quality_tier="high",
-        download_method="hf",
-    ))
+    registry.register(
+        DataSource(
+            name="the-stack-v2-dedup",
+            url="https://huggingface.co/datasets/bigcode/the-stack-v2-dedup",
+            domain="code",
+            license="Various",
+            format="parquet",
+            estimated_size_gb=300.0,
+            description="Deduplicated source code across 600+ programming languages.",
+            tags=["pretraining", "code"],
+            quality_tier="high",
+            download_method="hf",
+        )
+    )
 
     # ── Math ──
-    registry.register(DataSource(
-        name="open-web-math",
-        url="https://huggingface.co/datasets/open-web-math/open-web-math",
-        domain="math",
-        license="CC-BY-SA-4.0",
-        format="parquet",
-        estimated_size_gb=14.0,
-        description="Mathematical web content curated for LLM pretraining.",
-        tags=["pretraining", "math"],
-        quality_tier="high",
-        download_method="hf",
-    ))
+    registry.register(
+        DataSource(
+            name="open-web-math",
+            url="https://huggingface.co/datasets/open-web-math/open-web-math",
+            domain="math",
+            license="CC-BY-SA-4.0",
+            format="parquet",
+            estimated_size_gb=14.0,
+            description="Mathematical web content curated for LLM pretraining.",
+            tags=["pretraining", "math"],
+            quality_tier="high",
+            download_method="hf",
+        )
+    )
 
     # ── Science ──
-    registry.register(DataSource(
-        name="arxiv-abstracts",
-        url="https://huggingface.co/datasets/ccdv/arxiv-abstract",
-        domain="science",
-        license="CC0-1.0",
-        format="parquet",
-        estimated_size_gb=3.0,
-        description="ArXiv paper abstracts across all scientific domains.",
-        tags=["pretraining", "science", "academic"],
-        download_method="hf",
-    ))
-    registry.register(DataSource(
-        name="peS2o",
-        url="https://huggingface.co/datasets/allenai/peS2o",
-        domain="science",
-        license="ODC-By-1.0",
-        format="parquet",
-        estimated_size_gb=50.0,
-        description="Scientific paper corpus from Semantic Scholar.",
-        tags=["pretraining", "science"],
-        quality_tier="high",
-        download_method="hf",
-    ))
+    registry.register(
+        DataSource(
+            name="arxiv-abstracts",
+            url="https://huggingface.co/datasets/ccdv/arxiv-abstract",
+            domain="science",
+            license="CC0-1.0",
+            format="parquet",
+            estimated_size_gb=3.0,
+            description="ArXiv paper abstracts across all scientific domains.",
+            tags=["pretraining", "science", "academic"],
+            download_method="hf",
+        )
+    )
+    registry.register(
+        DataSource(
+            name="peS2o",
+            url="https://huggingface.co/datasets/allenai/peS2o",
+            domain="science",
+            license="ODC-By-1.0",
+            format="parquet",
+            estimated_size_gb=50.0,
+            description="Scientific paper corpus from Semantic Scholar.",
+            tags=["pretraining", "science"],
+            quality_tier="high",
+            download_method="hf",
+        )
+    )
 
     # ── Books ──
-    registry.register(DataSource(
-        name="gutenberg",
-        url="https://huggingface.co/datasets/manu/project_gutenberg",
-        domain="books",
-        license="Public Domain",
-        format="parquet",
-        estimated_size_gb=8.0,
-        description="Public domain books from Project Gutenberg.",
-        tags=["pretraining", "books", "literature"],
-        download_method="hf",
-    ))
+    registry.register(
+        DataSource(
+            name="gutenberg",
+            url="https://huggingface.co/datasets/manu/project_gutenberg",
+            domain="books",
+            license="Public Domain",
+            format="parquet",
+            estimated_size_gb=8.0,
+            description="Public domain books from Project Gutenberg.",
+            tags=["pretraining", "books", "literature"],
+            download_method="hf",
+        )
+    )
 
     # ── Wikipedia ──
-    registry.register(DataSource(
-        name="wikipedia-en",
-        url="https://huggingface.co/datasets/wikimedia/wikipedia",
-        domain="wikipedia",
-        license="CC-BY-SA-4.0",
-        format="parquet",
-        estimated_size_gb=21.0,
-        description="English Wikipedia articles (latest dump).",
-        tags=["pretraining", "wikipedia", "knowledge"],
-        quality_tier="high",
-        download_method="hf",
-    ))
+    registry.register(
+        DataSource(
+            name="wikipedia-en",
+            url="https://huggingface.co/datasets/wikimedia/wikipedia",
+            domain="wikipedia",
+            license="CC-BY-SA-4.0",
+            format="parquet",
+            estimated_size_gb=21.0,
+            description="English Wikipedia articles (latest dump).",
+            tags=["pretraining", "wikipedia", "knowledge"],
+            quality_tier="high",
+            download_method="hf",
+        )
+    )
 
     # ── Technical ──
-    registry.register(DataSource(
-        name="stackexchange",
-        url="https://huggingface.co/datasets/HuggingFaceTB/stack-exchange-preferences",
-        domain="technical",
-        license="CC-BY-SA-4.0",
-        format="parquet",
-        estimated_size_gb=10.0,
-        description="Stack Exchange Q&A pairs across technical domains.",
-        tags=["pretraining", "technical", "qa"],
-        download_method="hf",
-    ))
+    registry.register(
+        DataSource(
+            name="stackexchange",
+            url="https://huggingface.co/datasets/HuggingFaceTB/stack-exchange-preferences",
+            domain="technical",
+            license="CC-BY-SA-4.0",
+            format="parquet",
+            estimated_size_gb=10.0,
+            description="Stack Exchange Q&A pairs across technical domains.",
+            tags=["pretraining", "technical", "qa"],
+            download_method="hf",
+        )
+    )
 
     return registry

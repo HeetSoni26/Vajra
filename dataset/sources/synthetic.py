@@ -31,7 +31,7 @@ _DOMAIN_TEMPLATES: dict[str, list[str]] = {
         "The internet has revolutionized the way we access information. Search engines, social media platforms, and online encyclopedias have made knowledge more accessible than ever before.",
     ],
     "code": [
-        "def fibonacci(n: int) -> int:\n    \"\"\"Calculate the nth Fibonacci number using dynamic programming.\"\"\"\n    if n <= 1:\n        return n\n    dp = [0, 1]\n    for i in range(2, n + 1):\n        dp.append(dp[i-1] + dp[i-2])\n    return dp[n]\n",
+        'def fibonacci(n: int) -> int:\n    """Calculate the nth Fibonacci number using dynamic programming."""\n    if n <= 1:\n        return n\n    dp = [0, 1]\n    for i in range(2, n + 1):\n        dp.append(dp[i-1] + dp[i-2])\n    return dp[n]\n',
         "class BinarySearchTree:\n    def __init__(self, value):\n        self.value = value\n        self.left = None\n        self.right = None\n\n    def insert(self, value):\n        if value < self.value:\n            if self.left is None:\n                self.left = BinarySearchTree(value)\n            else:\n                self.left.insert(value)\n        else:\n            if self.right is None:\n                self.right = BinarySearchTree(value)\n            else:\n                self.right.insert(value)\n",
         "import torch\nimport torch.nn as nn\n\nclass TransformerBlock(nn.Module):\n    def __init__(self, d_model, n_heads, d_ff, dropout=0.1):\n        super().__init__()\n        self.attention = nn.MultiheadAttention(d_model, n_heads)\n        self.ffn = nn.Sequential(\n            nn.Linear(d_model, d_ff),\n            nn.GELU(),\n            nn.Linear(d_ff, d_model),\n        )\n        self.norm1 = nn.LayerNorm(d_model)\n        self.norm2 = nn.LayerNorm(d_model)\n        self.dropout = nn.Dropout(dropout)\n",
     ],
@@ -56,7 +56,7 @@ _DOMAIN_TEMPLATES: dict[str, list[str]] = {
         "The solar system consists of the Sun and everything bound to it by gravity, including eight planets, dwarf planets, asteroids, comets, and meteoroids. The four inner planets (Mercury, Venus, Earth, Mars) are terrestrial, while the four outer planets (Jupiter, Saturn, Uranus, Neptune) are gas and ice giants.",
     ],
     "technical": [
-        "Q: How do I implement a REST API with pagination?\nA: Use cursor-based pagination for large datasets. Return a `next_cursor` token in each response that clients pass in subsequent requests. This avoids the performance issues of offset-based pagination when dealing with millions of records.\n\nExample:\nGET /api/users?cursor=abc123&limit=50\nResponse: { \"data\": [...], \"next_cursor\": \"def456\" }",
+        'Q: How do I implement a REST API with pagination?\nA: Use cursor-based pagination for large datasets. Return a `next_cursor` token in each response that clients pass in subsequent requests. This avoids the performance issues of offset-based pagination when dealing with millions of records.\n\nExample:\nGET /api/users?cursor=abc123&limit=50\nResponse: { "data": [...], "next_cursor": "def456" }',
         "Q: What is the difference between TCP and UDP?\nA: TCP (Transmission Control Protocol) provides reliable, ordered delivery of data with error checking and flow control. UDP (User Datagram Protocol) provides faster, connectionless communication without guaranteed delivery. TCP is used for web browsing and email, while UDP is preferred for real-time applications like gaming and video streaming.",
     ],
 }
@@ -118,12 +118,14 @@ def generate_synthetic_documents(
         paragraphs = [_generate_paragraph(domain, rng) for _ in range(num_paragraphs)]
         text = "\n\n".join(paragraphs)
 
-        documents.append({
-            "doc_id": f"synthetic_{i:06d}",
-            "text": text,
-            "domain": domain,
-            "source_file": f"synthetic/{domain}/doc_{i:06d}.txt",
-        })
+        documents.append(
+            {
+                "doc_id": f"synthetic_{i:06d}",
+                "text": text,
+                "domain": domain,
+                "source_file": f"synthetic/{domain}/doc_{i:06d}.txt",
+            }
+        )
 
     logger.info(
         f"Generated {len(documents)} synthetic documents across "
@@ -162,7 +164,10 @@ def write_synthetic_corpus(
         file_path = output_dir / f"{domain}.jsonl"
         with file_path.open("w", encoding="utf-8") as f:
             for doc in docs:
-                f.write(json.dumps({"text": doc["text"], "doc_id": doc["doc_id"]}, ensure_ascii=False) + "\n")
+                f.write(
+                    json.dumps({"text": doc["text"], "doc_id": doc["doc_id"]}, ensure_ascii=False)
+                    + "\n"
+                )
                 total_chars += len(doc["text"])
 
     stats = {
@@ -173,5 +178,7 @@ def write_synthetic_corpus(
         "seed": seed,
     }
 
-    logger.info(f"Synthetic corpus written to {output_dir}: {len(documents)} documents, {total_chars:,} chars")
+    logger.info(
+        f"Synthetic corpus written to {output_dir}: {len(documents)} documents, {total_chars:,} chars"
+    )
     return stats

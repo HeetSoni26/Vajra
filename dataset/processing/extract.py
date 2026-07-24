@@ -2,7 +2,7 @@
 
 
 def main():
-    print('Extraction stage placeholder.')
+    print("Extraction stage placeholder.")
 
 
 if __name__ == "__main__":

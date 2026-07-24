@@ -7,8 +7,10 @@ from model.config import VajraConfig, ModelConfig  # noqa: F401
 
 TransformerBlock = VajraBlock
 
+
 class FoundationLM(VajraForCausalLM):
     """Deprecated alias for VajraForCausalLM."""
+
     def __init__(self, config: VajraConfig) -> None:
         warnings.warn(
             "FoundationLM is deprecated. Use VajraForCausalLM instead.",
@@ -16,5 +18,6 @@ class FoundationLM(VajraForCausalLM):
             stacklevel=2,
         )
         super().__init__(config)
+
 
 __all__ = ["FoundationLM", "TransformerBlock"]

@@ -9,12 +9,16 @@ def test_validate_multi_language_repository_structures(tmp_path: Path):
     py_dir = tmp_path / "fastapi_app"
     py_dir.mkdir()
     (py_dir / "pyproject.toml").write_text("[tool.poetry]\nname='app'\n", encoding="utf-8")
-    (py_dir / "main.py").write_text("from fastapi import FastAPI\napp = FastAPI()\n", encoding="utf-8")
+    (py_dir / "main.py").write_text(
+        "from fastapi import FastAPI\napp = FastAPI()\n", encoding="utf-8"
+    )
 
     # 2. Node / React / Next.js
     node_dir = tmp_path / "next_app"
     node_dir.mkdir()
-    (node_dir / "package.json").write_text('{"name": "next_app", "dependencies": {"next": "13.0.0"}}\n', encoding="utf-8")
+    (node_dir / "package.json").write_text(
+        '{"name": "next_app", "dependencies": {"next": "13.0.0"}}\n', encoding="utf-8"
+    )
 
     # 3. Go project
     go_dir = tmp_path / "go_app"

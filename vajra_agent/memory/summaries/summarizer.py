@@ -29,7 +29,9 @@ class MemorySummarizer:
             )
             summary_text = self.reasoner.generate(prompt=prompt)
         else:
-            summary_text = f"Summary of past {len(user_assistant_msgs[:-4])} messages: {history_str[:200]}..."
+            summary_text = (
+                f"Summary of past {len(user_assistant_msgs[:-4])} messages: {history_str[:200]}..."
+            )
 
         # Reconstruct pruned conversation
         new_conv = Conversation()

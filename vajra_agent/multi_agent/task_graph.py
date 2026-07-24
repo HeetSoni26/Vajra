@@ -85,4 +85,6 @@ class TaskGraph:
 
     def is_complete(self) -> bool:
         """Check if all nodes are COMPLETED or FAILED."""
-        return all(n.status in (TaskStatus.COMPLETED, TaskStatus.FAILED) for n in self.nodes.values())
+        return all(
+            n.status in (TaskStatus.COMPLETED, TaskStatus.FAILED) for n in self.nodes.values()
+        )

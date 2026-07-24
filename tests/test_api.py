@@ -13,6 +13,7 @@ def api_client():
     os.environ["FLM_CONFIG"] = "configs/training/pretrain_tiny.yaml"
     os.environ["FLM_CHECKPOINT"] = ""
     from api.main import app
+
     with TestClient(app) as client:
         yield client
 
@@ -39,11 +40,14 @@ def test_model_info_endpoint(api_client):
 
 
 def test_generate_endpoint(api_client):
-    resp = api_client.post("/generate", json={
-        "prompt": "Hello",
-        "max_tokens": 5,
-        "temperature": 0.0,
-    })
+    resp = api_client.post(
+        "/generate",
+        json={
+            "prompt": "Hello",
+            "max_tokens": 5,
+            "temperature": 0.0,
+        },
+    )
     assert resp.status_code == 200
     data = resp.json()
     assert "choices" in data
@@ -70,6 +74,7 @@ def test_detokenize_endpoint(api_client):
 def test_uninitialized_engine_returns_503():
     from fastapi.testclient import TestClient
     from api import main
+
     old_engine = main._ENGINE
     main._ENGINE = None
     try:
@@ -79,4 +84,3 @@ def test_uninitialized_engine_returns_503():
         assert resp.json()["detail"] == "Engine not initialised"
     finally:
         main._ENGINE = old_engine
-

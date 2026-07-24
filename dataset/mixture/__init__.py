@@ -10,5 +10,5 @@ __all__ = [
     "MixtureValidator",
     "MixtureValidationError",
     "MixtureAnalyzer",
-    "MixtureManager"
+    "MixtureManager",
 ]

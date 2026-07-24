@@ -74,7 +74,9 @@ class MemoryManager:
         # Index symbols into vector memory for semantic search
         for sym in index.symbols:
             text = f"Symbol {sym.kind} {sym.name} in {sym.filepath}:{sym.line_no}. Doc: {sym.docstring}"
-            self.remember(text, metadata={"kind": sym.kind, "filepath": sym.filepath, "name": sym.name})
+            self.remember(
+                text, metadata={"kind": sym.kind, "filepath": sym.filepath, "name": sym.name}
+            )
 
     def build_context(
         self,

@@ -9,5 +9,5 @@ __all__ = [
     "PreparationStatistics",
     "PreparationPipeline",
     "DocumentReader",
-    "DocumentWriter"
+    "DocumentWriter",
 ]

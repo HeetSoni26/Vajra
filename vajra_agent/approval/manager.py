@@ -43,7 +43,9 @@ class PermissionManager:
         """Override policy for a specific action category."""
         self.policy_overrides[category] = policy
 
-    def check_permission(self, category: ActionCategory, details: dict[str, Any] | None = None) -> bool:
+    def check_permission(
+        self, category: ActionCategory, details: dict[str, Any] | None = None
+    ) -> bool:
         """Check if an action is permitted under configured policy."""
         policy = self.policy_overrides.get(category, self.default_policy)
 

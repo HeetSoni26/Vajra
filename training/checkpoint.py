@@ -21,6 +21,7 @@ logger = setup_logger("checkpoint")
 # Low-level save / load helpers
 # ──────────────────────────────────────────────────────────────
 
+
 def save_checkpoint(
     path: str | Path,
     model: Any,
@@ -41,7 +42,9 @@ def save_checkpoint(
 
     state: dict[str, Any] = {
         "model": model.state_dict() if hasattr(model, "state_dict") else model,
-        "optimizer": optimizer.state_dict() if optimizer is not None and hasattr(optimizer, "state_dict") else None,
+        "optimizer": optimizer.state_dict()
+        if optimizer is not None and hasattr(optimizer, "state_dict")
+        else None,
         "scheduler": scheduler_state,
         "rng_state": rng_state,
         "step": step,
@@ -94,7 +97,11 @@ def load_checkpoint(
                 f"unexpected={incompatible.unexpected_keys}"
             )
 
-    if optimizer is not None and state.get("optimizer") is not None and hasattr(optimizer, "load_state_dict"):
+    if (
+        optimizer is not None
+        and state.get("optimizer") is not None
+        and hasattr(optimizer, "load_state_dict")
+    ):
         optimizer.load_state_dict(state["optimizer"])
 
     return state
@@ -104,9 +111,11 @@ def load_checkpoint(
 # RNG helpers
 # ──────────────────────────────────────────────────────────────
 
+
 def _capture_rng_state() -> dict:
     import random
     import numpy as np
+
     state: dict[str, Any] = {
         "python": random.getstate(),
         "numpy": np.random.get_state(),
@@ -120,6 +129,7 @@ def _capture_rng_state() -> dict:
 def _restore_rng_state(rng_state: dict) -> None:
     import random
     import numpy as np
+
     if "python" in rng_state:
         random.setstate(rng_state["python"])
     if "numpy" in rng_state:
@@ -133,6 +143,7 @@ def _restore_rng_state(rng_state: dict) -> None:
 # ──────────────────────────────────────────────────────────────
 # CheckpointManager
 # ──────────────────────────────────────────────────────────────
+
 
 class CheckpointManager:
     """
@@ -180,16 +191,15 @@ class CheckpointManager:
         return []
 
     def _save_registry(self) -> None:
-        self._registry_path.write_text(
-            json.dumps(self._registry, indent=2), encoding="utf-8"
-        )
+        self._registry_path.write_text(json.dumps(self._registry, indent=2), encoding="utf-8")
 
     # ── Disk-space guard ──────────────────────────────────────
 
     def _check_disk_space(self) -> None:
         import shutil
+
         total, used, free = shutil.disk_usage(str(self.checkpoint_dir))
-        free_gb = free / (1024 ** 3)
+        free_gb = free / (1024**3)
         if free_gb < self.min_free_gb:
             raise OSError(
                 f"Insufficient disk space: {free_gb:.2f} GB free "
@@ -212,16 +222,12 @@ class CheckpointManager:
         self._check_disk_space()
 
         ckpt_path = self.checkpoint_dir / f"checkpoint_step_{step}.pt"
-        save_checkpoint(
-            ckpt_path, model, optimizer, step, tokens_seen, metrics, scheduler_state
-        )
+        save_checkpoint(ckpt_path, model, optimizer, step, tokens_seen, metrics, scheduler_state)
         self.saved_checkpoints.append(ckpt_path)
 
         # Always update latest pointer
         latest_path = self.checkpoint_dir / "latest.pt"
-        save_checkpoint(
-            latest_path, model, optimizer, step, tokens_seen, metrics, scheduler_state
-        )
+        save_checkpoint(latest_path, model, optimizer, step, tokens_seen, metrics, scheduler_state)
 
         # Update best pointer when metric improves
         metrics = metrics or {}
@@ -246,13 +252,15 @@ class CheckpointManager:
                     meta.unlink()
 
         # Update registry
-        self._registry.append({
-            "step": step,
-            "tokens_seen": tokens_seen,
-            "metrics": metrics,
-            "file": ckpt_path.name,
-            "saved_at": time.strftime("%Y-%m-%dT%H:%M:%SZ"),
-        })
+        self._registry.append(
+            {
+                "step": step,
+                "tokens_seen": tokens_seen,
+                "metrics": metrics,
+                "file": ckpt_path.name,
+                "saved_at": time.strftime("%Y-%m-%dT%H:%M:%SZ"),
+            }
+        )
         self._save_registry()
 
         logger.info(f"Checkpoint saved: {ckpt_path.name} (step={step}, tokens={tokens_seen:,})")
@@ -277,7 +285,9 @@ class CheckpointManager:
         state = load_checkpoint(latest_path, model, optimizer, map_location=map_location)
         if restore_rng and "rng_state" in state:
             _restore_rng_state(state["rng_state"])
-        logger.info(f"Resumed from latest checkpoint: step={state.get('step')}, tokens={state.get('tokens_seen', 0):,}")
+        logger.info(
+            f"Resumed from latest checkpoint: step={state.get('step')}, tokens={state.get('tokens_seen', 0):,}"
+        )
         return state
 
     def load_best(

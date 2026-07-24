@@ -20,6 +20,7 @@ logger = setup_logger("resume_manager")
 
 class CheckpointValidationError(Exception):
     """Raised when a checkpoint fails validation."""
+
     pass
 
 
@@ -40,7 +41,7 @@ class ResumeManager:
         """
         if not self.base_dir.exists():
             return []
-            
+
         exps = [d for d in self.base_dir.iterdir() if d.is_dir() and d.name.startswith(prefix)]
         # Sort descending (newest first) based on directory name
         exps.sort(key=lambda p: p.name, reverse=True)
@@ -114,7 +115,9 @@ class ResumeManager:
                     except CheckpointValidationError as e:
                         logger.error(f"Downloaded remote checkpoint is corrupted: {e}")
 
-        raise FileNotFoundError(f"No valid resume state found locally or remotely in {self.base_dir}")
+        raise FileNotFoundError(
+            f"No valid resume state found locally or remotely in {self.base_dir}"
+        )
 
     def restore_state(
         self,
@@ -129,14 +132,14 @@ class ResumeManager:
         Returns (global_step, tokens_seen).
         """
         logger.info("Restoring training state...")
-        
+
         # 1. Restore Model
         # Load state dict directly to model
         if hasattr(model, "module"):  # DDP model
             model.module.load_state_dict(state["model"])
         else:
             model.load_state_dict(state["model"])
-            
+
         # Move model to device just in case
         model.to(device)
 
@@ -145,8 +148,8 @@ class ResumeManager:
             optimizer.load_state_dict(state["optimizer"])
 
         # 3. Restore Scaler (if applicable and saved)
-        # Assuming scaler might not be in state if not explicitly saved by CheckpointManager previously, 
-        # but if we add it we can restore it. Currently CheckpointManager doesn't save scaler state, 
+        # Assuming scaler might not be in state if not explicitly saved by CheckpointManager previously,
+        # but if we add it we can restore it. Currently CheckpointManager doesn't save scaler state,
         # so we'll skip scaler for now to maintain backward compatibility, or add support if it exists.
         if scaler is not None and "scaler" in state and state["scaler"] is not None:
             scaler.load_state_dict(state["scaler"])
@@ -156,5 +159,5 @@ class ResumeManager:
             _restore_rng_state(state["rng_state"])
 
         logger.info("Resume successful.")
-        
+
         return state.get("step", 0), state.get("tokens_seen", 0)

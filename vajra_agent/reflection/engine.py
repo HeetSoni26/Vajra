@@ -21,8 +21,14 @@ class ReflectionEngine:
 
         task_success = (errors == 0) and (verification.passed if verification else True)
 
-        critique = f"Processed {state.current_iteration} iteration(s) with {tool_count} tool call(s)."
-        efficiency = "Optimal tool usage" if errors == 0 else f"{errors} error(s) encountered during tool executions."
+        critique = (
+            f"Processed {state.current_iteration} iteration(s) with {tool_count} tool call(s)."
+        )
+        efficiency = (
+            "Optimal tool usage"
+            if errors == 0
+            else f"{errors} error(s) encountered during tool executions."
+        )
 
         ver_feedback = "Verification passed cleanly."
         improvements = []

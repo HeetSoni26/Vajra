@@ -3,12 +3,13 @@ import csv
 from pathlib import Path
 from typing import Dict, Any
 
+
 class ExportManager:
     @staticmethod
     def export_summary(run_metadata: Dict[str, Any], output_path: Path, format: str = "json"):
         output_path = Path(output_path)
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        
+
         if format == "json":
             with open(output_path, "w") as f:
                 json.dump(run_metadata, f, indent=2)

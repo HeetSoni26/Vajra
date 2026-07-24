@@ -27,7 +27,9 @@ class BugFixWorkflow(BaseWorkflow):
     def name(self) -> str:
         return "bug_fix"
 
-    def execute(self, bug_description: str, file_target: str | None = None, **kwargs: Any) -> AgentResponse:
+    def execute(
+        self, bug_description: str, file_target: str | None = None, **kwargs: Any
+    ) -> AgentResponse:
         prompt = f"Diagnose and fix the following bug:\n{bug_description}\nTarget file: {file_target or 'entire repository'}. Verify fix with tests."
         return self.agent.run(prompt)
 
@@ -65,6 +67,8 @@ class TestGenerationWorkflow(BaseWorkflow):
     def name(self) -> str:
         return "test_generation"
 
-    def execute(self, source_file: str, test_file: str | None = None, **kwargs: Any) -> AgentResponse:
+    def execute(
+        self, source_file: str, test_file: str | None = None, **kwargs: Any
+    ) -> AgentResponse:
         prompt = f"Generate pytest unit test suite for source file '{source_file}' in '{test_file or 'tests/'}'."
         return self.agent.run(prompt)

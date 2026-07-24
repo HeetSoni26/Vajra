@@ -16,7 +16,7 @@ from scripts.run_phase6_validation import run_all_validation
 def test_validation_configs_exist():
     assert Path("configs/model/model_tiny_validation.yaml").exists()
     assert Path("configs/training/pretrain_tiny_validation.yaml").exists()
-    
+
     cfg = ModelConfig.from_yaml("configs/model/model_tiny_validation.yaml")
     assert cfg.hidden_size == 64
     assert cfg.num_layers == 2
@@ -36,16 +36,16 @@ def test_checkpoint_state_dict_exact_match(tmp_path):
     model_cfg = ModelConfig.from_yaml("configs/model/model_tiny_validation.yaml")
     m1 = FoundationLM(model_cfg)
     opt1 = build_optimizer(m1, lr=1e-3, weight_decay=0.01)
-    
+
     ckpt_path = tmp_path / "ckpt.pt"
     save_checkpoint(ckpt_path, m1, opt1, step=10, tokens_seen=500)
-    
+
     m2 = FoundationLM(model_cfg)
     opt2 = build_optimizer(m2, lr=1e-3, weight_decay=0.01)
     state = load_checkpoint(ckpt_path, m2, opt2)
-    
+
     assert state["step"] == 10
     assert state["tokens_seen"] == 500
-    
+
     for p1, p2 in zip(m1.parameters(), m2.parameters()):
         assert torch.equal(p1, p2)

@@ -2,7 +2,7 @@
 
 
 def main():
-    print('Toxicity filtering stage placeholder.')
+    print("Toxicity filtering stage placeholder.")
 
 
 if __name__ == "__main__":

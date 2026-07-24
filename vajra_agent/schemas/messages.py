@@ -64,10 +64,14 @@ class Conversation:
         """Helper to add an assistant message."""
         self.add_message(Message(role=MessageRole.ASSISTANT, content=content, tool_call=tool_call))
 
-    def add_tool_result(self, tool_name: str, content: str, tool_call_id: str | None = None) -> None:
+    def add_tool_result(
+        self, tool_name: str, content: str, tool_call_id: str | None = None
+    ) -> None:
         """Helper to add a tool execution result message."""
         self.add_message(
-            Message(role=MessageRole.TOOL, content=content, name=tool_name, tool_call_id=tool_call_id)
+            Message(
+                role=MessageRole.TOOL, content=content, name=tool_name, tool_call_id=tool_call_id
+            )
         )
 
     def to_list(self) -> list[dict[str, Any]]:

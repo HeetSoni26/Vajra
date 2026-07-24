@@ -48,7 +48,9 @@ class RetrievalEngine:
 
         for rec, sim in raw_matches:
             age_hours = max((now - rec.timestamp) / 3600.0, 0.0)
-            recency_weight = 1.0 / (1.0 + (age_hours / self.recency_decay_hours)) if apply_recency else 1.0
+            recency_weight = (
+                1.0 / (1.0 + (age_hours / self.recency_decay_hours)) if apply_recency else 1.0
+            )
 
             final_score = sim * 0.8 + recency_weight * 0.2 if apply_recency else sim
             results.append(

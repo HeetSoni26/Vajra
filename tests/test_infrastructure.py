@@ -11,7 +11,6 @@ from utils.environment import get_device, get_memory_info, set_seed
 
 
 class SimpleModel(nn.Module):
-
     def __init__(self) -> None:
         super().__init__()
         self.fc = nn.Linear(4, 2)
@@ -48,7 +47,9 @@ def test_config_merging_and_cli_overrides():
 def test_checkpoint_manager(tmp_path: Path):
     model = SimpleModel()
     optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
-    manager = CheckpointManager(checkpoint_dir=tmp_path / "checkpoints", max_to_keep=2, metric_name="loss", mode="min")
+    manager = CheckpointManager(
+        checkpoint_dir=tmp_path / "checkpoints", max_to_keep=2, metric_name="loss", mode="min"
+    )
 
     manager.save(step=10, model=model, optimizer=optimizer, tokens_seen=1000, metrics={"loss": 2.5})
     manager.save(step=20, model=model, optimizer=optimizer, tokens_seen=2000, metrics={"loss": 1.5})

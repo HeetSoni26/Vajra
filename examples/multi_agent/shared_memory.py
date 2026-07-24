@@ -5,7 +5,9 @@ from vajra_agent import SharedMemory
 
 def main():
     shared = SharedMemory()
-    shared.publish_observation("ArchitectAgent", "Architectural plan finalized: Microservices pattern selected.")
+    shared.publish_observation(
+        "ArchitectAgent", "Architectural plan finalized: Microservices pattern selected."
+    )
     shared.publish_observation("CoderAgent", "Implemented API gateway in api/main.py")
 
     print("Shared Team Observations:")

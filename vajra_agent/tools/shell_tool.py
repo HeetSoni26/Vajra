@@ -56,7 +56,11 @@ class ShellTool(BaseTool):
             return {"exit_code": 1, "stdout": "", "stderr": f"Command parsing error: {e}"}
 
         if not cmd_args:
-            return {"exit_code": 1, "stdout": "", "stderr": "No executable arguments found in command."}
+            return {
+                "exit_code": 1,
+                "stdout": "",
+                "stderr": "No executable arguments found in command.",
+            }
 
         try:
             result = subprocess.run(

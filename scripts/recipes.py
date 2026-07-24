@@ -12,7 +12,7 @@ RECIPES = {
         "precision": "none",
         "optimizer": "AdamW",
         "expected_runtime": "1 minute",
-        "estimated_vram": "2GB"
+        "estimated_vram": "2GB",
     },
     "10M_token_run": {
         "batch_size": 8,
@@ -24,7 +24,7 @@ RECIPES = {
         "precision": "bf16",
         "optimizer": "AdamW_Fused",
         "expected_runtime": "30 minutes",
-        "estimated_vram": "8GB"
+        "estimated_vram": "8GB",
     },
     "100M_token_run": {
         "batch_size": 16,
@@ -36,7 +36,7 @@ RECIPES = {
         "precision": "bf16",
         "optimizer": "AdamW_Fused",
         "expected_runtime": "4 hours",
-        "estimated_vram": "16GB"
+        "estimated_vram": "16GB",
     },
     "1B_token_run": {
         "batch_size": 32,
@@ -48,7 +48,7 @@ RECIPES = {
         "precision": "bf16",
         "optimizer": "AdamW_Fused",
         "expected_runtime": "24 hours",
-        "estimated_vram": "24GB"
+        "estimated_vram": "24GB",
     },
     "full_Vajra_370M": {
         "batch_size": 128,
@@ -60,8 +60,8 @@ RECIPES = {
         "precision": "bf16",
         "optimizer": "AdamW_Fused",
         "expected_runtime": "14 days",
-        "estimated_vram": "80GB"
-    }
+        "estimated_vram": "80GB",
+    },
 }
 
 HARDWARE_PROFILES = {
@@ -69,21 +69,35 @@ HARDWARE_PROFILES = {
     "2_GPU": {"gradient_accumulation": 4, "batch_size_per_gpu": 16},
     "4_GPU": {"gradient_accumulation": 2, "batch_size_per_gpu": 16},
     "8_GPU": {"gradient_accumulation": 1, "batch_size_per_gpu": 16},
-    "Consumer_RTX_3090": {"batch_size_per_gpu": 8, "precision": "bf16", "gradient_checkpointing": True},
-    "Consumer_RTX_4090": {"batch_size_per_gpu": 16, "precision": "bf16", "gradient_checkpointing": True},
-    "Consumer_RTX_5090": {"batch_size_per_gpu": 32, "precision": "fp8", "gradient_checkpointing": False},
+    "Consumer_RTX_3090": {
+        "batch_size_per_gpu": 8,
+        "precision": "bf16",
+        "gradient_checkpointing": True,
+    },
+    "Consumer_RTX_4090": {
+        "batch_size_per_gpu": 16,
+        "precision": "bf16",
+        "gradient_checkpointing": True,
+    },
+    "Consumer_RTX_5090": {
+        "batch_size_per_gpu": 32,
+        "precision": "fp8",
+        "gradient_checkpointing": False,
+    },
     "A100_80GB": {"batch_size_per_gpu": 64, "precision": "bf16", "gradient_checkpointing": False},
-    "H100_80GB": {"batch_size_per_gpu": 128, "precision": "fp8", "gradient_checkpointing": False}
+    "H100_80GB": {"batch_size_per_gpu": 128, "precision": "fp8", "gradient_checkpointing": False},
 }
+
 
 def generate_configs(output_dir: str = "configs"):
     out = Path(output_dir)
     out.mkdir(parents=True, exist_ok=True)
-    
+
     for name, recipe in RECIPES.items():
         (out / f"recipe_{name}.json").write_text(json.dumps(recipe, indent=2))
-        
+
     (out / "hardware_profiles.json").write_text(json.dumps(HARDWARE_PROFILES, indent=2))
+
 
 if __name__ == "__main__":
     generate_configs()

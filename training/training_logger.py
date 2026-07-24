@@ -60,6 +60,7 @@ class TrainingLogger:
         if use_tensorboard:
             try:
                 from torch.utils.tensorboard import SummaryWriter
+
                 tb_dir = self.log_dir / "tensorboard"
                 self._tb_writer = SummaryWriter(log_dir=str(tb_dir))
                 logger.info(f"TensorBoard writer initialized at {tb_dir}")
@@ -72,6 +73,7 @@ class TrainingLogger:
             if wandb_api_key:
                 try:
                     import wandb
+
                     self._wandb_run = wandb.init(
                         project=wandb_project,
                         name=run_name,
@@ -82,7 +84,9 @@ class TrainingLogger:
                 except Exception as e:
                     logger.warning(f"W&B initialization failed (will skip): {e}")
             else:
-                logger.info("WANDB_API_KEY not set — W&B logging disabled (training continues normally)")
+                logger.info(
+                    "WANDB_API_KEY not set — W&B logging disabled (training continues normally)"
+                )
 
     def log_step(self, step: int, metrics: dict[str, Any]) -> None:
         """Log a training step to all available backends."""
@@ -141,7 +145,9 @@ class TrainingLogger:
         if self._fieldnames is None:
             self._fieldnames = list(flat.keys())
             self._csv_file = open(self._csv_path, "w", newline="", encoding="utf-8")
-            self._csv_writer = csv.DictWriter(self._csv_file, fieldnames=self._fieldnames, extrasaction="ignore")
+            self._csv_writer = csv.DictWriter(
+                self._csv_file, fieldnames=self._fieldnames, extrasaction="ignore"
+            )
             self._csv_writer.writeheader()
 
         # Extend fieldnames if new keys appear

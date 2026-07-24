@@ -2,6 +2,7 @@
 Integration tests for Milestone 4: Production Training Orchestration.
 Covers HealthMonitor, ExperimentManager, Watchdog, ETAEngine, and lifecycle transitions.
 """
+
 from __future__ import annotations
 
 import math
@@ -15,6 +16,7 @@ from training.orchestration.eta_engine import ETAEngine
 
 
 # ── HealthMonitor ──────────────────────────────────────────────────────────────
+
 
 def test_health_monitor_clean(tmp_path):
     monitor = HealthMonitor(checkpoint_dir=str(tmp_path), min_disk_free_gb=0.0)
@@ -48,6 +50,7 @@ def test_health_monitor_disk_warning(tmp_path):
 
 
 # ── ExperimentManager ──────────────────────────────────────────────────────────
+
 
 def test_experiment_manager_init(tmp_path):
     mgr = ExperimentManager(tmp_path / "exp_1")
@@ -96,6 +99,7 @@ def test_experiment_manager_persistence(tmp_path):
 
 # ── Watchdog ───────────────────────────────────────────────────────────────────
 
+
 def test_watchdog_no_trigger_with_heartbeats():
     triggered = []
 
@@ -126,6 +130,7 @@ def test_watchdog_triggers_on_freeze():
 
 
 # ── ETAEngine ──────────────────────────────────────────────────────────────────
+
 
 def test_eta_engine_progress(tmp_path):
     engine = ETAEngine(total_steps=100)

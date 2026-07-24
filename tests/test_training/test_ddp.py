@@ -5,7 +5,9 @@ import torch.multiprocessing as mp
 from training.ddp.config import DDPConfig
 from training.ddp.init import (
     get_rank,
-    get_world_size, is_main_process, barrier,
+    get_world_size,
+    is_main_process,
+    barrier,
 )
 from training.ddp.wrapper import unwrap_model
 from training.ddp.metrics import aggregate_metrics, all_reduce_mean
@@ -16,6 +18,7 @@ from model.modeling import VajraForCausalLM
 # ---------------------------------------------------------------------------
 # Helpers for running distributed tests in a single process using Gloo
 # ---------------------------------------------------------------------------
+
 
 def _run_in_gloo(fn, world_size: int = 2):
     """Spawns `world_size` processes running `fn(rank, world_size)` via Gloo."""
@@ -38,6 +41,7 @@ def _cleanup():
 # Unit tests that do NOT require distributed init
 # ---------------------------------------------------------------------------
 
+
 def test_ddp_config_defaults():
     cfg = DDPConfig()
     assert cfg.backend == "nccl"
@@ -48,8 +52,12 @@ def test_ddp_config_defaults():
 def test_unwrap_plain_model():
     """unwrap_model should return the model unchanged when it is not wrapped."""
     config = VajraConfig(
-        vocab_size=64, hidden_size=32, intermediate_size=64,
-        num_layers=1, num_attention_heads=2, num_key_value_heads=1,
+        vocab_size=64,
+        hidden_size=32,
+        intermediate_size=64,
+        num_layers=1,
+        num_attention_heads=2,
+        num_key_value_heads=1,
     )
     model = VajraForCausalLM(config)
     assert unwrap_model(model) is model
@@ -71,6 +79,7 @@ def test_all_reduce_mean_no_dist():
 # ---------------------------------------------------------------------------
 # Multi-process tests using Gloo (CPU, works offline)
 # ---------------------------------------------------------------------------
+
 
 def _barrier_worker(rank: int, world_size: int):
     _init_gloo(rank, world_size)

@@ -57,7 +57,9 @@ def create_dataloaders(
     train_dataset = MemmapTokenDataset(train_path, sequence_length)
 
     if is_distributed and world_size > 1:
-        train_sampler = DistributedSampler(train_dataset, num_replicas=world_size, rank=rank, shuffle=True)
+        train_sampler = DistributedSampler(
+            train_dataset, num_replicas=world_size, rank=rank, shuffle=True
+        )
         train_loader = DataLoader(
             train_dataset,
             batch_size=micro_batch_size,
@@ -79,7 +81,9 @@ def create_dataloaders(
     if val_path.exists() and val_path.stat().st_size > 0:
         val_dataset = MemmapTokenDataset(val_path, sequence_length)
         if is_distributed and world_size > 1:
-            val_sampler = DistributedSampler(val_dataset, num_replicas=world_size, rank=rank, shuffle=False)
+            val_sampler = DistributedSampler(
+                val_dataset, num_replicas=world_size, rank=rank, shuffle=False
+            )
             val_loader = DataLoader(
                 val_dataset,
                 batch_size=micro_batch_size,

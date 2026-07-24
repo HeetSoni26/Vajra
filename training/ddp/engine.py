@@ -61,15 +61,11 @@ class DDPTrainingEngine:
         # AMP scaler
         device_type = "cuda" if self.device.type == "cuda" else "cpu"
         scaler_enabled = (config.mixed_precision == "fp16") and (device_type == "cuda")
-        self.scaler = torch.amp.GradScaler(
-            device=device_type, enabled=scaler_enabled
-        )
+        self.scaler = torch.amp.GradScaler(device=device_type, enabled=scaler_enabled)
         self.dtype = (
             torch.bfloat16
             if config.mixed_precision == "bf16"
-            else (
-                torch.float16 if config.mixed_precision == "fp16" else torch.float32
-            )
+            else (torch.float16 if config.mixed_precision == "fp16" else torch.float32)
         )
 
         # Only rank-0 writes logs / checkpoints

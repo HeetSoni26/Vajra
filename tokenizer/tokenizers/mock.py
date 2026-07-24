@@ -2,16 +2,18 @@ from typing import List
 from tokenizer.tokenizers.base import BaseTokenizer
 from tokenizer.configs.settings import TokenizerConfig
 
+
 class MockTokenizer(BaseTokenizer):
     """
     A simple mock tokenizer for testing the framework infrastructure.
     It splits text by spaces and builds a naive vocabulary.
     """
+
     def __init__(self, config: TokenizerConfig):
         super().__init__(config)
         self.vocab = {}
         self.inv_vocab = {}
-        
+
     def encode(self, text: str) -> List[int]:
         ids = []
         for word in text.split():
@@ -32,5 +34,5 @@ class MockTokenizer(BaseTokenizer):
         pass
 
     @classmethod
-    def from_pretrained(cls, save_directory: str) -> 'MockTokenizer':
+    def from_pretrained(cls, save_directory: str) -> "MockTokenizer":
         return cls(TokenizerConfig())

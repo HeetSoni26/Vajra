@@ -2,11 +2,13 @@ from abc import ABC, abstractmethod
 from typing import List
 from tokenizer.configs.settings import TokenizerConfig
 
+
 class BaseTokenizer(ABC):
     """
     Abstract base interface for all Vajra tokenizers.
     Future implementations (BPE, SentencePiece, etc.) must subclass this.
     """
+
     def __init__(self, config: TokenizerConfig):
         self.config = config
 
@@ -32,6 +34,6 @@ class BaseTokenizer(ABC):
 
     @classmethod
     @abstractmethod
-    def from_pretrained(cls, save_directory: str) -> 'BaseTokenizer':
+    def from_pretrained(cls, save_directory: str) -> "BaseTokenizer":
         """Load a tokenizer from a directory."""
         pass

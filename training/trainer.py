@@ -17,7 +17,9 @@ from utils.logging import setup_logger
 logger = setup_logger("trainer")
 
 
-def resolve_precision_and_scaler(precision_mode: str, device: str | torch.device | None = None) -> tuple[torch.dtype, bool, Any]:
+def resolve_precision_and_scaler(
+    precision_mode: str, device: str | torch.device | None = None
+) -> tuple[torch.dtype, bool, Any]:
     """Resolve AMP precision dtype, autocast enabled state, and GradScaler based on hardware capabilities."""
     mode = precision_mode.lower()
 
@@ -45,7 +47,9 @@ def resolve_precision_and_scaler(precision_mode: str, device: str | torch.device
         elif device_type == "mps":
             return torch.bfloat16, True, torch.amp.GradScaler(scaler_device, enabled=False)
         else:
-            logger.warning("BF16 precision requested but hardware does not support BF16. Falling back to FP32.")
+            logger.warning(
+                "BF16 precision requested but hardware does not support BF16. Falling back to FP32."
+            )
             return torch.float32, False, torch.amp.GradScaler(scaler_device, enabled=False)
 
     elif mode == "fp16":
@@ -54,12 +58,13 @@ def resolve_precision_and_scaler(precision_mode: str, device: str | torch.device
         elif device_type == "mps":
             return torch.float16, True, torch.amp.GradScaler("cpu", enabled=False)
         else:
-            logger.warning("FP16 precision requested but CUDA is unavailable. Falling back to FP32.")
+            logger.warning(
+                "FP16 precision requested but CUDA is unavailable. Falling back to FP32."
+            )
             return torch.float32, False, torch.amp.GradScaler("cpu", enabled=False)
 
     # FP32 default
     return torch.float32, False, torch.amp.GradScaler(scaler_device, enabled=False)
-
 
 
 class Trainer:
@@ -92,7 +97,9 @@ class Trainer:
         # Wrap model in DDP if distributed
         if is_distributed and torch.distributed.is_initialized():
             device_ids = [local_rank] if self.device.type == "cuda" else None
-            self.model = torch.nn.parallel.DistributedDataParallel(self.raw_model, device_ids=device_ids)
+            self.model = torch.nn.parallel.DistributedDataParallel(
+                self.raw_model, device_ids=device_ids
+            )
         else:
             self.model = self.raw_model
 
@@ -110,7 +117,9 @@ class Trainer:
         self.autocast_device_type = "cuda" if self.device.type == "cuda" else "cpu"
 
         # Checkpoint Manager (rank 0 only saves checkpoints)
-        self.checkpoint_manager = CheckpointManager(checkpoint_dir=checkpoint_dir, metric_name="val_loss", mode="min")
+        self.checkpoint_manager = CheckpointManager(
+            checkpoint_dir=checkpoint_dir, metric_name="val_loss", mode="min"
+        )
         self.metrics_tracker = MetricsTracker()
         self.accumulated_loss = 0.0
 
@@ -124,7 +133,9 @@ class Trainer:
             min_lr=self.min_lr,
         )
 
-    def train_step(self, batch: dict[str, torch.Tensor], step: int, is_accum_step: bool) -> dict[str, Any] | None:
+    def train_step(
+        self, batch: dict[str, torch.Tensor], step: int, is_accum_step: bool
+    ) -> dict[str, Any] | None:
         """Execute a single forward/backward pass with AMP and early failure checks."""
         self.model.train()
         step_start_t = time.time()
@@ -134,7 +145,9 @@ class Trainer:
 
         # Forward pass with AMP autocast
         fwd_start_t = time.time()
-        with torch.amp.autocast(device_type=self.autocast_device_type, dtype=self.amp_dtype, enabled=self.amp_enabled):
+        with torch.amp.autocast(
+            device_type=self.autocast_device_type, dtype=self.amp_dtype, enabled=self.amp_enabled
+        ):
             out = self.model(input_ids, labels=labels)
             raw_loss = out["loss"]
 
@@ -142,7 +155,9 @@ class Trainer:
         # Early Failure Check 1: Loss NaN / Inf
         # ----------------------------------------------------
         if torch.isnan(raw_loss) or torch.isinf(raw_loss):
-            raise ValueError(f"[EARLY FAILURE] Training aborted at rank {self.rank}, step {step}: Loss is NaN/Inf ({raw_loss.item()}).")
+            raise ValueError(
+                f"[EARLY FAILURE] Training aborted at rank {self.rank}, step {step}: Loss is NaN/Inf ({raw_loss.item()})."
+            )
 
         loss = raw_loss / self.grad_accum_steps
         fwd_time = time.time() - fwd_start_t
@@ -163,10 +178,14 @@ class Trainer:
                 self.scaler.unscale_(self.optimizer)
 
             # Early Failure Check 2: Exploding / NaN Gradients
-            grad_norm = float(torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.grad_clip))
+            grad_norm = float(
+                torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.grad_clip)
+            )
 
             if math.isnan(grad_norm) or math.isinf(grad_norm):
-                raise ValueError(f"[EARLY FAILURE] Training aborted at rank {self.rank}, step {step}: Gradient norm is NaN/Inf.")
+                raise ValueError(
+                    f"[EARLY FAILURE] Training aborted at rank {self.rank}, step {step}: Gradient norm is NaN/Inf."
+                )
 
             if grad_norm > self.max_grad_norm_threshold:
                 logger.warning(
@@ -210,12 +229,12 @@ class Trainer:
             step_loss = self.accumulated_loss
             self.accumulated_loss = 0.0
             metrics["loss"] = step_loss
-            
+
             # GPU Memory Monitoring
             if torch.cuda.is_available():
                 metrics["gpu_mem_allocated_mb"] = torch.cuda.memory_allocated() / (1024**2)
                 metrics["gpu_mem_reserved_mb"] = torch.cuda.memory_reserved() / (1024**2)
-            
+
             # ETA Calculation
             steps_remaining = self.total_steps - step
             if "tokens_per_sec" in metrics and metrics["tokens_per_sec"] > 0:
@@ -252,7 +271,11 @@ class Trainer:
             for batch in val_loader:
                 input_ids = batch["input_ids"].to(self.device)
                 labels = batch["labels"].to(self.device)
-                with torch.amp.autocast(device_type=self.autocast_device_type, dtype=self.amp_dtype, enabled=self.amp_enabled):
+                with torch.amp.autocast(
+                    device_type=self.autocast_device_type,
+                    dtype=self.amp_dtype,
+                    enabled=self.amp_enabled,
+                ):
                     out = self.model(input_ids, labels=labels)
                 total_val_loss += float(out["loss"].item())
                 total_batches += 1
@@ -268,6 +291,8 @@ class Trainer:
         val_ppl = perplexity(avg_val_loss)
 
         if self.rank == 0:
-            logger.info(f"[EVALUATION] Val Loss: {avg_val_loss:.4f} | Val Perplexity: {val_ppl:.2f}")
+            logger.info(
+                f"[EVALUATION] Val Loss: {avg_val_loss:.4f} | Val Perplexity: {val_ppl:.2f}"
+            )
 
         return {"val_loss": round(avg_val_loss, 4), "val_perplexity": round(val_ppl, 2)}

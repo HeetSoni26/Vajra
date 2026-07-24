@@ -27,7 +27,9 @@ DEFAULT_SYSTEM_PROMPT = """You are Vajra-Agent, an autonomous AI Software Engine
 """
 
 
-def build_system_prompt(tool_schemas: list[dict[str, Any]], custom_prompt: str | None = None) -> str:
+def build_system_prompt(
+    tool_schemas: list[dict[str, Any]], custom_prompt: str | None = None
+) -> str:
     """Build full system prompt containing JSON definitions of registered tools."""
     base = custom_prompt or DEFAULT_SYSTEM_PROMPT
     if not tool_schemas:
