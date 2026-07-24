@@ -32,6 +32,30 @@ def compute_sha256(file_path: Path) -> str:
     return sha256.hexdigest()
 
 
+def get_git_timestamp() -> str:
+    """Get the current git commit timestamp for deterministic builds."""
+    try:
+        ts = subprocess.check_output(["git", "log", "-1", "--format=%cI"]).decode("utf-8").strip()
+        if ts:
+            return ts
+    except Exception:
+        pass
+    import os
+    return os.environ.get("SOURCE_DATE_EPOCH_STR", "2026-01-01T00:00:00Z")
+
+
+def write_deterministic_text(path: Path, content: str) -> None:
+    """Write text file with strict LF line endings for deterministic hashing."""
+    with path.open("w", encoding="utf-8", newline="\n") as f:
+        f.write(content)
+
+
+def write_deterministic_json(path: Path, data: dict) -> None:
+    """Write JSON with strict LF line endings and sorted keys."""
+    content = json.dumps(data, indent=2, sort_keys=True) + "\n"
+    write_deterministic_text(path, content)
+
+
 def package_model(
     checkpoint_path: str | Path,
     config_path: str | Path,
@@ -114,19 +138,24 @@ def package_model(
     # 1b. Save License file
     root_license = Path("LICENSE")
     if root_license.exists():
-        shutil.copy2(root_license, output_dir / "LICENSE")
+        content = root_license.read_text(encoding="utf-8")
+        write_deterministic_text(output_dir / "LICENSE", content)
     else:
-        (output_dir / "LICENSE").write_text("Apache License 2.0 / MIT License\n", encoding="utf-8")
+        write_deterministic_text(output_dir / "LICENSE", "Apache License 2.0 / MIT License\n")
 
     # 2. Save Tokenizer Files
     for tok_file in ["tokenizer.json", "tokenizer_config.json", "special_tokens_map.json"]:
         src_tok = tokenizer_dir / tok_file
         dest_tok = output_dir / tok_file
         if src_tok.exists():
-            shutil.copy2(src_tok, dest_tok)
+            content = src_tok.read_text(encoding="utf-8")
+            if src_tok.suffix == ".json":
+                write_deterministic_json(dest_tok, json.loads(content))
+            else:
+                write_deterministic_text(dest_tok, content)
         else:
             # Write fallback tokenizer config if file missing
-            dest_tok.write_text(json.dumps({"tokenizer_class": "PreTrainedTokenizerFast", "name_or_path": "vajra-tokenizer"}, indent=2))
+            write_deterministic_json(dest_tok, {"tokenizer_class": "PreTrainedTokenizerFast", "name_or_path": "vajra-tokenizer"})
 
     # 3. Save Model Config (config.json)
     if hasattr(model_cfg, "model_dump"):
@@ -138,7 +167,7 @@ def package_model(
     hf_config["architectures"] = ["FoundationLM"]
     hf_config["model_type"] = "vajra"
     hf_config["parameter_count"] = actual_params
-    (output_dir / "config.json").write_text(json.dumps(hf_config, indent=2), encoding="utf-8")
+    write_deterministic_json(output_dir / "config.json", hf_config)
 
     # 4. Save Generation Config (generation_config.json)
     gen_config = {
@@ -151,23 +180,23 @@ def package_model(
         "eos_token_id": getattr(model_cfg, "eos_token_id", 2),
         "pad_token_id": getattr(model_cfg, "pad_token_id", 0),
     }
-    (output_dir / "generation_config.json").write_text(json.dumps(gen_config, indent=2), encoding="utf-8")
+    write_deterministic_json(output_dir / "generation_config.json", gen_config)
 
     # 5. Copy / Load Evaluation & Benchmark Data
     eval_metrics = {}
     step_eval_file = eval_dir / f"checkpoint_{step}" / "metrics.json"
     if step_eval_file.exists():
         eval_metrics = json.loads(step_eval_file.read_text(encoding="utf-8"))
-    (output_dir / "evaluation.json").write_text(json.dumps(eval_metrics, indent=2), encoding="utf-8")
+    write_deterministic_json(output_dir / "evaluation.json", eval_metrics)
 
     benchmark_metrics = {}
     step_bench_file = benchmarks_dir / f"checkpoint_{step}" / "benchmark.json"
     if step_bench_file.exists():
         benchmark_metrics = json.loads(step_bench_file.read_text(encoding="utf-8"))
-    (output_dir / "benchmark.json").write_text(json.dumps(benchmark_metrics, indent=2), encoding="utf-8")
+    write_deterministic_json(output_dir / "benchmark.json", benchmark_metrics)
 
     # 6. Save Metadata (metadata.json)
-    packaging_time = time.strftime("%Y-%m-%dT%H:%M:%SZ")
+    packaging_time = get_git_timestamp()
     metadata = {
         "model_name": model_name,
         "version": "1.0.0",
@@ -180,7 +209,7 @@ def package_model(
         "dataset": eval_metrics.get("dataset_name", raw_config.get("data_dir", "FineWeb-Edu")),
         "packaging_timestamp": packaging_time,
     }
-    (output_dir / "metadata.json").write_text(json.dumps(metadata, indent=2), encoding="utf-8")
+    write_deterministic_json(output_dir / "metadata.json", metadata)
 
     # 7. Generate Training Summary Reports
     report_gen = TrainingReportGenerator(output_dir)
@@ -226,14 +255,14 @@ def package_model(
     }
 
     # Gather manifest files
-    for item in output_dir.glob("*"):
+    for item in sorted(output_dir.glob("*")):
         if item.is_file() and item.name not in ["manifest.json", "checksums.txt", "verification_report.json"]:
             manifest["files"][item.name] = {
                 "size_bytes": item.stat().st_size,
                 "sha256": compute_sha256(item),
             }
 
-    (output_dir / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+    write_deterministic_json(output_dir / "manifest.json", manifest)
 
     # 10. Generate Checksums (checksums.txt)
     checksum_lines = []
@@ -242,7 +271,7 @@ def package_model(
             file_hash = compute_sha256(item)
             checksum_lines.append(f"{file_hash}  {item.name}")
 
-    (output_dir / "checksums.txt").write_text("\n".join(checksum_lines) + "\n", encoding="utf-8")
+    write_deterministic_text(output_dir / "checksums.txt", "\n".join(checksum_lines) + "\n")
     logger.info(f"Successfully packaged {model_name} at {output_dir}")
     return output_dir
 

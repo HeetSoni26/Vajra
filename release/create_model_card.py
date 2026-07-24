@@ -181,7 +181,8 @@ If you use {model_name} in your research or applications, please cite:
 """
 
         path = self.output_dir / "README.md"
-        path.write_text(content, encoding="utf-8")
+        with path.open("w", encoding="utf-8", newline="\n") as f:
+            f.write(content)
         return path
 
 
