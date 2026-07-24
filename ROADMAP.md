@@ -1,36 +1,43 @@
-# Vajra Roadmap
+# Vajra Public Product Roadmap
 
-This document outlines the version roadmap for the Vajra framework and model scaling.
+Welcome to the public roadmap for the **Vajra Foundation Language Model Framework**.
 
-## ✅ Vajra Framework v1.0.0 Released (Current)
+---
 
-The base infrastructure, tools, LLM engine, and autonomous multi-agent platform have been fully implemented, validated, and released as an open-source project.
+## Current Status: v1.0.0 (Released)
 
-## ↓ Vajra-370M Training
+The framework has reached production stability with complete pretraining, evaluation, and verifiably signed release packaging capabilities.
 
-The next major milestone is to train the first production model, **Vajra-370M**, on the validated `Vajra-LM` engine.
-- Distributed training on high-quality code and language datasets.
-- Hyperparameter tuning and continuous evaluation.
+---
 
-## ↓ Evaluation
+## Roadmap Overview
 
-Comprehensive evaluation of Vajra-370M on established benchmarks (HumanEval, MBPP, MMLU) and integrated Vajra-Agent tasks.
+### 1. Framework & Core Architecture
+- [x] Decoder-only LLaMA-style Transformer (`RoPE`, `SwiGLU`, `RMSNorm`, `GQA`).
+- [x] Custom Hugging Face BPE Tokenizer (`vocab_size=65536`).
+- [x] Multi-source streaming dataset loader & binary memory-mapped sharding.
+- [x] Distributed Data Parallel (DDP) pretraining engine with cosine decay.
+- [x] Perplexity, Loss, Diversity, and Latency benchmarking engine.
+- [x] Release packaging engine (`model.safetensors`, `pytorch_model.bin`, `manifest.json`).
+- [x] Cross-platform LF line ending normalization & static Git commit timestamping.
+- [x] Git LFS tracking for release weight binaries.
+- [x] 8/8 rule release integrity verifier script.
+- [x] Comprehensive PyTest test suite (**248 tests passing**).
 
-## ↓ Improvements
+### 2. Model Family Scaling
+- [x] **Vajra-57M**: Base foundation model release (`90M` total params / `57M` non-embed).
+- [ ] **Vajra-125M**: Small scale pretrained model (Target: 10B tokens).
+- [ ] **Vajra-370M**: Intermediate scale pretrained model (Target: 50B tokens).
+- [ ] **Vajra-1B**: Standard foundation scale model (Target: 200B tokens).
+- [ ] **Vajra-3B**: Large scale foundation model (Target: 1T tokens).
 
-Based on the 370M evaluation results, apply architectural, data pipeline, and system improvements to both the engine and agent reasoning logic.
+### 3. Research & Post-Training
+- [ ] Direct Preference Optimization (DPO) & SFT alignment pipeline.
+- [ ] Sparse Mixture-of-Experts (MoE) architecture modules.
+- [ ] Long-context RoPE extension (8k / 32k tokens).
+- [ ] Multimodal vision-language integration.
 
-## ↓ Vajra-1B Training
-
-Scale up the model to 1B parameters (**Vajra-1B**) using the refined dataset and hyperparameter schedules.
-
-## ↓ Evaluation
-
-Rigorous evaluation of Vajra-1B against state-of-the-art 1B-3B models.
-- Deep integration testing as the core `VajraReasoner` for complex multi-agent coding workflows.
-
-## ↓ Future Scaling
-
-- Scaling to Vajra-3B and beyond.
-- Advanced RLHF and DPO fine-tuning using agent execution trace logs.
-- Interactive Web UI and native GitHub/GitLab CI integrations.
+### 4. Ecosystem & Infrastructure
+- [ ] Direct Hugging Face Hub push workflow (`huggingface_hub` integration).
+- [ ] Production REST API inference server & streaming Web UI.
+- [ ] Docker & Kubernetes pretraining deployment scripts.

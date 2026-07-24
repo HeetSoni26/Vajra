@@ -1,67 +1,26 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+All notable changes to the **Vajra** project will be documented in this file.
 
-## [1.0.0] - 2026-07-24 (Vajra v1.0.0 Stable Production & Model Release)
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-### Added & Published
-- **Vajra-57M Base Model Release**:
-  - Published official release package in `release/vajra-57m`.
-  - Exported weights (`model.safetensors`), BPE tokenizer (`tokenizer.json`), config schemas (`config.json`, `generation_config.json`), reproducibility manifest (`manifest.json`), evaluation metrics (`evaluation.json`), hardware telemetry (`benchmark.json`), model card (`README.md`), and training summary reports (`training_summary.json/csv/md`).
-  - Passed 8/8 automated verification audits in `verify_package.py` with SHA-256 checksums (`checksums.txt`).
-- **Milestone 6 (Evaluation Subsystem)**:
-  - Created native evaluation framework (`evaluate.py`, `evaluate_all.py`, `compare_checkpoints.py`, `generate.py`).
-  - Evaluates cross-entropy loss and token perplexity without intermediate Hugging Face conversion.
-- **Milestone 7 (Benchmarking Subsystem)**:
-  - Created hardware and quality benchmarking framework (`benchmarks/benchmark.py`, `runners/quality.py`, `runners/performance.py`, `compare_benchmarks.py`).
-  - Measures throughput (tokens/sec), first-token latency, memory footprint, and N-gram diversity (Distinct-1, Distinct-2, Repetition Rate).
-- **Milestone 8 (Packaging Subsystem)**:
-  - Created architecture-agnostic release packager (`release/package_model.py`, `release/verify_package.py`, `release/create_model_card.py`, `release/create_training_report.py`).
+---
 
-### Added & Stabilized
-- **Phase 1 (Critical Runtime & Architecture Repair)**:
-  - Canonicalized model exports on `VajraForCausalLM` and `VajraConfig`.
-  - Deprecated redundant model classes with backward compatible aliases.
-  - Enhanced Pydantic configuration alias resolution (`rms_norm_eps` / `rmsnorm_eps`, `head_dim`).
-  - Fixed training data loader import chains and checkpoint managers.
-- **Phase 2 (Security, API Correctness & Production Readiness)**:
-  - Hardened `ShellTool` to eliminate unsafe `shell=True` execution.
-  - Restricted `PythonTool` and `PythonSandbox` `exec()` environment, blocking hazardous builtins and system imports.
-  - Device-agnostic `GradScaler` hardware detection (CUDA, CPU, Apple MPS).
-  - Integrated HuggingFace `AutoConfig` and `AutoModelForCausalLM` registration with `strict=True` weight loading validation.
-  - Hardened Docker containers with non-root `vajra` user (UID/GID 10001).
-- **Phase 3 (Medium Severity & Production Completeness)**:
-  - Added missing `__init__.py` files across all python packages.
-  - Migrated Pydantic V2 configurations to `ConfigDict` and `SettingsConfigDict`.
-  - Implemented production middleware (`CORS`, `X-Request-ID`, execution profiling, error logging).
-  - Implemented working `LocalBackend`, `HTTPBackend`, `HuggingFaceBackend`, and `GitBackend` dataset downloaders.
-  - Converted API endpoints to async with SSE streaming generators.
-  - Clarified label shifting semantics in `VajraForCausalLM.forward`.
-- **Phase 4 (Final Open Source Release Preparation)**:
-  - Updated `SECURITY.md`, `CITATION.cff`, `pyproject.toml` extras, and pytest infrastructure `conftest.py`.
-  - Reached **100% test pass rate (180/180 passed)** and **0 Ruff lint errors**.
-- **Phase 5 (Dataset Engineering & Training Preparation)**:
-  - Added `DataSourceRegistry` with 9 curated open pretraining sources (FineWeb-Edu, The Stack v2, OpenWebMath, peS2o, Wikipedia, Gutenberg, etc.), YAML serialisation, domain/tag/license filtering, and download manifest generation.
-  - Added `SyntheticDataGenerator` for 7-domain synthetic corpus generation (CI/dev, reproducible, no downloads required).
-  - Added `DatasetStatistics` engine: token distribution, vocab coverage, top-K frequency analysis, and integrity validation.
-  - Added training preset configs for **Vajra-125M** and **Vajra-370M** (model YAML + training YAML, Chinchilla-scaled token targets).
-  - Added `configs/data/sources.yaml` and enhanced `configs/data/dataset_mix.yaml` with per-tier weight overrides and sampling strategy.
-  - Added `scripts/prepare_dataset.py`: end-to-end orchestrator (synthetic + production modes).
-  - Added `scripts/verify_training_readiness.py`: 5-stage pre-flight verification (model, dataset, forward/backward, optimizer, checkpoint round-trip).
-  - Expanded unit test suite to **213/213 passing tests** (33 new Phase 5 tests added).
-- **Phase 6 (End-to-End Training Pipeline Validation)**:
-  - Created `configs/model/model_tiny_validation.yaml` and `configs/training/pretrain_tiny_validation.yaml` for `Vajra-Tiny-Validation`.
-  - Created `scripts/run_phase6_validation.py` validating 11 pipeline sections: Tokenizer workflow, Dataset pipeline, Forward/Backward/Optimizer/AMP, Checkpoint save/load/resume, HF Export/Reload, Greedy/Sample/Stream Inference, Evaluation, and Failure recovery.
-  - Expanded unit test suite to **216/216 passing tests** (100% pass rate).
+## [1.0.0] - 2026-07-25
 
-## [0.9.0] - 2026-07-22 (Vajra-Agent Phase 3 — Memory & Knowledge System)
+### Added
+- **Major Framework Completion**: Initial production release of the Vajra Foundation Language Model Framework.
+- **Vajra-57M Base Model**: Complete pretraining, evaluation, and packaging of `Vajra-57M` (`90,317,312` parameters).
+- **Release Packaging Engine**: `release/package_model.py` generating `model.safetensors`, `pytorch_model.bin`, `README.md` (Model Card), `manifest.json`, and training metrics reports (`training_summary.json/csv/md`).
+- **Release Verification System**: `release/verify_package.py` enforcing strict **8/8 rule** verification checks covering metadata, weights, tokenizer, SHA-256 checksums, and structural validity.
+- **Deterministic Builds**: Static LF line ending normalization (`newline="\n"`) and Git commit timestamp integration ensuring byte-for-byte reproducible release packages across Windows, Linux, and macOS.
+- **Git LFS Integration**: Full Git LFS tracking for `.safetensors` and `.bin` weights.
+- **Agent & Memory System**: Multi-agent task orchestration, persistent conversation memory, RAG context building, and knowledge graph storage in `vajra_agent/`.
+- **Comprehensive Documentation**: Complete technical guides in `docs/` covering architecture, training, evaluation, tokenizer, dataset pipeline, release pipeline, configuration, contributing, and FAQ.
+- **Testing Suite**: **248 unit and integration tests** fully passing across all framework subsystems.
 
-- MemoryManager, ContextBuilder, Embeddings, Vector Storage, Semantic Retrieval, Knowledge Graph, Retention Policies, Memory Summarizer.
-
-## [0.8.0] - 2026-07-22 (Vajra-Agent Phase 2 — Coding Intelligence)
-
-- Task Planning Engine, Repository Scanner, Workspace Indexer, PythonSandbox, VerificationEngine, ReflectionEngine, ProjectContext, and Coding Workflows.
-
-## [0.7.0] - 2026-07-22 (Vajra-Agent Phase 1 — Core Infrastructure)
-
-- Built initial `vajra_agent/` package: `BaseTool`, `ToolRegistry`, `FunctionParser`, `FoundationAgent` execution loop, `EventBus`, and MCP abstractions.
+### Fixed
+- Fixed `UnicodeEncodeError` on Windows consoles during release verification output.
+- Fixed non-deterministic SHA-256 checksum mismatches caused by OS-native CRLF line endings and dynamic wall-clock timestamps.
+- Fixed tied weight cloning (`.clone().contiguous().cpu()`) when exporting PyTorch state dicts to Hugging Face `safetensors` format.

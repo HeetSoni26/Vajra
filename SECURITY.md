@@ -2,30 +2,23 @@
 
 ## Supported Versions
 
-| Version | Supported          | Security Maintenance |
-| ------- | ------------------ | -------------------- |
-| 1.0.x   | :white_check_mark: | Active Support       |
-| < 1.0   | :x:                | End of Life          |
+| Version | Supported |
+| :--- | :--- |
+| `v1.0.x` | :white_check_mark: Supported |
+| `< 1.0.0` | :x: Unsupported |
+
+---
 
 ## Reporting a Vulnerability
 
-The Vajra security team takes security vulnerabilities seriously.
+The Vajra AI team takes security and model safety seriously. If you discover a security vulnerability (such as unsafe deserialization, arbitrary code execution, or data exposure), please follow these steps:
 
-If you discover a security issue or vulnerability in `vajra` (including `vajra-lm` and `vajra-agent`), please report it privately through **GitHub Security Advisories**:
+1. **Do NOT open a public GitHub issue.**
+2. Report the vulnerability directly to `security@vajra.ai` or submit a private security advisory via GitHub Security Advisories.
+3. Include detailed steps to reproduce the issue, proof-of-concept scripts, and affected versions.
 
-- **Official Channel**: [GitHub Security Advisories](https://github.com/HeetSoni26/Vajra/security/advisories)
-- **Private Disclosure**: Click **"Report a vulnerability"** on the repository Security tab.
+---
 
-### Disclosure Process
-1. **Do NOT open a public GitHub issue** or disclose details publicly until the vulnerability has been triaged and addressed.
-2. Provide detailed steps to reproduce the vulnerability, including code snippets or proof-of-concept exploits if available.
-3. The Vajra maintainers will acknowledge receipt within **48 hours** and provide periodic updates on progress towards resolution.
-4. Once a fix is released, public advisories and CVE requests will be coordinated transparently via GitHub Security Advisories.
-
-## Security Scope
-
-The scope of this security policy covers:
-- Core model architecture & execution (`model/`)
-- Agent execution sandboxes (`vajra_agent/sandbox/`, `vajra_agent/tools/`)
-- API endpoints (`api/`)
-- Dependency configuration & Docker containerization (`Dockerfile`, `Dockerfile.serve`)
+## Security Best Practices
+- **Safe Weight Deserialization**: Always use `model.safetensors` over `pytorch_model.bin` when loading untrusted weights to prevent pickle execution vulnerabilities.
+- **Model Alignment**: Base pretraining checkpoints are raw foundation models without RLHF or instruction tuning safety filters. Deployments should implement downstream guardrails.

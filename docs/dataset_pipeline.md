@@ -1,70 +1,86 @@
-# Vajra Dataset Pipeline
+# Vajra Dataset Pipeline Guide
 
-The Vajra production dataset pipeline is designed to easily ingest, clean, tokenize, and format massive corpora from the Hugging Face hub (specifically optimized for `HuggingFaceFW/fineweb-edu`).
+[Overview](../README.md) | [Tokenizer](tokenizer.md) | [Training](training.md) | [Configuration](configuration.md)
 
-## Pipeline Workflow
+---
 
-1. **Download / Streaming**
-   - The pipeline uses the `datasets` library to connect to Hugging Face.
-   - It supports `streaming=True`, allowing for on-the-fly processing without needing terabytes of local storage.
-   - It includes configurable limits such as `max-docs`, `max-tokens`, and `max-gb`.
+## Overview
 
-2. **Preprocessing & Cleaning**
-   - **Language Filtering**: Skips non-English documents (if metadata is available).
-   - **Length Constraints**: Removes documents that are too short (<50 chars) or too long (>100,000 chars).
-   - **HTML Removal**: Strips any residual HTML tags via regex.
-   - **Normalization**: Applies strict Unicode NFC normalization and collapses multiple whitespaces and newlines.
-   - **Empty & Duplicate Removal**: Hashes each cleaned document to remove exact duplicates and filters out empty lines.
-   - **Statistics Collection**: Logs the number of processed documents, tokens, and data volume bytes.
+The Vajra dataset engineering pipeline converts raw, heterogeneous text corpora (e.g. FineWeb-Edu, Wikipedia, OpenWebText, GitHub code) into high-performance, tokenized, sharded, binary memory-mapped files (`.bin` / `.npy`) optimized for zero-copy DDP pretraining.
 
-3. **Tokenization**
-   - Uses the Vajra tokenizer (`DatasetTokenizer`).
-   - Appends an EOS token to each document.
+---
 
-4. **Splitting & Binary Formatting**
-   - Splits the processed token stream into `train`, `val`, and `test` partitions based on user-defined ratios.
-   - Saves them as `.bin` files (`uint32` memmaps) for extremely fast loading during training.
-   - Generates `metadata.json` and `dataset_report.json` to keep track of splits, token counts, and cleaning statistics.
+## Dataset Pipeline Architecture
 
-5. **Validation**
-   - Ensures that output `.bin` files are not empty.
-   - Verifies that the total tokens match the metadata statistics.
-   - Checks the maximum token ID to ensure it is within the expected vocabulary range (e.g., `<128000`).
-
-## Expected Directory Structure
-
-After running the pipeline, the output directory (e.g., `data/fineweb`) will look like this:
-
-```
-data/fineweb/
-├── train.bin             # Training tokens (uint32 memmap)
-├── val.bin               # Validation tokens (uint32 memmap)
-├── test.bin              # Test tokens (uint32 memmap)
-├── metadata.json         # High-level dataset metadata (split info)
-└── dataset_report.json   # Detailed stats on cleaning and processing
+```mermaid
+flowchart TD
+    A[Raw Text Sources / HuggingFace Datasets] --> B[Data Cleaning & Deduplication]
+    B --> C[BPE Tokenization Engine]
+    C --> D[Sequence Packing & EOF Formatting]
+    D --> E[Sharded Binary Writer]
+    E --> F[dataset/production/train_0000.bin]
+    E --> G[dataset/production/val_0000.bin]
+    E --> H[dataset_manifest.json + SHA-256 Checksum]
 ```
 
-## Usage
+---
+
+## Pipeline Components
+
+### 1. Data Downloading & Storage (`dataset/downloaders.py`)
+Downloads multi-source web corpora using streaming interfaces to avoid local memory exhaustion.
+
+### 2. Tokenization & Sequence Packing (`dataset/preparation.py`)
+- Tokenizes raw strings into integer token arrays using the `VajraTokenizer`.
+- Packs sequences into uniform length chunks (`context_length = 2048`) separated by `<|endoftext|>` BOS/EOS tokens (`id = 1` / `id = 2`).
+- Eliminates padding overhead during pretraining via greedy sequence concatenation.
+
+### 3. Binary Sharding & Cataloging (`dataset/sharding.py`, `dataset/catalog.py`)
+- Converts token lists into `uint16` or `uint32` binary arrays (depending on `vocab_size`).
+- Writes sharded chunks (e.g. 100M tokens per file shard).
+- Generates `dataset_manifest.json` containing metadata, token counts, split boundaries, and cryptographic SHA-256 signatures.
+
+---
+
+## Running Dataset Preparation
+
+To prepare a production dataset mixture:
 
 ```bash
-python -m scripts.prepare_dataset \
-    --dataset HuggingFaceFW/fineweb-edu \
-    --stream \
-    --max-docs 10000 \
-    --output data/fineweb \
-    --seed 42 \
-    --batch-size 100
+python -m dataset.preparation \
+    --config configs/dataset/dataset_production.yaml \
+    --output-dir dataset/production \
+    --tokenizer-dir tokenizer/v1.0
 ```
 
-### Resuming Generation
-
-Dataset preparation fully supports resuming from an interrupted state. Progress is automatically saved to `pipeline_state.json`.
+To validate dataset shards before pretraining:
 
 ```bash
-python -m scripts.prepare_dataset \
-    --dataset HuggingFaceFW/fineweb-edu \
-    --stream \
-    --max-docs 10000 \
-    --output data/fineweb \
-    --resume
+python -m dataset.validation --data-dir dataset/production
+```
+
+---
+
+## Dataset Configuration Example (`configs/dataset/dataset_production.yaml`)
+
+```yaml
+dataset_name: "FineWeb-Edu Production Mixture"
+vocab_size: 65536
+sequence_length: 2048
+shard_size_tokens: 100000000
+dtype: "uint16"
+
+mixtures:
+  - name: "fineweb_edu"
+    weight: 0.80
+    split: "train"
+  - name: "wikipedia_en"
+    weight: 0.10
+    split: "train"
+  - name: "github_code"
+    weight: 0.10
+    split: "train"
+
+validation_ratio: 0.01
+seed: 42
 ```
