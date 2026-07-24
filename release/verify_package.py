@@ -94,6 +94,8 @@ def verify_package(package_dir: str | Path) -> tuple[bool, dict[str, Any]]:
             parts = line.split(maxsplit=1)
             if len(parts) == 2:
                 expected_hash, fname = parts[0], parts[1]
+                if fname == "verification_report.json":
+                    continue
                 target_file = package_dir / fname
                 if not target_file.exists():
                     checksum_errors.append(f"{fname}: File missing")

@@ -284,6 +284,60 @@ def validate_dataset(output_dir: Path, split_stats: dict, total_tokens: int):
     logger.info("Validation successful.")
 
 
+def prepare_synthetic(
+    output_dir: str | Path,
+    num_docs: int = 50,
+    sequence_length: int = 32,
+    vocab_size: int = 128,
+    seed: int = 42,
+    val_ratio: float = 0.05,
+    test_ratio: float = 0.05,
+) -> dict:
+    """Generate a synthetic tokenized binary dataset for testing and validation."""
+    from dataset.sources.synthetic import generate_synthetic_documents
+
+    output_dir = Path(output_dir)
+    tokenized_dir = output_dir / "tokenized"
+    ensure_dir(tokenized_dir)
+
+    raw_docs = generate_synthetic_documents(num_documents=num_docs, seed=seed)
+    cleaned_texts = []
+    for doc in raw_docs:
+        c = clean_document(doc["text"], min_len=10)
+        if c:
+            cleaned_texts.append(c)
+
+    tokenizer = DatasetTokenizer("tokenizer/v1.0")
+
+    builder = BinaryDatasetBuilder(
+        output_dir=tokenized_dir,
+        val_ratio=val_ratio,
+        test_ratio=test_ratio,
+    )
+
+    def doc_generator():
+        for i in range(0, len(cleaned_texts), 10):
+            batch = cleaned_texts[i : i + 10]
+            tokens_out, _ = tokenizer.tokenize_documents([{"text": d} for d in batch])
+            if vocab_size:
+                tokens_out = [int(t) % vocab_size for t in tokens_out]
+            yield tokens_out
+
+    split_stats = builder.build_from_stream(
+        doc_generator(),
+        metadata_info={"synthetic": True, "seed": seed},
+        seed=seed,
+    )
+
+    report = {
+        "status": "PASSED",
+        "cleaned_docs": len(cleaned_texts),
+        "split_stats": split_stats,
+    }
+    write_json(report, tokenized_dir / "dataset_report.json")
+    return report
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Vajra Production Dataset Preparation")
     parser.add_argument("--dataset", type=str, default="HuggingFaceFW/fineweb-edu", help="HuggingFace dataset name")

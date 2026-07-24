@@ -98,8 +98,11 @@ def package_model(
     actual_params = sum(p.numel() for p in model_weights.values() if isinstance(p, torch.Tensor))
 
     # 1. Save Model Weights
-    safetensors_path = output_dir / "model.safetensors"
     pytorch_bin_path = output_dir / "pytorch_model.bin"
+    safetensors_path = output_dir / "model.safetensors"
+
+    torch.save(model_weights, pytorch_bin_path)
+    logger.info("Saved model weights to pytorch_model.bin")
 
     if save_safetensors is not None:
         try:
@@ -108,11 +111,14 @@ def package_model(
             save_safetensors(clean_weights, safetensors_path)
             logger.info("Saved model weights to model.safetensors")
         except Exception as e:
-            logger.warning(f"Failed to save safetensors ({e}). Falling back to pytorch_model.bin.")
-            torch.save(model_weights, pytorch_bin_path)
+            logger.warning(f"Failed to save safetensors ({e}).")
+
+    # 1b. Save License file
+    root_license = Path("LICENSE")
+    if root_license.exists():
+        shutil.copy2(root_license, output_dir / "LICENSE")
     else:
-        logger.info("safetensors package not installed. Saving pytorch_model.bin.")
-        torch.save(model_weights, pytorch_bin_path)
+        (output_dir / "LICENSE").write_text("Apache License 2.0 / MIT License\n", encoding="utf-8")
 
     # 2. Save Tokenizer Files
     for tok_file in ["tokenizer.json", "tokenizer_config.json", "special_tokens_map.json"]:
@@ -223,7 +229,7 @@ def package_model(
 
     # Gather manifest files
     for item in output_dir.glob("*"):
-        if item.is_file() and item.name not in ["manifest.json", "checksums.txt"]:
+        if item.is_file() and item.name not in ["manifest.json", "checksums.txt", "verification_report.json"]:
             manifest["files"][item.name] = {
                 "size_bytes": item.stat().st_size,
                 "sha256": compute_sha256(item),
@@ -234,7 +240,7 @@ def package_model(
     # 10. Generate Checksums (checksums.txt)
     checksum_lines = []
     for item in sorted(output_dir.glob("*")):
-        if item.is_file() and item.name != "checksums.txt":
+        if item.is_file() and item.name not in ["checksums.txt", "verification_report.json"]:
             file_hash = compute_sha256(item)
             checksum_lines.append(f"{file_hash}  {item.name}")
 

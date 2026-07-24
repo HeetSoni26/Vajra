@@ -4,9 +4,9 @@
   "package_version": "1.0.0",
   "architecture": "vajra-lm-tiny",
   "parameter_count": 90317312,
-  "git_commit_hash": "1903d36",
+  "git_commit_hash": "4142456",
   "checkpoint_step": 250,
   "tokens_seen": 64000,
   "dataset": "production",
-  "packaging_timestamp": "2026-07-24T22:23:21Z"
+  "packaging_timestamp": "2026-07-24T23:05:16Z"
 }
