@@ -4,7 +4,6 @@ import math
 import time
 from pathlib import Path
 
-import torch
 import yaml
 
 from model import FoundationLM, ModelConfig

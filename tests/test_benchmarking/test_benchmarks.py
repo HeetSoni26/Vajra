@@ -2,7 +2,6 @@ import json
 from pathlib import Path
 from unittest import mock
 
-import pytest
 
 from benchmarks.benchmark import save_reports
 from benchmarks.compare_benchmarks import generate_comparison_report

@@ -6,7 +6,6 @@ import json
 import shutil
 import time
 from pathlib import Path
-from typing import Any
 
 import torch
 
@@ -18,7 +17,6 @@ except ImportError:
 from model import ModelConfig
 from release.create_model_card import ModelCardGenerator
 from release.create_training_report import TrainingReportGenerator
-from training.checkpoint import load_checkpoint
 from utils.environment import get_git_hash
 from utils.logging import setup_logger
 
