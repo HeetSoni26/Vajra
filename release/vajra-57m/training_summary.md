@@ -9,7 +9,7 @@ This document summarizes the pretraining progression, validation metrics, hardwa
 | Metric | Value |
 | :--- | :--- |
 | **Model Name** | `vajra-57m` |
-| **Best Checkpoint** | `checkpoint_step_250.pt` |
+| **Best Checkpoint** | `best.pt` |
 | **Global Training Step** | `250` |
 | **Total Tokens Processed** | `64,000` |
 | **Dataset** | `production` |

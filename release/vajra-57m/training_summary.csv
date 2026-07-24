@@ -1,6 +1,6 @@
 Metric,Value
 model_name,vajra-57m
-best_checkpoint,checkpoint_step_250.pt
+best_checkpoint,best.pt
 checkpoint_step,250
 tokens_processed,64000
 training_duration,N/A

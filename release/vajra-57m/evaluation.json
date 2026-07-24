@@ -1,13 +1,13 @@
 {
   "checkpoint_filename": "checkpoint_step_250.pt",
-  "global_step": 250,
-  "tokens_seen": 64000,
-  "validation_loss": 41.895,
-  "perplexity": 1.5659118813707052e+18,
-  "evaluation_timestamp": "2026-07-24T22:22:49Z",
-  "model_name": "vajra-lm-tiny",
-  "dataset_name": "production",
   "configuration_path": "configs\\training\\pretrain_tiny.yaml",
+  "dataset_name": "production",
+  "evaluation_duration_sec": 6.232704401016235,
+  "evaluation_timestamp": "2026-07-24T22:22:49Z",
   "git_commit_hash": "1903d36",
-  "evaluation_duration_sec": 6.232704401016235
+  "global_step": 250,
+  "model_name": "vajra-lm-tiny",
+  "perplexity": 1.5659118813707052e+18,
+  "tokens_seen": 64000,
+  "validation_loss": 41.895
 }

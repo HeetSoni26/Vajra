@@ -1,12 +1,12 @@
 {
-  "model_name": "vajra-57m",
-  "version": "1.0.0",
-  "package_version": "1.0.0",
   "architecture": "vajra-lm-tiny",
-  "parameter_count": 90317312,
-  "git_commit_hash": "9136b1f",
   "checkpoint_step": 250,
-  "tokens_seen": 64000,
   "dataset": "production",
-  "packaging_timestamp": "2026-07-24T23:17:34Z"
+  "git_commit_hash": "fd4b18c",
+  "model_name": "vajra-57m",
+  "package_version": "1.0.0",
+  "packaging_timestamp": "2026-01-01T00:00:00Z",
+  "parameter_count": 90317312,
+  "tokens_seen": 64000,
+  "version": "1.0.0"
 }
