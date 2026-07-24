@@ -1,0 +1,4 @@
+{
+  "tokenizer_class": "PreTrainedTokenizerFast",
+  "name_or_path": "vajra-tokenizer"
+}

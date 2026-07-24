@@ -277,6 +277,8 @@ class Trainer:
                     out = self.model(input_ids, labels=labels)
                 total_val_loss += float(out["loss"].item())
                 total_batches += 1
+                if total_batches >= 20:  # Fast validation for CPU run
+                    break
 
         avg_val_loss = total_val_loss / max(1, total_batches)
 

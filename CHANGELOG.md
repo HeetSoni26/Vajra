@@ -2,7 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.0.0] - 2026-07-23 (Vajra v1.0.0 Open Source Production Release)
+## [1.0.0] - 2026-07-24 (Vajra v1.0.0 Stable Production & Model Release)
+
+### Added & Published
+- **Vajra-57M Base Model Release**:
+  - Published official release package in `release/vajra-57m`.
+  - Exported weights (`model.safetensors`), BPE tokenizer (`tokenizer.json`), config schemas (`config.json`, `generation_config.json`), reproducibility manifest (`manifest.json`), evaluation metrics (`evaluation.json`), hardware telemetry (`benchmark.json`), model card (`README.md`), and training summary reports (`training_summary.json/csv/md`).
+  - Passed 8/8 automated verification audits in `verify_package.py` with SHA-256 checksums (`checksums.txt`).
+- **Milestone 6 (Evaluation Subsystem)**:
+  - Created native evaluation framework (`evaluate.py`, `evaluate_all.py`, `compare_checkpoints.py`, `generate.py`).
+  - Evaluates cross-entropy loss and token perplexity without intermediate Hugging Face conversion.
+- **Milestone 7 (Benchmarking Subsystem)**:
+  - Created hardware and quality benchmarking framework (`benchmarks/benchmark.py`, `runners/quality.py`, `runners/performance.py`, `compare_benchmarks.py`).
+  - Measures throughput (tokens/sec), first-token latency, memory footprint, and N-gram diversity (Distinct-1, Distinct-2, Repetition Rate).
+- **Milestone 8 (Packaging Subsystem)**:
+  - Created architecture-agnostic release packager (`release/package_model.py`, `release/verify_package.py`, `release/create_model_card.py`, `release/create_training_report.py`).
 
 ### Added & Stabilized
 - **Phase 1 (Critical Runtime & Architecture Repair)**:

@@ -1,0 +1,24 @@
+{
+  "dtype": "uint32",
+  "sequence_length": 4096,
+  "splits": {
+    "train": {
+      "file": "train.bin",
+      "count": 90000000
+    },
+    "val": {
+      "file": "val.bin",
+      "count": 5000000
+    },
+    "test": {
+      "file": "test.bin",
+      "count": 5000000
+    }
+  },
+  "extra_info": {
+    "dataset": "HuggingFaceFW/fineweb-edu",
+    "seed": 42,
+    "docs_processed": 150000,
+    "total_bytes": 400000000
+  }
+}

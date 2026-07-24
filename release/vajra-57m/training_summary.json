@@ -1,0 +1,16 @@
+{
+  "model_name": "vajra-57m",
+  "best_checkpoint": "checkpoint_step_250.pt",
+  "checkpoint_step": 250,
+  "tokens_processed": 64000,
+  "training_duration": "N/A",
+  "validation_loss": 41.895,
+  "perplexity": 1.5659118813707052e+18,
+  "throughput_tokens_per_sec": 48.96,
+  "first_token_latency_ms": 72.64,
+  "distinct_1": 0.0,
+  "dataset_name": "production",
+  "optimizer": "AdamW",
+  "learning_rate": 0.0003,
+  "precision": "bf16"
+}

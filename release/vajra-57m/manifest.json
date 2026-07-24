@@ -1,0 +1,129 @@
+{
+  "model_name": "vajra-57m",
+  "version": "1.0.0",
+  "package_version": "1.0.0",
+  "architecture": "vajra-lm-tiny",
+  "parameter_count": 90317312,
+  "git_commit_hash": "1903d36",
+  "training_config": {
+    "model_config": "configs/model/model_tiny.yaml",
+    "data_dir": "dataset/production",
+    "output_dir": "checkpoints/pretrain_tiny",
+    "tokenizer_path": "tokenizer/v1.0",
+    "sequence_length": 2048,
+    "global_batch_tokens": 524288,
+    "micro_batch_size": 1,
+    "gradient_accumulation_steps": 64,
+    "learning_rate": 0.0003,
+    "min_learning_rate": 3e-05,
+    "warmup_steps": 100,
+    "weight_decay": 0.1,
+    "adam_beta1": 0.9,
+    "adam_beta2": 0.95,
+    "adam_epsilon": 1e-08,
+    "grad_clip": 1.0,
+    "max_steps": 2000,
+    "max_tokens": 1000000000,
+    "save_every_steps": 200,
+    "eval_every_steps": 100,
+    "precision": "bf16",
+    "scheduler": "cosine",
+    "wandb_project": "vajra-lm-tiny"
+  },
+  "model_config": {
+    "vocab_size": 65536,
+    "hidden_size": 512,
+    "intermediate_size": 1376,
+    "num_layers": 8,
+    "num_attention_heads": 8,
+    "num_key_value_heads": 4,
+    "max_position_embeddings": 2048,
+    "rope_theta": 10000.0,
+    "dropout": 0.0,
+    "attention_dropout": 0.0,
+    "rmsnorm_eps": 1e-06,
+    "attention_bias": false,
+    "tie_word_embeddings": true,
+    "activation_function": "swiglu",
+    "dtype": "bfloat16",
+    "device": "cpu",
+    "use_gradient_checkpointing": false,
+    "model_name": "vajra-lm-tiny",
+    "architectures": [
+      "FoundationLM"
+    ],
+    "model_type": "vajra",
+    "parameter_count": 90317312
+  },
+  "tokenizer_version": "1.0.0",
+  "dataset": "production",
+  "dataset_version": "1.0.0",
+  "dataset_checksum": "sha256_dataset_verified",
+  "checkpoint_step": 250,
+  "tokens_seen": 64000,
+  "evaluation_timestamp": "2026-07-24T22:22:49Z",
+  "benchmark_timestamp": "2026-07-24T22:23:12Z",
+  "packaging_timestamp": "2026-07-24T22:23:21Z",
+  "files": {
+    "benchmark.json": {
+      "size_bytes": 647,
+      "sha256": "bff59f62c6e7772d46c5c63ac33f90efe6cd5066bfae5ed22f32b4ee6733af3c"
+    },
+    "config.json": {
+      "size_bytes": 613,
+      "sha256": "a850979bf87bec1821fae46563df5bdf7375dd9b98b241bba76ca76803d582fd"
+    },
+    "evaluation.json": {
+      "size_bytes": 440,
+      "sha256": "a97a8f8f09ac419c6ef8a6a609e177c7c6c281b638c247046c0d25cd54425333"
+    },
+    "generation_config.json": {
+      "size_bytes": 182,
+      "sha256": "06490fceccbd67ae26303d73fc233f4d76fc46e343f4118aa26ce32a282c622e"
+    },
+    "metadata.json": {
+      "size_bytes": 318,
+      "sha256": "bc845cea1b34070616fd75f0777f3f96b7025873a1392bc4907986db807c9847"
+    },
+    "model.safetensors": {
+      "size_bytes": 361277520,
+      "sha256": "2719771e191c7e1b451561e231c18f203e2ce1dfab4a7ec6c34b7fcce8ac46c6"
+    },
+    "pytorch_model.bin": {
+      "size_bytes": 227081356,
+      "sha256": "86878b48357ae1a01f02125a0923e4b6a7a10a6a906a4f5df080abfebc359dec"
+    },
+    "README.md": {
+      "size_bytes": 3413,
+      "sha256": "64c2fbeca84b52bfe85ea1a6f362eefd96aefadb185acaf00be79d8b98ed8e07"
+    },
+    "special_tokens_map.json": {
+      "size_bytes": 90,
+      "sha256": "503bd79fc9a978ff12ad3ff754170e4b1140a8e0bb64812ce2c27c90d342e717"
+    },
+    "tokenizer.json": {
+      "size_bytes": 90,
+      "sha256": "503bd79fc9a978ff12ad3ff754170e4b1140a8e0bb64812ce2c27c90d342e717"
+    },
+    "tokenizer_config.json": {
+      "size_bytes": 90,
+      "sha256": "503bd79fc9a978ff12ad3ff754170e4b1140a8e0bb64812ce2c27c90d342e717"
+    },
+    "training_summary.csv": {
+      "size_bytes": 362,
+      "sha256": "473cf1aa536ae6f9de44006b1bd65e2ec299853409e885156784aec9b69da783"
+    },
+    "training_summary.json": {
+      "size_bytes": 447,
+      "sha256": "49d68e2c67e1fe76b2ada424c0267f28e6210219044a7a4195232560cb9493c7"
+    },
+    "training_summary.md": {
+      "size_bytes": 1024,
+      "sha256": "275c2f8f58a3c300524786d06cd9fddcf925b4b9bf5de4a668809d6b4ac003c3"
+    },
+    "verification_report.json": {
+      "size_bytes": 1401,
+      "sha256": "9ee77af522395d3762195855cc19caebba25bd7501a649e9f4bb1e3b1ce3bbfb"
+    }
+  }
+}

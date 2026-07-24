@@ -1,0 +1,2 @@
+Rank,Checkpoint Dir,Global Step,Tokens Seen,Validation Loss,Perplexity,Timestamp,Dataset
+1,checkpoint_250,250,64000,41.895,1.5659118813707052e+18,2026-07-24T22:22:49Z,production

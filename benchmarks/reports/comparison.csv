@@ -1,0 +1,2 @@
+Checkpoint,Validation Loss,Perplexity,Distinct-1,Tokens/Sec,Inference Latency (ms),Memory RAM (MB)
+checkpoint_step_250.pt,41.895,1.5659118813707052e+18,0.0,48.96,72.64,0

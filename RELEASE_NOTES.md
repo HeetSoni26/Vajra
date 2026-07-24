@@ -1,47 +1,45 @@
-# Vajra v1.0.0 Release Notes
+# Vajra v1.0.0 Stable Release Notes
 
-**Release Date**: July 23, 2026  
+**Release Date**: July 24, 2026  
 **Tag**: `v1.0.0`  
-**License**: Apache-2.0  
+**Model Release**: `Vajra-57M` Base Foundation Model  
+**License**: Apache-2.0 / MIT  
 **Repository**: [https://github.com/HeetSoni26/Vajra](https://github.com/HeetSoni26/Vajra)
 
 ---
 
 ## 🚀 Summary
 
-We are excited to announce the official **v1.0.0 Open Source Release** of the **Vajra Framework**!
+We are thrilled to present the official **v1.0.0 Stable Release of the Vajra Framework**, accompanying the publication of our first production model release package: **Vajra-57M**.
 
-Vajra is an end-to-end open-source AI ecosystem combining a high-performance decoder-only language model architecture (**Vajra-LM**) with an advanced autonomous agent framework (**Vajra-Agent**).
+Vajra is an end-to-end open-source AI ecosystem integrating high-performance decoder-only transformer architecture (**Vajra-LM**), an autonomous agent system (**Vajra-Agent**), and a fully automated Dataset, Evaluation, Benchmarking, and Packaging pipeline.
 
 > [!NOTE]  
-> **Framework Status Statement**:  
-> The Vajra Framework codebase, multi-agent engine, inference APIs, and training infrastructure are production-ready with **100% test pass rate (180/180 tests)** and verified GitHub Actions CI workflows.  
-> Model weights pre-training for the Vajra-370M and Vajra-1B models will follow in a separate dedicated release.
+> **Production Release Verification**:  
+> The **Vajra-57M** model release package (`release/vajra-57m`) has been packaged with complete SHA-256 checksums, reproducibility manifests, Hugging Face compatible Model Cards (`README.md`), evaluation loss metrics, generation quality telemetry, and hardware throughput profiles. **Verification Status: 8/8 CHECKS PASSED.**
 
 ---
 
-## 🔥 Key Highlights
+## 🔥 Release Highlights
 
-### 1. Vajra-LM Core Architecture
-- **Decoder-Only Transformer**: LLaMA-style architecture featuring SwiGLU activation, RoPE positional embeddings, RMSNorm, and Grouped-Query Attention (GQA).
-- **HuggingFace Compatibility**: Native `AutoConfig` and `AutoModelForCausalLM` integration.
-- **Inference Server**: FastAPI server with asynchronous Server-Sent Events (SSE) streaming for `/generate`, `/v1/completions`, and `/v1/chat/completions`.
-- **Training Engine**: Distributed Data Parallel (DDP) engine with hardware-agnostic AMP (`GradScaler`), SFT, and DPO alignment routines.
+### 1. Vajra-57M Foundation Model Package (`release/vajra-57m`)
+- **SafeTensors Weights**: Fully exported `model.safetensors` compatible with Hugging Face transformers.
+- **BPE Tokenizer**: Fully exportable `tokenizer.json`, `tokenizer_config.json`, and `special_tokens_map.json`.
+- **Reproducibility Manifest**: `manifest.json` locking git commit hashes, parameter count (90.3M total / 56.7M backbone parameters), checkpoint steps, and token counts.
+- **Checksum Security**: Verified SHA-256 hashes generated in `checksums.txt`.
 
-### 2. Vajra-Agent Framework
-- **Multi-Agent Orchestration**: `MultiAgentEngine`, `Orchestrator`, DAG `TaskGraph` engine, and `SharedMemory`.
-- **10 Specialized Built-in Agents**: Architect, Coder, Tester, Reviewer, SecurityAuditor, DevOps, DataEngineer, Researcher, DocumentationSpecialist, and ProjectManager.
-- **Coding Intelligence**: Sandboxed Python execution (`PythonSandbox`), shell execution (`ShellTool`), indexing, context building, and verification pipelines.
-- **Memory Subsystem**: Vector storage, knowledge graph, semantic retrieval, and memory retention policies.
+### 2. Evaluation & Benchmarking Subsystems
+- **Native Evaluation Framework**: Standardized evaluation (`evaluate.py`, `evaluate_all.py`) computing cross-entropy loss and perplexity.
+- **Hardware & Quality Benchmarking**: Automated metrics (`benchmarks/`) measuring tokens/sec throughput, first-token latency, memory footprint, and N-gram generation diversity (Distinct-1, Distinct-2, Repetition Rate).
 
-### 3. Production & Security Engineering
-- **Docker Hardened**: Non-root execution (`USER vajra`), healthchecks, and production `docker-compose.yml`.
-- **Type Safety**: PEP 561 `py.typed` markers included across all package modules.
-- **Security Policy**: Integrated with [GitHub Security Advisories](https://github.com/HeetSoni26/Vajra/security/advisories).
+### 3. Core Architecture & Engineering
+- **Vajra-LM Core**: SwiGLU activation, RoPE positional embeddings, RMSNorm, and Grouped-Query Attention (GQA).
+- **Inference & Serving Engine**: Native streaming generator with KV-cache prefilling support and FastAPI serving integration.
+- **Automated Verification**: `verify_package.py` audit runner outputting `verification_report.json`.
 
 ---
 
-## 📦 Installation
+## 📦 Installation & Release Artifact Usage
 
 ```bash
 # Clone repository
@@ -50,8 +48,13 @@ cd Vajra
 
 # Install full environment
 pip install -e .[all]
+
+# Verify the official release package
+python -m release.verify_package --package-dir release/vajra-57m
 ```
+
+---
 
 ## 📄 License & Attribution
 
-Licensed under the **Apache License 2.0**.
+Licensed under the **Apache License 2.0 / MIT License**.

@@ -1,0 +1,24 @@
+{
+  "dataset_name": "HuggingFaceFW/fineweb-edu",
+  "seed": 42,
+  "cleaning_stats": {
+    "docs_processed": 150000,
+    "unique_docs": 150000,
+    "total_bytes_processed": 400000000
+  },
+  "tokenization_stats": {
+    "total_tokens": 100000000,
+    "train_tokens": 90000000,
+    "val_tokens": 5000000,
+    "test_tokens": 5000000,
+    "sequence_length": 4096,
+    "num_train_sequences": 21972,
+    "write_speed_mb_s": 239.61,
+    "checksums": {
+      "train.bin": "7ba1ed4c55ddb83014df372bf1ddfee585db6e922634b631414247ebb4dc4608",
+      "val.bin": "08da8d2f229be4b538ea8de9986090cc127ac39fef2052015c791c70bbabbea8",
+      "test.bin": "3939cfe7369ddb87f73eb95ef03387b9f10b3de2dcddfe4a0c7c91ca13afa8fb"
+    }
+  },
+  "validation_passed": true
+}

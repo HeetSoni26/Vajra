@@ -1,0 +1,13 @@
+model_name: "vajra-debug"
+data_dir: dataset/production
+output_dir: "checkpoints/debug_run"
+model_config: "configs/model/model_tiny.yaml"
+sequence_length: 32
+micro_batch_size: 2
+max_steps: 2
+learning_rate: 0.0001
+weight_decay: 0.01
+adam_beta1: 0.9
+adam_beta2: 0.95
+save_every_steps: 10
+eval_every_steps: 10

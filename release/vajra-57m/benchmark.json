@@ -1,0 +1,22 @@
+{
+  "checkpoint": "checkpoint_step_250.pt",
+  "timestamp": "2026-07-24T22:23:12Z",
+  "validation_loss": 41.895,
+  "perplexity": 1.5659118813707052e+18,
+  "distinct_1": 0.0,
+  "distinct_2": 0.0,
+  "repetition_rate": 0.0,
+  "average_generated_length": 128,
+  "generation_time_sec": 4.9832,
+  "tokens_generated": 128,
+  "generated_sample": "",
+  "loading_time_sec": 0.9603,
+  "model_size_mb": 108.27,
+  "model_parameters": 56762880,
+  "memory_ram_mb": 0,
+  "memory_vram_mb": 0,
+  "inference_latency_first_token_ms": 72.64,
+  "inference_latency_total_ms": 1307.25,
+  "tokens_per_sec": 48.96,
+  "throughput_tokens_per_sec": 48.96
+}

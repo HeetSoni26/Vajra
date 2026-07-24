@@ -1,0 +1,49 @@
+{
+  "package_directory": "D:\\OneDrive\\Desktop\\LLM\\foundation-lm-final_a39dc860\\release\\vajra-57m",
+  "verification_timestamp": "2026-07-24T22:23:33Z",
+  "overall_status": "PASS",
+  "checks_passed": 8,
+  "checks_total": 8,
+  "checks": [
+    {
+      "check": "Required Metadata & Report Files",
+      "status": "PASS",
+      "message": "All metadata/report files present."
+    },
+    {
+      "check": "Weights File Existence",
+      "status": "PASS",
+      "message": "Weights file found: model.safetensors"
+    },
+    {
+      "check": "Tokenizer Files",
+      "status": "PASS",
+      "message": "Tokenizer config present."
+    },
+    {
+      "check": "Checksum Validation (SHA-256)",
+      "status": "PASS",
+      "message": "All SHA-256 checksums verified."
+    },
+    {
+      "check": "Weights Load Verification",
+      "status": "PASS",
+      "message": "Loaded safetensors successfully (75 tensors, 90,317,312 params)."
+    },
+    {
+      "check": "Config Verification",
+      "status": "PASS",
+      "message": "config.json valid."
+    },
+    {
+      "check": "Generation Config Verification",
+      "status": "PASS",
+      "message": "generation_config.json valid (max_new_tokens=128)."
+    },
+    {
+      "check": "Manifest & Metadata Consistency",
+      "status": "PASS",
+      "message": "Manifest and metadata are consistent."
+    }
+  ]
+}

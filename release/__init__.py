@@ -1,6 +1,13 @@
-from release.export import ModelExporter
-from release.inference import InferenceExamplesGenerator
-from release.model_card import ModelCardGenerator
-from release.package import ReleasePackager
+"""Vajra Release & Model Packaging Subsystem."""
 
-__all__ = ["InferenceExamplesGenerator", "ModelCardGenerator", "ModelExporter", "ReleasePackager"]
+from release.create_model_card import ModelCardGenerator
+from release.create_training_report import TrainingReportGenerator
+from release.package_model import package_model
+from release.verify_package import verify_package
+
+__all__ = [
+    "ModelCardGenerator",
+    "TrainingReportGenerator",
+    "package_model",
+    "verify_package",
+]
