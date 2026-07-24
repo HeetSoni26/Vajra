@@ -52,14 +52,20 @@ def document_token_stream(
     last_log_time = start_time
 
     batch_docs = []
+    first_doc_received = False
+    first_batch_tokenized = False
 
     def process_batch():
-        nonlocal total_bytes, docs_processed, total_tokens_estimated
+        nonlocal total_bytes, docs_processed, total_tokens_estimated, first_batch_tokenized
         if not batch_docs:
             return []
 
         # Tokenize as a batch
         tokens_out, _ = tokenizer.tokenize_documents([{"text": d} for d in batch_docs])
+        if not first_batch_tokenized:
+            logger.info("First batch tokenized successfully")
+            first_batch_tokenized = True
+            
         batch_docs.clear()
 
         total_tokens_estimated += len(tokens_out)
@@ -68,6 +74,10 @@ def document_token_stream(
     for i, row in enumerate(ds):
         if i < docs_processed:
             continue
+            
+        if not first_doc_received:
+            logger.info("First document received from stream")
+            first_doc_received = True
 
         text = row.get("text", "")
         if "language" in row and row["language"] != "en":
@@ -185,7 +195,7 @@ def prepare_huggingface(
             ds = load_dataset(dataset_name, **kwargs)
             
             if stream:
-                ds = ds.shuffle(seed=seed, buffer_size=10000)
+                ds = ds.shuffle(seed=seed, buffer_size=100)
 
             # Re-read state in case we are retrying
             if state_file.exists():

@@ -27,7 +27,7 @@ def compute_file_hash(path: Path) -> str:
 class StreamingBinaryWriter:
     """Writes tokens to a binary file incrementally with buffering."""
 
-    def __init__(self, path: Path, dtype: np.dtype = np.uint32, buffer_size: int = 1024 * 1024):
+    def __init__(self, path: Path, dtype: np.dtype = np.uint32, buffer_size: int = 65536):
         self.path = path
         self.dtype = np.dtype(dtype)
         self.buffer_size = buffer_size
@@ -37,12 +37,16 @@ class StreamingBinaryWriter:
         self.tokens_written = 0
 
     def write(self, tokens: list[int]):
+        if self.tokens_written == 0 and len(self.buffer) == 0:
+            logger.info(f"First write() called on {self.path.name}")
         self.buffer.extend(tokens)
         if len(self.buffer) >= self.buffer_size:
             self.flush()
 
     def flush(self):
         if self.buffer:
+            if self.tokens_written == 0:
+                logger.info(f"First flush() called on {self.path.name}")
             arr = np.array(self.buffer, dtype=self.dtype)
             arr.tofile(self.file)
             self.tokens_written += len(self.buffer)
@@ -146,6 +150,7 @@ class BinaryDatasetBuilder:
         }
 
         # Save metadata.json
+        logger.info("Creating metadata.json")
         meta = {
             "dtype": "uint32",
             "sequence_length": self.sequence_length,
