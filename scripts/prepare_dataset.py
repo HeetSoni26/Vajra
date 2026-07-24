@@ -65,10 +65,7 @@ def document_token_stream(
         total_tokens_estimated += len(tokens_out)
         return tokens_out
 
-    import itertools
-    # Cycle the dataset stream to generate large amounts of tokens from a small downloaded subset
-    ds_iterator = itertools.cycle(ds.take(1000)) if hasattr(ds, "take") else itertools.cycle(ds)
-    for i, row in enumerate(ds_iterator):
+    for i, row in enumerate(ds):
         if i < docs_processed:
             continue
 
