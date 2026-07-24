@@ -198,7 +198,15 @@ def main() -> None:
     passed, report = verify_package(args.package_dir)
     status_str = "[SUCCESS]" if passed else "[FAILED]"
     print(f"\nPackage Verification Status: {status_str}")
-    print(f"Passed {report['checks_passed']}/{report['checks_total']} checks.")
+    print(f"Passed {report['checks_passed']}/{report['checks_total']} checks.\n")
+    
+    for check in report['checks']:
+        symbol = "[PASS]" if check["status"] == "PASS" else "[FAIL]"
+        print(f"{symbol} {check['check']}")
+        if check["status"] != "PASS":
+            print(f"  • pass/fail: {check['status']}")
+            print(f"  • message: {check['message']}")
+            
     if not passed:
         import sys
         sys.exit(1)
