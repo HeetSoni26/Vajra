@@ -18,6 +18,8 @@ from utils.environment import get_device, get_git_hash, set_seed
 from utils.file_utils import read_json, write_json
 from utils.logging import create_experiment_dir, setup_logger
 from training.training_logger import TrainingLogger
+from training.resume import ResumeManager
+from training.cloud.sync_manager import CloudSyncManager
 
 logger = setup_logger("pretrain_runner")
 
@@ -139,13 +141,20 @@ def main() -> None:
         if rank == 0:
             logger.info(f"Using compute device: {device} | Distributed: {is_distributed} (World Size: {world_size})")
 
-        # Setup Experiment Directory
-        exp_dir = create_experiment_dir(cfg.get("output_dir", "checkpoints/run"))
+        base_out_dir = Path(cfg.get("output_dir", "checkpoints/run"))
+        
+        # Resume or Create Experiment Directory
+        resume_state = None
+        if args.resume:
+            resume_manager = ResumeManager(base_dir=base_out_dir.parent)
+            exp_dir, resume_state = resume_manager.find_latest_valid_experiment(prefix=base_out_dir.name + "_")
+        else:
+            exp_dir = create_experiment_dir(base_out_dir.parent, name=base_out_dir.name, config=cfg)
 
         # Model Summary & Reproducibility Metadata (Rank 0 saves artifacts)
         model_summary = compute_model_summary(model, model_cfg)
 
-        if rank == 0:
+        if rank == 0 and not args.resume:
             write_json(model_summary, exp_dir / "model_summary.json")
 
             data_dir = Path(cfg.get("data_dir", "data/tokenized"))
@@ -218,14 +227,21 @@ def main() -> None:
         )
 
         # Resume from checkpoint if requested
-        if args.resume:
-            latest_ckpt = exp_dir / "latest.pt"
-            if latest_ckpt.exists():
-                state = trainer.checkpoint_manager.load_latest(trainer.raw_model, optimizer, restore_rng=True)
-                start_step = state.get("step", 0)
-                tokens_seen = state.get("tokens_seen", 0)
-                if rank == 0:
-                    logger.info(f"Resumed successfully from step {start_step} (tokens seen: {tokens_seen:,})")
+        if args.resume and resume_state is not None:
+            resume_manager = ResumeManager(base_dir=base_out_dir.parent)
+            start_step, tokens_seen = resume_manager.restore_state(
+                state=resume_state,
+                model=trainer.raw_model,
+                optimizer=optimizer,
+                scaler=trainer.scaler,
+                device=device,
+            )
+            # Update trainer's checkpoint manager to know about the resumed state
+            trainer.checkpoint_manager.checkpoint_dir = exp_dir
+            # Sync scaler state correctly if using AMP (ResumeManager restores it if present)
+
+        # Initialize CloudSyncManager for background uploads
+        cloud_sync = CloudSyncManager()
 
         max_steps = int(cfg.get("max_steps", 50))
         save_every = int(cfg.get("save_every_steps", 10))
@@ -272,6 +288,9 @@ def main() -> None:
                     )
                     training_logger.log_checkpoint(global_step, ckpt_path.name)
                     logger.info(f"Checkpoint saved at step {global_step} -> {ckpt_path.name}")
+                    
+                    # Trigger background sync to cloud
+                    cloud_sync.sync_experiment(exp_dir)
 
                 if is_distributed:
                     dist.barrier()

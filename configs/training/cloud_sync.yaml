@@ -1,0 +1,11 @@
+enable_sync: true
+provider: "huggingface"
+repository: "HeetSoni26/vajra-cloud-sync"
+private: true
+upload_frequency: 50
+background_upload: true
+retry_limit: 3
+retry_interval: 10
+download_on_resume: true
+compression: false
+metadata: true
