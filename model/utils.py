@@ -1,14 +1,16 @@
-import torch.nn as nn
-from typing import Dict, Any
-from model.modeling import VajraForCausalLM
+from typing import Any
+
+from torch import nn
+
 from model.config import VajraConfig
+from model.modeling import VajraForCausalLM
 
 
 def count_parameters(model: nn.Module) -> int:
     return sum(p.numel() for p in model.parameters() if p.requires_grad)
 
 
-def summarize_model(model: VajraForCausalLM) -> Dict[str, Any]:
+def summarize_model(model: VajraForCausalLM) -> dict[str, Any]:
     return {
         "model_type": "VajraForCausalLM",
         "parameters": count_parameters(model),

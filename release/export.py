@@ -1,7 +1,7 @@
-from pathlib import Path
 import json
 import logging
-from typing import Dict, Any, Optional
+from pathlib import Path
+from typing import Any
 
 import torch
 
@@ -34,14 +34,14 @@ class ModelExporter:
             self.export_pytorch(model, name="pytorch_model.bin")
         return path
 
-    def export_config(self, config_dict: Dict[str, Any], name: str = "config.json"):
+    def export_config(self, config_dict: dict[str, Any], name: str = "config.json"):
         path = self.output_dir / name
         with open(path, "w", encoding="utf-8") as f:
             json.dump(config_dict, f, indent=2)
         return path
 
     def export_generation_config(
-        self, config_dict: Dict[str, Any], name: str = "generation_config.json"
+        self, config_dict: dict[str, Any], name: str = "generation_config.json"
     ):
         path = self.output_dir / name
         with open(path, "w", encoding="utf-8") as f:
@@ -51,9 +51,9 @@ class ModelExporter:
     def export_huggingface(
         self,
         model: torch.nn.Module,
-        model_config: Dict[str, Any],
+        model_config: dict[str, Any],
         tokenizer: Any = None,
-        generation_config: Optional[Dict[str, Any]] = None,
+        generation_config: dict[str, Any] | None = None,
     ):
         """Creates a complete HuggingFace-compatible export."""
         # 1. Config

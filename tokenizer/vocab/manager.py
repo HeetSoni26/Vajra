@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from typing import Dict
+
 from tokenizer.configs.settings import TokenizerConfig
 
 
@@ -11,8 +11,8 @@ class VocabularyManager:
 
     def __init__(self, config: TokenizerConfig):
         self.config = config
-        self.token_to_id: Dict[str, int] = {}
-        self.id_to_token: Dict[int, str] = {}
+        self.token_to_id: dict[str, int] = {}
+        self.id_to_token: dict[int, str] = {}
 
     def add_token(self, token: str) -> int:
         if token in self.token_to_id:

@@ -1,7 +1,8 @@
-import sys
 import shutil
-import torch
+import sys
 from pathlib import Path
+
+import torch
 
 
 def run_preflight_checks(output_dir: str, dataset_dir: str):

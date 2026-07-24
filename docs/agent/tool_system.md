@@ -10,6 +10,7 @@ Subclass `BaseTool` and define `name`, `description`, `input_schema`, and `execu
 from typing import Any
 from vajra_agent import BaseTool, FoundationAgent
 
+
 class WeatherTool(BaseTool):
     @property
     def name(self) -> str:
@@ -23,10 +24,8 @@ class WeatherTool(BaseTool):
     def input_schema(self) -> dict[str, Any]:
         return {
             "type": "object",
-            "properties": {
-                "location": {"type": "string", "description": "City name"}
-            },
-            "required": ["location"]
+            "properties": {"location": {"type": "string", "description": "City name"}},
+            "required": ["location"],
         }
 
     def execute(self, location: str, **kwargs: Any) -> str:

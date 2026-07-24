@@ -1,6 +1,5 @@
-from typing import List
-from tokenizer.tokenizers.base import BaseTokenizer
 from tokenizer.configs.settings import TokenizerConfig
+from tokenizer.tokenizers.base import BaseTokenizer
 
 
 class MockTokenizer(BaseTokenizer):
@@ -14,7 +13,7 @@ class MockTokenizer(BaseTokenizer):
         self.vocab = {}
         self.inv_vocab = {}
 
-    def encode(self, text: str) -> List[int]:
+    def encode(self, text: str) -> list[int]:
         ids = []
         for word in text.split():
             if word not in self.vocab:
@@ -24,7 +23,7 @@ class MockTokenizer(BaseTokenizer):
             ids.append(self.vocab[word])
         return ids
 
-    def decode(self, ids: List[int]) -> str:
+    def decode(self, ids: list[int]) -> str:
         return " ".join([self.inv_vocab.get(i, self.config.unk_token) for i in ids])
 
     def get_vocab_size(self) -> int:

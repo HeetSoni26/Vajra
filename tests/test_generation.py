@@ -5,15 +5,15 @@ from __future__ import annotations
 import pytest
 import torch
 
-from inference.kv_cache import KVCache
 from inference.engine import (
-    InferenceEngine,
     GenerationConfig,
+    InferenceEngine,
     _apply_repetition_penalty,
     _apply_top_k,
     _apply_top_p,
     _sample_next_token,
 )
+from inference.kv_cache import KVCache
 from model import FoundationLM, ModelConfig
 
 

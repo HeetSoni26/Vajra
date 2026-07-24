@@ -1,6 +1,7 @@
 """Tests for RepositoryScanner and RepositoryContext."""
 
 from pathlib import Path
+
 from vajra_agent.repository import RepositoryScanner
 
 

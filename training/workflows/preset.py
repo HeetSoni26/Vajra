@@ -1,11 +1,11 @@
 from model.config import VajraConfig
+from training.ddp.config import DDPConfig
 from training.production.config import (
-    ProductionConfig,
-    OptimisationConfig,
     FaultToleranceConfig,
+    OptimisationConfig,
+    ProductionConfig,
     ProfilingConfig,
 )
-from training.ddp.config import DDPConfig
 
 
 def get_vajra_370m_preset(

@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Dict, Any
+from typing import Any
 
 from release.export import ModelExporter
 from release.model_card import ModelCardGenerator
@@ -15,9 +15,9 @@ class ReleasePackager:
     def create_package(
         self,
         model: Any,
-        config: Dict[str, Any],
+        config: dict[str, Any],
         tokenizer: Any = None,
-        metrics: Dict[str, Any] = None,
+        metrics: dict[str, Any] = None,
     ):
         """Creates a complete release package."""
 

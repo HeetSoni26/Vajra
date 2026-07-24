@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List
+
 from tokenizer.shards.metadata import ShardMetadata
 
 
@@ -13,11 +13,9 @@ class BaseShardWriter(ABC):
         self.metadata = metadata
 
     @abstractmethod
-    def write_batch(self, token_batch: List[List[int]]) -> None:
+    def write_batch(self, token_batch: list[list[int]]) -> None:
         """Writes a batch of token sequences."""
-        pass
 
     @abstractmethod
     def close(self) -> None:
         """Closes the shard and saves metadata."""
-        pass

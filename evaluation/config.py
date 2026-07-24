@@ -1,6 +1,6 @@
-from pydantic import BaseModel
 from pathlib import Path
-from typing import List
+
+from pydantic import BaseModel
 
 
 class EvaluationConfig(BaseModel):
@@ -9,9 +9,9 @@ class EvaluationConfig(BaseModel):
     mixed_precision: str = "bf16"  # none, fp16, bf16
     device: str = "cuda"
 
-    validation_datasets: List[str] = ["output/shards"]
-    metrics: List[str] = ["loss", "perplexity", "accuracy", "bpb", "throughput"]
-    benchmarks: List[str] = []  # e.g. "hellaswag", "arc"
+    validation_datasets: list[str] = ["output/shards"]
+    metrics: list[str] = ["loss", "perplexity", "accuracy", "bpb", "throughput"]
+    benchmarks: list[str] = []  # e.g. "hellaswag", "arc"
 
     output_dir: str = "output/evaluations"
     evaluation_interval: int = 1000  # for potential integration later

@@ -1,7 +1,7 @@
 import platform
-import sys
 import subprocess
-from typing import Dict, Any
+import sys
+from typing import Any
 
 
 class SnapshotManager:
@@ -10,7 +10,7 @@ class SnapshotManager:
     """
 
     @staticmethod
-    def capture_system_snapshot() -> Dict[str, Any]:
+    def capture_system_snapshot() -> dict[str, Any]:
         snapshot = {
             "os": platform.system(),
             "os_release": platform.release(),
@@ -43,10 +43,10 @@ class SnapshotManager:
 
     @staticmethod
     def capture_config_snapshot(
-        training_config: Dict[str, Any] = None,
-        model_config: Dict[str, Any] = None,
-        dataset_mixture: Dict[str, Any] = None,
-    ) -> Dict[str, Any]:
+        training_config: dict[str, Any] = None,
+        model_config: dict[str, Any] = None,
+        dataset_mixture: dict[str, Any] = None,
+    ) -> dict[str, Any]:
         return {
             "training_config": training_config or {},
             "model_config": model_config or {},

@@ -5,6 +5,7 @@ Vajra currently targets high-performance single-node multi-GPU DDP.
 """
 
 from __future__ import annotations
+
 from typing import Any
 
 from dataset.utils.logging import logger
@@ -34,4 +35,3 @@ class CommunicationAbstraction:
     @staticmethod
     def sync_gradients() -> None:
         """Placeholder for cross-node gradient synchronization."""
-        pass

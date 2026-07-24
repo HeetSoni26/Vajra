@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import argparse
-from datetime import datetime
 import json
-from pathlib import Path
 import time
+from datetime import datetime
+from pathlib import Path
 from typing import Any
 
 from dataset.builder import BinaryDatasetBuilder

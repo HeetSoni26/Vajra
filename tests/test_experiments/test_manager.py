@@ -1,10 +1,11 @@
-import tempfile
 import json
+import tempfile
 from pathlib import Path
+
+from experiments.comparison import ComparisonEngine
 from experiments.config import ExperimentConfig
 from experiments.manager import RunManager
 from experiments.search import SearchEngine
-from experiments.comparison import ComparisonEngine
 
 
 def test_run_creation():

@@ -1,10 +1,10 @@
 import torch
-import torch.nn as nn
-from typing import Optional, Tuple
+from torch import nn
+
 from model.config import VajraConfig
-from model.layers.rmsnorm import RMSNorm
 from model.layers.attention import VajraAttention
 from model.layers.mlp import VajraMLP
+from model.layers.rmsnorm import RMSNorm
 
 
 class VajraBlock(nn.Module):
@@ -19,14 +19,14 @@ class VajraBlock(nn.Module):
     def forward(
         self,
         hidden_states: torch.Tensor,
-        attention_mask: Optional[torch.Tensor] = None,
-        position_ids: Optional[torch.LongTensor] = None,
-        past_key_value: Optional[Tuple[torch.Tensor, torch.Tensor]] = None,
-        output_attentions: Optional[bool] = False,
-        use_cache: Optional[bool] = False,
-        cos: Optional[torch.Tensor] = None,
-        sin: Optional[torch.Tensor] = None,
-    ) -> Tuple[torch.Tensor, Optional[Tuple[torch.Tensor, torch.Tensor]]]:
+        attention_mask: torch.Tensor | None = None,
+        position_ids: torch.LongTensor | None = None,
+        past_key_value: tuple[torch.Tensor, torch.Tensor] | None = None,
+        output_attentions: bool | None = False,
+        use_cache: bool | None = False,
+        cos: torch.Tensor | None = None,
+        sin: torch.Tensor | None = None,
+    ) -> tuple[torch.Tensor, tuple[torch.Tensor, torch.Tensor] | None]:
         residual = hidden_states
 
         hidden_states = self.input_layernorm(hidden_states)

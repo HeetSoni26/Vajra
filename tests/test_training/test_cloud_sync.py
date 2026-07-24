@@ -3,9 +3,9 @@ import shutil
 import pytest
 import yaml
 
+from tests.test_training.test_resume import create_dummy_checkpoint
 from training.cloud.sync_manager import CloudSyncManager
 from training.resume import ResumeManager
-from tests.test_training.test_resume import create_dummy_checkpoint
 
 
 @pytest.fixture
@@ -113,7 +113,6 @@ def test_cloud_sync_retry_logic(sync_env, monkeypatch):
         if call_count < 3:
             raise ConnectionError("Simulated network drop")
         # Let it succeed on the 3rd try (we won't actually copy, just pass)
-        pass
 
     monkeypatch.setattr(manager.backend, "upload_folder", mock_upload)
 

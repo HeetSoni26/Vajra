@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import ast
 from pathlib import Path
+
 from vajra_agent.indexing.models import SymbolInfo, WorkspaceIndex
 
 

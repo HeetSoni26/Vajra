@@ -1,6 +1,7 @@
 """Validation suite verifying RepositoryScanner and WorkspaceIndexer across multi-language projects."""
 
 from pathlib import Path
+
 from vajra_agent import RepositoryScanner, WorkspaceIndexer
 
 

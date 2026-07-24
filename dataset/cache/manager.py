@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from typing import Dict, Any
+from typing import Any
 
 from dataset.configs.settings import config
 from dataset.utils.logging import logger
@@ -16,9 +16,9 @@ class CacheManager:
         self.cache_dir = Path(cache_dir or config.cache_dir)
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         self.state_file = self.cache_dir / "download_state.json"
-        self._state: Dict[str, Any] = self._load_state()
+        self._state: dict[str, Any] = self._load_state()
 
-    def _load_state(self) -> Dict[str, Any]:
+    def _load_state(self) -> dict[str, Any]:
         """Loads the current download states from disk."""
         if self.state_file.exists():
             try:

@@ -4,11 +4,11 @@ from __future__ import annotations
 
 from typing import Any
 
+from utils.logging import setup_logger
 from vajra_agent.agent.agent import FoundationAgent
 from vajra_agent.multi_agent.communication import AgentMessage, MessageType
 from vajra_agent.multi_agent.shared_memory import SharedMemory
 from vajra_agent.multi_agent.task_graph import TaskGraph, TaskStatus
-from utils.logging import setup_logger
 
 logger = setup_logger("multi_agent_orchestrator")
 

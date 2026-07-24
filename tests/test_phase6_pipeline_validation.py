@@ -5,12 +5,13 @@ Unit tests for Phase 6 — End-to-End Training Pipeline Validation.
 from __future__ import annotations
 
 from pathlib import Path
+
 import torch
 
 from model import FoundationLM, ModelConfig
-from training.checkpoint import save_checkpoint, load_checkpoint
-from training.optimizer import build_optimizer
 from scripts.run_phase6_validation import run_all_validation
+from training.checkpoint import load_checkpoint, save_checkpoint
+from training.optimizer import build_optimizer
 
 
 def test_validation_configs_exist():

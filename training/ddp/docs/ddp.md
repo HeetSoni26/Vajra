@@ -31,6 +31,7 @@ torchrun / mp.spawn
 ```python
 import torch.multiprocessing as mp
 from training.ddp.scripts.launch import _worker
+
 mp.spawn(_worker, args=(world_size, train_config, ddp_config), nprocs=world_size)
 ```
 

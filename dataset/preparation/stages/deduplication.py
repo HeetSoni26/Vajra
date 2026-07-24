@@ -1,5 +1,5 @@
 import hashlib
-from typing import Optional, Set
+
 from dataset.preparation.models import Document, PreparationStatistics
 from dataset.preparation.stages.base import PipelineStage
 
@@ -12,9 +12,9 @@ class ExactDeduplicationStage(PipelineStage):
 
     def __init__(self, config):
         super().__init__(config)
-        self.seen_hashes: Set[str] = set()
+        self.seen_hashes: set[str] = set()
 
-    def process(self, doc: Document, stats: PreparationStatistics) -> Optional[Document]:
+    def process(self, doc: Document, stats: PreparationStatistics) -> Document | None:
         if not self.config.enable_exact_deduplication:
             return doc
 

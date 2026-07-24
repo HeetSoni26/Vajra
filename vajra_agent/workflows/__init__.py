@@ -11,9 +11,9 @@ from vajra_agent.workflows.coding import (
 
 __all__ = [
     "BaseWorkflow",
-    "RepoAnalysisWorkflow",
     "BugFixWorkflow",
     "FeatureWorkflow",
     "RefactorWorkflow",
+    "RepoAnalysisWorkflow",
     "TestGenerationWorkflow",
 ]

@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-
 from vajra_agent.agent.agent import FoundationAgent
 from vajra_agent.multi_agent.orchestrator import Orchestrator
 from vajra_agent.multi_agent.shared_memory import SharedMemory

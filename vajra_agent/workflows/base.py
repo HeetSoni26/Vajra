@@ -19,9 +19,7 @@ class BaseWorkflow(ABC):
     @abstractmethod
     def name(self) -> str:
         """Workflow identifier name."""
-        pass
 
     @abstractmethod
     def execute(self, **kwargs: Any) -> AgentResponse:
         """Execute workflow logic."""
-        pass

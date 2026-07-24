@@ -1,6 +1,5 @@
-from typing import List, Dict
+from dataset.metadata.licenses import LicenseCategory, LicenseValidator
 from dataset.mixture.models import DatasetMixture
-from dataset.metadata.licenses import LicenseValidator, LicenseCategory
 
 
 class MixtureValidationError(Exception):
@@ -13,7 +12,7 @@ class MixtureValidator:
     """
 
     @classmethod
-    def validate(cls, mixture: DatasetMixture) -> Dict[str, List[str]]:
+    def validate(cls, mixture: DatasetMixture) -> dict[str, list[str]]:
         """
         Validates the mixture and returns a dictionary of warnings and errors.
         """

@@ -1,8 +1,9 @@
-from typing import Iterable, List
-from tokenizer.trainers.base import BaseTrainer
-from tokenizer.tokenizers.hf_bpe import HFBpeTokenizer
-from tokenizer.tokenizers.base import BaseTokenizer
+from collections.abc import Iterable
+
 from tokenizer.configs.settings import TokenizerConfig
+from tokenizer.tokenizers.base import BaseTokenizer
+from tokenizer.tokenizers.hf_bpe import HFBpeTokenizer
+from tokenizer.trainers.base import BaseTrainer
 
 try:
     from tokenizers.trainers import BpeTrainer
@@ -60,7 +61,7 @@ class HFBpeTrainer(BaseTrainer):
 
         return tokenizer
 
-    def train_from_files(self, file_paths: List[str]) -> BaseTokenizer:
+    def train_from_files(self, file_paths: list[str]) -> BaseTokenizer:
         tokenizer = HFBpeTokenizer(self.config)
         trainer = self._create_hf_trainer()
 

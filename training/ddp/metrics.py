@@ -1,6 +1,8 @@
+from typing import Any
+
 import torch
 import torch.distributed as dist
-from typing import Dict, Any
+
 from training.ddp.init import get_world_size
 
 
@@ -17,7 +19,7 @@ def all_reduce_mean(value: float) -> float:
     return (tensor / get_world_size()).item()
 
 
-def aggregate_metrics(local_metrics: Dict[str, Any]) -> Dict[str, Any]:
+def aggregate_metrics(local_metrics: dict[str, Any]) -> dict[str, Any]:
     """
     Reduce per-rank metrics to global averages.
     Operates in-place and returns the aggregated dict.

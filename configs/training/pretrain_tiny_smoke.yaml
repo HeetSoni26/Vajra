@@ -1,0 +1,26 @@
+# Vajra-Tiny Pretraining Configuration
+# Target: ~1B tokens (Chinchilla-optimal for ~18M params)
+# Suitable for: single GPU (RTX 3090 / A100) or development machine
+model_config: configs/model/model_tiny.yaml
+data_dir: data/test_dataset
+output_dir: checkpoints/pretrain_tiny
+tokenizer_path: tokenizer/v1.0
+sequence_length: 1024
+global_batch_tokens: 524288
+micro_batch_size: 1
+gradient_accumulation_steps: 16
+learning_rate: 3.0e-4
+min_learning_rate: 3.0e-5
+warmup_steps: 100
+weight_decay: 0.1
+adam_beta1: 0.9
+adam_beta2: 0.95
+adam_epsilon: 1.0e-8
+grad_clip: 1.0
+max_steps: 100
+max_tokens: 1000000000
+save_every_steps: 200
+eval_every_steps: 100
+precision: bf16
+scheduler: cosine
+wandb_project: vajra-lm-tiny

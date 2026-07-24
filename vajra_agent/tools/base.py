@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
 import time
+from abc import ABC, abstractmethod
 from typing import Any
 
 from vajra_agent.schemas.results import ToolExecutionResult
@@ -20,13 +20,11 @@ class BaseTool(ABC):
     @abstractmethod
     def name(self) -> str:
         """Unique identifier name of the tool."""
-        pass
 
     @property
     @abstractmethod
     def description(self) -> str:
         """Description explaining when and how the model should use this tool."""
-        pass
 
     @property
     def input_schema(self) -> dict[str, Any]:
@@ -41,7 +39,6 @@ class BaseTool(ABC):
     @abstractmethod
     def execute(self, **kwargs: Any) -> Any:
         """Execute tool logic and return raw result or payload."""
-        pass
 
     def run(self, **kwargs: Any) -> ToolExecutionResult:
         """Safely execute the tool and return a strongly typed ToolExecutionResult."""

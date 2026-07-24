@@ -1,11 +1,12 @@
 import os
 import uuid
-import numpy as np
 from pathlib import Path
-from typing import List
-from dataset.sharding.models import ShardFormatConfig, ShardStatistics
-from dataset.sharding.metadata import BinaryShardMetadata
+
+import numpy as np
+
 from dataset.mixture.models import DatasetMixture
+from dataset.sharding.metadata import BinaryShardMetadata
+from dataset.sharding.models import ShardFormatConfig, ShardStatistics
 
 
 class BinaryShardWriter:
@@ -38,7 +39,7 @@ class BinaryShardWriter:
         self.dtype_map = {"uint16": np.uint16, "uint32": np.uint32}
         self.np_dtype = self.dtype_map.get(self.config.dtype, np.uint16)
 
-    def write(self, sequence: List[int]):
+    def write(self, sequence: list[int]):
         """
         Writes a single packed sequence to the binary stream.
         """

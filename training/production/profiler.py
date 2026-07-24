@@ -1,6 +1,6 @@
 import time
+
 import torch
-from typing import Dict
 
 
 class MemoryProfiler:
@@ -10,7 +10,7 @@ class MemoryProfiler:
         self.device = device
         self.enabled = device.type == "cuda"
 
-    def get_memory_stats(self) -> Dict[str, float]:
+    def get_memory_stats(self) -> dict[str, float]:
         if not self.enabled:
             return {}
 
@@ -55,6 +55,6 @@ class PerformanceProfiler:
     def end_backward(self):
         self.stats["backward_time_ms"] = (time.perf_counter() - self.backward_start_time) * 1000
 
-    def end_step(self) -> Dict[str, float]:
+    def end_step(self) -> dict[str, float]:
         self.stats["step_time_ms"] = (time.perf_counter() - self.step_start_time) * 1000
         return self.stats.copy()

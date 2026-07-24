@@ -1,16 +1,17 @@
 import time
-from typing import List, Iterable
+from collections.abc import Iterable
+
 from dataset.preparation.models import Document, PreparationConfig, PreparationStatistics
 from dataset.preparation.stages import (
+    CharacterRatioFilteringStage,
+    EmptyRemovalStage,
+    ExactDeduplicationStage,
+    LanguageDetectionStage,
+    LengthFilteringStage,
     PipelineStage,
     UnicodeNormalizationStage,
     WhitespaceNormalizationStage,
-    EmptyRemovalStage,
-    LengthFilteringStage,
-    CharacterRatioFilteringStage,
     WhitespaceRatioFilteringStage,
-    ExactDeduplicationStage,
-    LanguageDetectionStage,
 )
 from dataset.utils.logging import logger
 
@@ -23,9 +24,9 @@ class PreparationPipeline:
     def __init__(self, config: PreparationConfig):
         self.config = config
         self.stats = PreparationStatistics()
-        self.stages: List[PipelineStage] = self._build_pipeline()
+        self.stages: list[PipelineStage] = self._build_pipeline()
 
-    def _build_pipeline(self) -> List[PipelineStage]:
+    def _build_pipeline(self) -> list[PipelineStage]:
         """
         Instantiates the processing stages in the correct order.
         """

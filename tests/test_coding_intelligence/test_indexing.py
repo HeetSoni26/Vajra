@@ -1,6 +1,7 @@
 """Tests for WorkspaceIndexer and AST symbol extraction."""
 
 from pathlib import Path
+
 from vajra_agent.indexing import WorkspaceIndexer
 
 

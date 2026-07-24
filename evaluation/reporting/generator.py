@@ -1,8 +1,7 @@
-import json
 import csv
+import json
 from datetime import datetime
 from pathlib import Path
-from typing import Dict
 
 
 class ReportGenerator:
@@ -15,7 +14,7 @@ class ReportGenerator:
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
     def generate(
-        self, model_id: str, metrics: Dict[str, float], hardware_info: Dict[str, str] = None
+        self, model_id: str, metrics: dict[str, float], hardware_info: dict[str, str] = None
     ) -> Path:
         timestamp = datetime.now().isoformat()
 
@@ -44,7 +43,6 @@ class ReportGenerator:
             f.write(f"# Evaluation Report: {model_id}\n")
             f.write(f"**Date**: {timestamp}\n\n")
             f.write("## Metrics\n\n")
-            for k, v in metrics.items():
-                f.write(f"- **{k}**: {v:.4f}\n")
+            f.writelines(f"- **{k}**: {v:.4f}\n" for k, v in metrics.items())
 
         return json_path

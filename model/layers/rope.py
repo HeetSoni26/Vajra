@@ -1,6 +1,5 @@
 import torch
-import torch.nn as nn
-from typing import Tuple
+from torch import nn
 
 
 class RotaryEmbedding(nn.Module):
@@ -33,7 +32,7 @@ class RotaryEmbedding(nn.Module):
         self.register_buffer("cos_cached", emb.cos().to(dtype), persistent=False)
         self.register_buffer("sin_cached", emb.sin().to(dtype), persistent=False)
 
-    def forward(self, x: torch.Tensor, seq_len: int = None) -> Tuple[torch.Tensor, torch.Tensor]:
+    def forward(self, x: torch.Tensor, seq_len: int = None) -> tuple[torch.Tensor, torch.Tensor]:
         if seq_len > self.max_seq_len_cached:
             self._set_cos_sin_cache(seq_len=seq_len, device=x.device, dtype=x.dtype)
 
@@ -45,7 +44,7 @@ class RotaryEmbedding(nn.Module):
 
 def apply_rotary_pos_emb(
     q: torch.Tensor, k: torch.Tensor, cos: torch.Tensor, sin: torch.Tensor
-) -> Tuple[torch.Tensor, torch.Tensor]:
+) -> tuple[torch.Tensor, torch.Tensor]:
     # q, k shapes: [bsz, seq_len, num_heads, head_dim]
 
     def rotate_half(x: torch.Tensor) -> torch.Tensor:

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+
 from vajra_agent.memory.storage.base import VectorRecord
 
 
@@ -12,7 +13,6 @@ class BaseMemoryPolicy(ABC):
     @abstractmethod
     def prune(self, records: list[VectorRecord], max_records: int) -> list[VectorRecord]:
         """Prune record list according to policy rules."""
-        pass
 
 
 class LRUPolicy(BaseMemoryPolicy):

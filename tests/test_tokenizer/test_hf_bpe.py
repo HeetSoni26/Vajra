@@ -1,8 +1,10 @@
+import tempfile
+
 import pytest
+
 from tokenizer.configs.settings import TokenizerConfig
 from tokenizer.tokenizers.hf_bpe import HFBpeTokenizer
 from tokenizer.trainers.hf_trainer import HFBpeTrainer
-import tempfile
 
 pytest.importorskip("tokenizers")
 

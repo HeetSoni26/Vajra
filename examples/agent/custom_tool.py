@@ -1,6 +1,7 @@
 """Custom Tool creation example."""
 
 from typing import Any
+
 from vajra_agent import BaseTool, FoundationAgent, MockReasoner
 
 

@@ -1,5 +1,7 @@
 import argparse
+
 from evaluation.benchmarks.registry import BenchmarkRegistry
+
 # Ensure adapters are registered
 
 

@@ -1,7 +1,8 @@
 import math
 import time
+
 import torch
-from typing import Dict
+
 from evaluation.metrics.base import BaseMetric
 
 
@@ -34,7 +35,7 @@ class StandardMetrics(BaseMetric):
 
         self.correct_tokens += (preds_shift == labels_shift).sum().item()
 
-    def compute(self) -> Dict[str, float]:
+    def compute(self) -> dict[str, float]:
         elapsed = time.time() - self.start_time
         avg_loss = self.total_loss / max(1, self.total_tokens)
 

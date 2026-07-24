@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
-from typing import Iterable, List
+from collections.abc import Iterable
+
 from tokenizer.configs.settings import TokenizerConfig
 from tokenizer.tokenizers.base import BaseTokenizer
 
@@ -18,11 +19,9 @@ class BaseTrainer(ABC):
         Train a new tokenizer model from an iterator of strings.
         Returns the trained BaseTokenizer instance.
         """
-        pass
 
     @abstractmethod
-    def train_from_files(self, file_paths: List[str]) -> BaseTokenizer:
+    def train_from_files(self, file_paths: list[str]) -> BaseTokenizer:
         """
         Train a new tokenizer model directly from files.
         """
-        pass

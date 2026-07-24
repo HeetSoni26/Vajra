@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import warnings
-from model.modeling import VajraForCausalLM, VajraModel  # noqa: F401
+
 from model.blocks import VajraBlock
-from model.config import VajraConfig, ModelConfig  # noqa: F401
+from model.config import ModelConfig, VajraConfig  # noqa: F401
+from model.modeling import VajraForCausalLM, VajraModel  # noqa: F401
 
 TransformerBlock = VajraBlock
 

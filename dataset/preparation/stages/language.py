@@ -1,4 +1,3 @@
-from typing import Optional
 from dataset.preparation.models import Document, PreparationStatistics
 from dataset.preparation.stages.base import PipelineStage
 
@@ -9,7 +8,7 @@ class LanguageDetectionStage(PipelineStage):
     Currently just passes the document through.
     """
 
-    def process(self, doc: Document, stats: PreparationStatistics) -> Optional[Document]:
+    def process(self, doc: Document, stats: PreparationStatistics) -> Document | None:
         if not self.config.enable_language_detection:
             return doc
 

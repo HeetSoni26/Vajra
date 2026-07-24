@@ -12,7 +12,7 @@ if hasattr(sys.stdout, "reconfigure"):
 
 def cmd_generate(args: argparse.Namespace) -> None:
     """Generate text from a prompt."""
-    from inference.engine import InferenceEngine, GenerationConfig
+    from inference.engine import GenerationConfig, InferenceEngine
 
     engine = InferenceEngine.from_config(args.config, args.checkpoint or None)
     gen_cfg = GenerationConfig(
@@ -39,7 +39,7 @@ def cmd_generate(args: argparse.Namespace) -> None:
 
 def cmd_chat(args: argparse.Namespace) -> None:
     """Interactive chat REPL."""
-    from inference.engine import InferenceEngine, GenerationConfig
+    from inference.engine import GenerationConfig, InferenceEngine
 
     engine = InferenceEngine.from_config(args.config, args.checkpoint or None)
     gen_cfg = GenerationConfig(
@@ -84,8 +84,9 @@ def cmd_evaluate(args: argparse.Namespace) -> None:
 
 def cmd_tokenize(args: argparse.Namespace) -> None:
     """Tokenize or detokenize text."""
-    from tokenizers import Tokenizer
     from pathlib import Path
+
+    from tokenizers import Tokenizer
 
     tok_path = Path(args.tokenizer)
     if tok_path.is_dir():

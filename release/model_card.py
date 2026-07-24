@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Dict, Any
+from typing import Any
 
 
 class ModelCardGenerator:
@@ -10,7 +10,7 @@ class ModelCardGenerator:
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
     def generate(
-        self, model_name: str, config: Dict[str, Any], eval_metrics: Dict[str, Any] = None
+        self, model_name: str, config: dict[str, Any], eval_metrics: dict[str, Any] = None
     ) -> Path:
         content = f"""# {model_name}
 

@@ -1,7 +1,8 @@
 import json
 import uuid
-from typing import Iterable
+from collections.abc import Iterable
 from pathlib import Path
+
 from dataset.preparation.models import Document
 from dataset.utils.logging import logger
 

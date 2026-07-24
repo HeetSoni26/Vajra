@@ -1,5 +1,6 @@
 import time
-from typing import List, Dict, Any
+from typing import Any
+
 from evaluation.benchmarks.registry import BenchmarkRegistry
 
 
@@ -11,8 +12,8 @@ class EvaluationPipeline:
         self.tokenizer = tokenizer
 
     def evaluate_benchmark(
-        self, benchmark_name: str, dataset: List[Dict[str, Any]]
-    ) -> Dict[str, Any]:
+        self, benchmark_name: str, dataset: list[dict[str, Any]]
+    ) -> dict[str, Any]:
         """Runs evaluation for a single benchmark."""
         adapter = BenchmarkRegistry.get_adapter(benchmark_name)
 
@@ -44,8 +45,8 @@ class EvaluationPipeline:
         return metrics
 
     def run_suite(
-        self, benchmarks: List[str], dataset_mocks: Dict[str, List[Dict[str, Any]]]
-    ) -> Dict[str, Dict[str, Any]]:
+        self, benchmarks: list[str], dataset_mocks: dict[str, list[dict[str, Any]]]
+    ) -> dict[str, dict[str, Any]]:
         """Runs evaluation across multiple benchmarks."""
         results = {}
         # In a real environment, this might use concurrent.futures for parallel execution.

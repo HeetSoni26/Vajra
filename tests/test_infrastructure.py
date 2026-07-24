@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import torch
-import torch.nn as nn
+from torch import nn
 
 from training.checkpoint import CheckpointManager
 from utils.config import apply_cli_overrides, merge_configs

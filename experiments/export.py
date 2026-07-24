@@ -1,12 +1,12 @@
-import json
 import csv
+import json
 from pathlib import Path
-from typing import Dict, Any
+from typing import Any
 
 
 class ExportManager:
     @staticmethod
-    def export_summary(run_metadata: Dict[str, Any], output_path: Path, format: str = "json"):
+    def export_summary(run_metadata: dict[str, Any], output_path: Path, format: str = "json"):
         output_path = Path(output_path)
         output_path.parent.mkdir(parents=True, exist_ok=True)
 

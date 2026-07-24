@@ -24,11 +24,11 @@ from typing import Any
 import torch.distributed as dist
 from torch.utils.data import DataLoader
 
-from training.orchestration.experiment_manager import ExperimentManager, TrainingState
+from training.cloud.sync_manager import CloudSyncManager
 from training.orchestration.eta_engine import ETAEngine
+from training.orchestration.experiment_manager import ExperimentManager, TrainingState
 from training.orchestration.health_monitor import HealthMonitor
 from training.orchestration.watchdog import Watchdog
-from training.cloud.sync_manager import CloudSyncManager
 from training.trainer import Trainer
 from training.training_logger import TrainingLogger
 from utils.logging import setup_logger
@@ -38,7 +38,7 @@ logger = setup_logger("orchestrator")
 _EMERGENCY_SAVE_REQUESTED = False
 
 
-def _signal_handler(signum, _frame):  # noqa: ANN001
+def _signal_handler(signum, _frame):
     global _EMERGENCY_SAVE_REQUESTED
     logger.warning(
         f"[SIGNAL] Received signal {signum}. Emergency checkpoint will be saved before exit."

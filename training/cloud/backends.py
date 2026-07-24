@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Any
 
 from huggingface_hub import HfApi, hf_hub_download
+
 from utils.logging import setup_logger
 
 logger = setup_logger("cloud_backend")
@@ -103,8 +104,8 @@ class LocalBackend(StorageBackend):
     def upload_folder(
         self, local_dir: str | Path, remote_path: str, run_as_future: bool = True
     ) -> Any:
-        import shutil
         import concurrent.futures
+        import shutil
 
         target = self.target_dir / remote_path
 

@@ -3,9 +3,9 @@ from pathlib import Path
 
 import pytest
 import torch
-import torch.nn as nn
+from torch import nn
 
-from training.resume import ResumeManager, CheckpointValidationError
+from training.resume import CheckpointValidationError, ResumeManager
 
 
 class DummyModel(nn.Module):

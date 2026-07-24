@@ -114,6 +114,7 @@ def load_checkpoint(
 
 def _capture_rng_state() -> dict:
     import random
+
     import numpy as np
 
     state: dict[str, Any] = {
@@ -128,6 +129,7 @@ def _capture_rng_state() -> dict:
 
 def _restore_rng_state(rng_state: dict) -> None:
     import random
+
     import numpy as np
 
     if "python" in rng_state:

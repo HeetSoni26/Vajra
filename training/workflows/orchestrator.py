@@ -1,13 +1,12 @@
 import logging
-from typing import Optional
 
 from model.modeling import VajraForCausalLM
-from training.production.engine import ProductionTrainingEngine
-from training.ddp.dataloader import create_distributed_dataloader
 from training.checkpoints.manager import TrainingCheckpointManager
+from training.ddp.dataloader import create_distributed_dataloader
+from training.production.engine import ProductionTrainingEngine
 from training.workflows.generation import TextGenerationPipeline
-from training.workflows.reporting import TrainingReportGenerator
 from training.workflows.preset import get_vajra_370m_preset, get_vajra_tiny_preset
+from training.workflows.reporting import TrainingReportGenerator
 
 logger = logging.getLogger(__name__)
 
@@ -47,7 +46,7 @@ class TrainingSessionManager:
 
         self.metrics_history = []
 
-    def train(self, resume_checkpoint: Optional[str] = None):
+    def train(self, resume_checkpoint: str | None = None):
         """Executes the training loop."""
 
         start_step = 0

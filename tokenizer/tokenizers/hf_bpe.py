@@ -1,13 +1,14 @@
 import os
-from typing import List, Optional
-from tokenizer.tokenizers.base import BaseTokenizer
+from typing import Optional
+
 from tokenizer.configs.settings import TokenizerConfig
+from tokenizer.tokenizers.base import BaseTokenizer
 
 try:
     from tokenizers import Tokenizer
     from tokenizers.models import BPE
-    from tokenizers.pre_tokenizers import Whitespace
     from tokenizers.normalizers import NFD, Sequence, StripAccents
+    from tokenizers.pre_tokenizers import Whitespace
     from tokenizers.processors import TemplateProcessing
 except ImportError:
     pass  # Allow offline linting if missing
@@ -49,11 +50,11 @@ class HFBpeTokenizer(BaseTokenizer):
             ],
         )
 
-    def encode(self, text: str) -> List[int]:
+    def encode(self, text: str) -> list[int]:
         encoded = self._tokenizer.encode(text)
         return encoded.ids
 
-    def decode(self, ids: List[int]) -> str:
+    def decode(self, ids: list[int]) -> str:
         return self._tokenizer.decode(ids, skip_special_tokens=False)
 
     def get_vocab_size(self) -> int:

@@ -1,17 +1,17 @@
-import torch
 from pathlib import Path
-from typing import Union
+
+import torch
 
 # Attempt to load safetensors if available
 try:
-    from safetensors.torch import save_file, load_file
+    from safetensors.torch import load_file, save_file
 
     HAS_SAFETENSORS = True
 except ImportError:
     HAS_SAFETENSORS = False
 
-from model.modeling import VajraForCausalLM
 from model.config import VajraConfig
+from model.modeling import VajraForCausalLM
 
 
 class CheckpointManager:
@@ -22,7 +22,7 @@ class CheckpointManager:
 
     @staticmethod
     def save_checkpoint(
-        model: VajraForCausalLM, output_dir: Union[str, Path], use_safetensors: bool = True
+        model: VajraForCausalLM, output_dir: str | Path, use_safetensors: bool = True
     ):
         output_dir = Path(output_dir)
         output_dir.mkdir(parents=True, exist_ok=True)
@@ -40,7 +40,7 @@ class CheckpointManager:
             torch.save(state_dict, output_dir / "pytorch_model.bin")
 
     @staticmethod
-    def load_checkpoint(output_dir: Union[str, Path], device: str = "cpu") -> VajraForCausalLM:
+    def load_checkpoint(output_dir: str | Path, device: str = "cpu") -> VajraForCausalLM:
         output_dir = Path(output_dir)
         if not output_dir.exists():
             raise FileNotFoundError(f"Checkpoint directory {output_dir} not found.")

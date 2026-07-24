@@ -1,17 +1,17 @@
 from __future__ import annotations
 
-from contextlib import asynccontextmanager
 import os
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, HTTPException, status
 from fastapi.responses import StreamingResponse
 
 from api.middleware import setup_middleware
 from api.schemas import (
-    CompletionRequest,
     ChatRequest,
-    TokenizeRequest,
+    CompletionRequest,
     DetokenizeRequest,
+    TokenizeRequest,
 )
 
 _ENGINE = None
@@ -114,7 +114,7 @@ async def completions(request: CompletionRequest):
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Generation failed: {str(e)}",
+            detail=f"Generation failed: {e!s}",
         )
 
     return {
@@ -160,7 +160,7 @@ async def chat_completions(request: ChatRequest):
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Chat generation failed: {str(e)}",
+            detail=f"Chat generation failed: {e!s}",
         )
 
     return {

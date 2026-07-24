@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from datetime import datetime
 import logging
-from pathlib import Path
 import sys
+from datetime import datetime
+from pathlib import Path
 from typing import Any
 
 from .environment import get_git_hash

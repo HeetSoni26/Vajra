@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import glob
 from pathlib import Path
+
 import yaml
 from tokenizers import ByteLevelBPETokenizer
 from transformers import PreTrainedTokenizerFast

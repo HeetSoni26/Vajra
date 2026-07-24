@@ -1,4 +1,3 @@
-from typing import List, Optional
 from dataset.metadata.models import DatasetMetadata
 from dataset.registry.registry import DatasetRegistry
 
@@ -13,14 +12,14 @@ class DatasetSearch:
 
     def search(
         self,
-        query: Optional[str] = None,
-        language: Optional[str] = None,
-        domain: Optional[str] = None,
-        license: Optional[str] = None,
-        tags: Optional[List[str]] = None,
-        dataset_type: Optional[str] = None,
-        quality_rating: Optional[str] = None,
-    ) -> List[DatasetMetadata]:
+        query: str | None = None,
+        language: str | None = None,
+        domain: str | None = None,
+        license: str | None = None,
+        tags: list[str] | None = None,
+        dataset_type: str | None = None,
+        quality_rating: str | None = None,
+    ) -> list[DatasetMetadata]:
         """
         Search and filter registered datasets based on multiple criteria.
         """

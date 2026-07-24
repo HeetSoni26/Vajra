@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+
 import pytest
 from fastapi.testclient import TestClient
 
@@ -73,6 +74,7 @@ def test_detokenize_endpoint(api_client):
 
 def test_uninitialized_engine_returns_503():
     from fastapi.testclient import TestClient
+
     from api import main
 
     old_engine = main._ENGINE

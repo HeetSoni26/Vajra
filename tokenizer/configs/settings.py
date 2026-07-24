@@ -1,6 +1,6 @@
-from typing import List
-from pydantic import BaseModel, Field, ConfigDict
 from enum import Enum
+
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class TokenizerType(str, Enum):
@@ -25,7 +25,7 @@ class TokenizerConfig(BaseModel):
     eos_token: str = "</s>"
     unk_token: str = "<unk>"
     pad_token: str = "<pad>"
-    additional_special_tokens: List[str] = Field(default_factory=list)
+    additional_special_tokens: list[str] = Field(default_factory=list)
 
     # Pre-tokenization / Normalization
     enable_normalization: bool = True
@@ -38,6 +38,6 @@ class TokenizerConfig(BaseModel):
 
     # I/O
     output_dir: str = "output/tokenizer"
-    training_corpus_paths: List[str] = Field(default_factory=list)
+    training_corpus_paths: list[str] = Field(default_factory=list)
 
     model_config = ConfigDict(use_enum_values=True)

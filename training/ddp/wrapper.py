@@ -1,5 +1,5 @@
 import torch
-import torch.nn as nn
+from torch import nn
 from torch.nn.parallel import DistributedDataParallel as DDP
 
 from model.modeling import VajraForCausalLM

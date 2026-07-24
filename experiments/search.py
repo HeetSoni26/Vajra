@@ -1,13 +1,13 @@
-from pathlib import Path
-from typing import List, Dict, Any
 import json
+from pathlib import Path
+from typing import Any
 
 
 class SearchEngine:
     def __init__(self, storage_dir: Path):
         self.storage_dir = Path(storage_dir)
 
-    def _get_all_runs(self) -> List[Dict[str, Any]]:
+    def _get_all_runs(self) -> list[dict[str, Any]]:
         runs = []
         if not self.storage_dir.exists():
             return runs
@@ -25,8 +25,8 @@ class SearchEngine:
         return runs
 
     def filter_runs(
-        self, tags: List[str] = None, status: str = None, project: str = None
-    ) -> List[Dict[str, Any]]:
+        self, tags: list[str] = None, status: str = None, project: str = None
+    ) -> list[dict[str, Any]]:
         runs = self._get_all_runs()
         results = []
 

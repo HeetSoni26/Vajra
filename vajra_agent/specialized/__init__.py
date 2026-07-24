@@ -15,15 +15,15 @@ from vajra_agent.specialized.agents import (
 from vajra_agent.specialized.base import SpecializedAgent
 
 __all__ = [
-    "SpecializedAgent",
     "ArchitectAgent",
-    "PlannerAgent",
-    "ResearchAgent",
     "CoderAgent",
-    "ReviewerAgent",
-    "TesterAgent",
     "DebuggerAgent",
     "DocumentationAgent",
-    "SecurityAgent",
+    "PlannerAgent",
     "RefactorAgent",
+    "ResearchAgent",
+    "ReviewerAgent",
+    "SecurityAgent",
+    "SpecializedAgent",
+    "TesterAgent",
 ]

@@ -1,5 +1,5 @@
 import torch
-import torch.nn as nn
+from torch import nn
 from torch.utils.checkpoint import checkpoint
 
 from training.production.config import OptimisationConfig

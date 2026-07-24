@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 import math
-from pathlib import Path
 import time
+from pathlib import Path
 from typing import Any
 
 import torch
-import torch.nn as nn
+from torch import nn
 from torch.utils.data import DataLoader
 
 from training.checkpoint import CheckpointManager
@@ -42,9 +42,7 @@ def resolve_precision_and_scaler(
     scaler_device = "cuda" if device_type == "cuda" else "cpu"
 
     if mode == "bf16":
-        if device_type == "cuda" and torch.cuda.is_bf16_supported():
-            return torch.bfloat16, True, torch.amp.GradScaler(scaler_device, enabled=False)
-        elif device_type == "mps":
+        if device_type == "cuda" and torch.cuda.is_bf16_supported() or device_type == "mps":
             return torch.bfloat16, True, torch.amp.GradScaler(scaler_device, enabled=False)
         else:
             logger.warning(

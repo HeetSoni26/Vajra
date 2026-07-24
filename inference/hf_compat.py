@@ -13,7 +13,7 @@ from typing import Any
 
 import torch
 
-from model import VajraForCausalLM, VajraConfig, FoundationLM
+from model import FoundationLM, VajraConfig, VajraForCausalLM
 from utils.file_utils import write_json
 from utils.logging import setup_logger
 

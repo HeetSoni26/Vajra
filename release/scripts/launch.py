@@ -1,7 +1,9 @@
 import argparse
-from release.package import ReleasePackager
+
+from torch import nn
+
 from release.inference import InferenceExamplesGenerator
-import torch.nn as nn
+from release.package import ReleasePackager
 
 
 def main():

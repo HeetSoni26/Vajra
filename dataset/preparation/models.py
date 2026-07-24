@@ -1,4 +1,5 @@
-from typing import Dict, Any
+from typing import Any
+
 from pydantic import BaseModel, Field
 
 
@@ -9,7 +10,7 @@ class Document(BaseModel):
 
     id: str = Field(..., description="Unique document identifier.")
     text: str = Field(..., description="The main text content.")
-    metadata: Dict[str, Any] = Field(
+    metadata: dict[str, Any] = Field(
         default_factory=dict, description="Preserved metadata (e.g. url, date)."
     )
 

@@ -1,5 +1,5 @@
-from typing import Dict, Any, Type
 import logging
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -10,21 +10,21 @@ class BenchmarkAdapter:
     def __init__(self, name: str):
         self.name = name
 
-    def format_prompt(self, example: Dict[str, Any]) -> str:
+    def format_prompt(self, example: dict[str, Any]) -> str:
         raise NotImplementedError
 
-    def compute_metrics(self, predictions: list, references: list) -> Dict[str, float]:
+    def compute_metrics(self, predictions: list, references: list) -> dict[str, float]:
         raise NotImplementedError
 
 
 class BenchmarkRegistry:
     """Registry for managing available benchmarks."""
 
-    _adapters: Dict[str, Type[BenchmarkAdapter]] = {}
+    _adapters: dict[str, type[BenchmarkAdapter]] = {}
 
     @classmethod
     def register(cls, name: str):
-        def decorator(adapter_class: Type[BenchmarkAdapter]):
+        def decorator(adapter_class: type[BenchmarkAdapter]):
             cls._adapters[name] = adapter_class
             return adapter_class
 

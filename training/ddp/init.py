@@ -1,6 +1,8 @@
-import os
 import datetime
+import os
+
 import torch.distributed as dist
+
 from training.ddp.config import DDPConfig
 
 

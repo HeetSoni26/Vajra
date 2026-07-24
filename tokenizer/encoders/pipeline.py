@@ -1,4 +1,5 @@
-from typing import Iterable, List, Iterator
+from collections.abc import Iterable, Iterator
+
 from tokenizer.tokenizers.base import BaseTokenizer
 
 
@@ -10,14 +11,14 @@ class TokenizationPipeline:
     def __init__(self, tokenizer: BaseTokenizer):
         self.tokenizer = tokenizer
 
-    def encode_stream(self, text_stream: Iterable[str]) -> Iterator[List[int]]:
+    def encode_stream(self, text_stream: Iterable[str]) -> Iterator[list[int]]:
         """
         Lazily yields tokenized sequences from a text stream.
         """
         for text in text_stream:
             yield self.tokenizer.encode(text)
 
-    def encode_batch(self, texts: List[str]) -> List[List[int]]:
+    def encode_batch(self, texts: list[str]) -> list[list[int]]:
         """
         Encodes a batch of texts in memory.
         """

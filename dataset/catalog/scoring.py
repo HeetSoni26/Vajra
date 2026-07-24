@@ -1,4 +1,3 @@
-from typing import Dict
 from dataset.metadata.models import DatasetMetadata, QualityRating
 
 
@@ -25,12 +24,12 @@ class QualityScoringFramework:
     """
 
     def __init__(self):
-        self.criteria: Dict[str, ScoringCriterion] = {}
+        self.criteria: dict[str, ScoringCriterion] = {}
 
     def add_criterion(self, criterion: ScoringCriterion):
         self.criteria[criterion.name] = criterion
 
-    def score_dataset(self, metadata: DatasetMetadata) -> Dict[str, float]:
+    def score_dataset(self, metadata: DatasetMetadata) -> dict[str, float]:
         """
         Returns a dictionary with individual criterion scores and the 'total_score'.
         """

@@ -1,6 +1,7 @@
 """Tests for InMemoryVectorStore and LocalDiskVectorStore."""
 
 from pathlib import Path
+
 from vajra_agent.memory.storage import InMemoryVectorStore, LocalDiskVectorStore, VectorRecord
 
 

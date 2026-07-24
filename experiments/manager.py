@@ -3,12 +3,11 @@ import time
 import uuid
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List
 
-from experiments.config import ExperimentConfig
-from experiments.snapshots import SnapshotManager
 from experiments.artifacts import ArtifactManager
+from experiments.config import ExperimentConfig
 from experiments.metrics import MetricsHistory
+from experiments.snapshots import SnapshotManager
 
 
 class RunManager:
@@ -21,7 +20,7 @@ class RunManager:
         project_id: str,
         config: ExperimentConfig,
         run_name: str = None,
-        tags: List[str] = None,
+        tags: list[str] = None,
     ):
         self.config = config
         self.project_id = project_id
@@ -68,7 +67,7 @@ class RunManager:
         with open(self.run_dir / "config_snapshot.json", "w") as f:
             json.dump(snapshot, f, indent=2)
 
-    def log_metric(self, step: int, metrics: Dict[str, float]):
+    def log_metric(self, step: int, metrics: dict[str, float]):
         self.metrics.log_metrics(step, metrics)
         self._save_metadata()
 

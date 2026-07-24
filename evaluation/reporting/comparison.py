@@ -1,4 +1,4 @@
-from typing import Dict, Any
+from typing import Any
 
 
 class ComparisonEngine:
@@ -7,7 +7,7 @@ class ComparisonEngine:
     """
 
     @staticmethod
-    def compare(report_a: Dict[str, float], report_b: Dict[str, float]) -> Dict[str, Any]:
+    def compare(report_a: dict[str, float], report_b: dict[str, float]) -> dict[str, Any]:
         """
         Compare metrics between model A (baseline) and model B.
         """

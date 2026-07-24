@@ -1,9 +1,11 @@
+from collections.abc import Iterable
+from typing import Any
+
 import torch
 from torch.optim import AdamW
-from typing import Iterable, Any
 
-from training.production.config import OptimisationConfig
 from training.config import TrainingConfig
+from training.production.config import OptimisationConfig
 
 
 def create_production_optimizer(

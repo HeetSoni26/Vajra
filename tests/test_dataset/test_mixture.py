@@ -1,8 +1,9 @@
 import tempfile
-from dataset.mixture.models import DatasetMixture, DatasetMixtureEntry
-from dataset.mixture.validators import MixtureValidator
+
 from dataset.mixture.analysis import MixtureAnalyzer
 from dataset.mixture.manager import MixtureManager
+from dataset.mixture.models import DatasetMixture, DatasetMixtureEntry
+from dataset.mixture.validators import MixtureValidator
 
 
 def test_mixture_model_creation():

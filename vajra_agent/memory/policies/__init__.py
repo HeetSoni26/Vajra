@@ -7,4 +7,4 @@ from vajra_agent.memory.policies.base import (
     RecentOnlyPolicy,
 )
 
-__all__ = ["BaseMemoryPolicy", "LRUPolicy", "ImportancePolicy", "RecentOnlyPolicy"]
+__all__ = ["BaseMemoryPolicy", "ImportancePolicy", "LRUPolicy", "RecentOnlyPolicy"]

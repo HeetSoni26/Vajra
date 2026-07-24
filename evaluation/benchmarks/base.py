@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Dict, Any
+from typing import Any
 
 
 class BaseBenchmark(ABC):
@@ -21,12 +21,10 @@ class BaseBenchmark(ABC):
     @abstractmethod
     def format_prompt(self, sample: Any) -> str:
         """Formats the dataset sample into a prompt suitable for the model."""
-        pass
 
     @abstractmethod
-    def evaluate_model(self, model, engine) -> Dict[str, float]:
+    def evaluate_model(self, model, engine) -> dict[str, float]:
         """
         Executes the benchmark against the model.
         Returns a dictionary of metrics.
         """
-        pass

@@ -41,6 +41,7 @@ Validation:
 
 ```python
 from transformers import AutoModelForCausalLM, AutoTokenizer
+
 model = AutoModelForCausalLM.from_pretrained("yourname/vajra-lm-1b")
 tok = AutoTokenizer.from_pretrained("yourname/vajra-lm-1b")
 ```

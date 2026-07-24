@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+
 from vajra_agent.memory.embeddings.base import BaseEmbeddingProvider
 
 
@@ -20,7 +21,7 @@ class MockEmbeddingProvider(BaseEmbeddingProvider):
         # Hash text into deterministic float values
         vec = []
         for i in range(self._dim):
-            h = hashlib.sha256(f"{text}_{i}".encode("utf-8")).hexdigest()
+            h = hashlib.sha256(f"{text}_{i}".encode()).hexdigest()
             val = (int(h[:8], 16) / 0xFFFFFFFF) * 2.0 - 1.0
             vec.append(val)
 

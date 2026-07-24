@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Dict, Any
+from typing import Any
 
 from dataset.configs.settings import config
 from dataset.metadata.models import DatasetMetadata
@@ -16,7 +16,7 @@ class DatasetValidator:
     def __init__(self, download_dir: str | None = None):
         self.download_dir = Path(download_dir or config.download_dir)
 
-    def validate(self, metadata: DatasetMetadata) -> Dict[str, Any]:
+    def validate(self, metadata: DatasetMetadata) -> dict[str, Any]:
         """
         Performs a full validation of a dataset.
         Returns a report dictionary. Raises ValidationMismatchError if strict check fails.

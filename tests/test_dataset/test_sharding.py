@@ -1,18 +1,18 @@
 import tempfile
-import numpy as np
 from pathlib import Path
 
-from tokenizer.configs.settings import TokenizerConfig
-from tokenizer.tokenizers.mock import MockTokenizer
+import numpy as np
 
 from dataset.mixture.models import DatasetMixture
+from dataset.sharding.metadata import BinaryShardMetadata
 from dataset.sharding.models import ShardFormatConfig, ShardStatistics
 from dataset.sharding.packer import SequencePackingEngine
-from dataset.sharding.writer import BinaryShardWriter
-from dataset.sharding.reader import BinaryShardReader
-from dataset.sharding.metadata import BinaryShardMetadata
 from dataset.sharding.pipeline import ShardingPipeline
+from dataset.sharding.reader import BinaryShardReader
 from dataset.sharding.validators import ShardValidator
+from dataset.sharding.writer import BinaryShardWriter
+from tokenizer.configs.settings import TokenizerConfig
+from tokenizer.tokenizers.mock import MockTokenizer
 
 
 def test_sequence_packer():

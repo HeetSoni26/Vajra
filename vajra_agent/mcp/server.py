@@ -17,9 +17,7 @@ class MCPServer(ABC):
     @abstractmethod
     def register_tool_definition(self, tool_def: dict[str, Any]) -> None:
         """Register a tool definition to expose via MCP."""
-        pass
 
     @abstractmethod
     def start(self) -> None:
         """Start listening for incoming MCP requests."""
-        pass

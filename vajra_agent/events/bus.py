@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from typing import Callable
+from collections.abc import Callable
+
 from vajra_agent.events.types import AgentEvent
 
 EventListener = Callable[[AgentEvent], None]

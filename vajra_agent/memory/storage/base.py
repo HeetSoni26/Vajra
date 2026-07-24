@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
 import time
 import uuid
+from abc import ABC, abstractmethod
+from dataclasses import dataclass, field
 from typing import Any
 
 
@@ -35,7 +35,6 @@ class BaseVectorStore(ABC):
     @abstractmethod
     def add(self, record: VectorRecord) -> None:
         """Add a vector record."""
-        pass
 
     @abstractmethod
     def search(
@@ -45,14 +44,11 @@ class BaseVectorStore(ABC):
         metadata_filter: dict[str, Any] | None = None,
     ) -> list[tuple[VectorRecord, float]]:
         """Search for top_k nearest vector records returning (record, similarity_score)."""
-        pass
 
     @abstractmethod
     def delete(self, record_id: str) -> None:
         """Delete record by ID."""
-        pass
 
     @abstractmethod
     def clear(self) -> None:
         """Clear all stored vector records."""
-        pass

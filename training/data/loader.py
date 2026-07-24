@@ -1,11 +1,12 @@
-from training.data_loader import create_dataloaders, MemmapTokenDataset
 from pathlib import Path
-from typing import Union
+
 from torch.utils.data import DataLoader
+
+from training.data_loader import MemmapTokenDataset, create_dataloaders
 
 
 def create_dataloader(
-    data_dir: Union[str, Path],
+    data_dir: str | Path,
     batch_size: int = 1,
     sequence_length: int = 2048,
     num_workers: int = 0,
@@ -20,4 +21,4 @@ def create_dataloader(
     return train_loader
 
 
-__all__ = ["create_dataloader", "create_dataloaders", "MemmapTokenDataset"]
+__all__ = ["MemmapTokenDataset", "create_dataloader", "create_dataloaders"]

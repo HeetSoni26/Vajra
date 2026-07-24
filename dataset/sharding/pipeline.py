@@ -1,9 +1,10 @@
-from typing import Iterable
-from tokenizer.tokenizers.base import BaseTokenizer
+from collections.abc import Iterable
+
+from dataset.mixture.models import DatasetMixture
 from dataset.sharding.models import ShardFormatConfig, ShardStatistics
 from dataset.sharding.packer import SequencePackingEngine
 from dataset.sharding.writer import BinaryShardWriter
-from dataset.mixture.models import DatasetMixture
+from tokenizer.tokenizers.base import BaseTokenizer
 
 
 class ShardingPipeline:

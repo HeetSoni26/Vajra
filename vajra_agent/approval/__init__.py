@@ -2,4 +2,4 @@
 
 from vajra_agent.approval.manager import ActionCategory, PermissionManager, PermissionPolicy
 
-__all__ = ["ActionCategory", "PermissionPolicy", "PermissionManager"]
+__all__ = ["ActionCategory", "PermissionManager", "PermissionPolicy"]

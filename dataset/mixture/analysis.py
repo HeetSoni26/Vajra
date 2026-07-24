@@ -1,5 +1,6 @@
 from collections import defaultdict
-from typing import Dict, Any
+from typing import Any
+
 from dataset.mixture.models import DatasetMixture
 
 
@@ -9,7 +10,7 @@ class MixtureAnalyzer:
     """
 
     @classmethod
-    def generate_report(cls, mixture: DatasetMixture) -> Dict[str, Any]:
+    def generate_report(cls, mixture: DatasetMixture) -> dict[str, Any]:
         """
         Generates an analytical report of the mixture's composition.
         """

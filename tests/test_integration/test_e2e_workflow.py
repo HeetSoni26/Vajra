@@ -1,6 +1,7 @@
 """End-to-end integration test combining all Vajra-Agent subsystems."""
 
 from pathlib import Path
+
 from vajra_agent import (
     ActionCategory,
     AgentPluginRegistry,

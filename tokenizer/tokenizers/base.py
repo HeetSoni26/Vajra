@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List
+
 from tokenizer.configs.settings import TokenizerConfig
 
 
@@ -13,27 +13,22 @@ class BaseTokenizer(ABC):
         self.config = config
 
     @abstractmethod
-    def encode(self, text: str) -> List[int]:
+    def encode(self, text: str) -> list[int]:
         """Convert a string to a list of token IDs."""
-        pass
 
     @abstractmethod
-    def decode(self, ids: List[int]) -> str:
+    def decode(self, ids: list[int]) -> str:
         """Convert a list of token IDs back to a string."""
-        pass
 
     @abstractmethod
     def get_vocab_size(self) -> int:
         """Return the size of the vocabulary."""
-        pass
 
     @abstractmethod
     def save_pretrained(self, save_directory: str) -> None:
         """Save the tokenizer model and configurations."""
-        pass
 
     @classmethod
     @abstractmethod
     def from_pretrained(cls, save_directory: str) -> "BaseTokenizer":
         """Load a tokenizer from a directory."""
-        pass

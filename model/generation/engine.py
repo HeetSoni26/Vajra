@@ -1,6 +1,6 @@
 import torch
 import torch.nn.functional as F
-from typing import Optional
+
 from model.modeling import VajraForCausalLM
 
 
@@ -23,7 +23,7 @@ class GenerationEngine:
         temperature: float = 1.0,
         top_k: int = 0,
         top_p: float = 1.0,
-        eos_token_id: Optional[int] = None,
+        eos_token_id: int | None = None,
         use_cache: bool = True,
     ) -> torch.LongTensor:
 

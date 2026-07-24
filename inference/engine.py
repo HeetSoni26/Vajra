@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
+from collections.abc import Generator
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Generator
+from typing import Any
 
 import torch
 import yaml
@@ -115,7 +116,7 @@ class InferenceEngine:
         tokenizer_path: str | Path,
         device: torch.device | str | None = None,
         precision: str = "fp32",
-    ) -> "InferenceEngine":
+    ) -> InferenceEngine:
         """Load model from a training checkpoint (.pt file)."""
         from tokenizers import Tokenizer
 
@@ -165,7 +166,7 @@ class InferenceEngine:
         cls,
         config_path: str | Path,
         checkpoint: str | None = None,
-    ) -> "InferenceEngine":
+    ) -> InferenceEngine:
         """Load from a training YAML config file (convenience wrapper)."""
         cfg = yaml.safe_load(Path(config_path).read_text(encoding="utf-8"))
         ckpt = checkpoint or cfg.get("checkpoint_path", "")

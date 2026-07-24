@@ -1,12 +1,14 @@
-import torch
-import torch.nn as nn
-import torch.utils.checkpoint
 from pathlib import Path
-from typing import Optional, Tuple, List, Union, Any
+from typing import Any
+
+import torch
+import torch.utils.checkpoint
+from torch import nn
+
+from model.blocks import VajraBlock
 from model.config import VajraConfig
 from model.layers.rmsnorm import RMSNorm
 from model.layers.rope import RotaryEmbedding
-from model.blocks import VajraBlock
 
 
 class VajraModel(nn.Module):
@@ -28,14 +30,14 @@ class VajraModel(nn.Module):
     def forward(
         self,
         input_ids: torch.LongTensor,
-        attention_mask: Optional[torch.Tensor] = None,
-        position_ids: Optional[torch.LongTensor] = None,
-        past_key_values: Optional[List[Tuple[torch.Tensor, torch.Tensor]]] = None,
-        use_cache: Optional[bool] = None,
-        kv_cache: Optional[Any] = None,
+        attention_mask: torch.Tensor | None = None,
+        position_ids: torch.LongTensor | None = None,
+        past_key_values: list[tuple[torch.Tensor, torch.Tensor]] | None = None,
+        use_cache: bool | None = None,
+        kv_cache: Any | None = None,
         start_pos: int = 0,
         **kwargs,
-    ) -> Tuple[torch.Tensor, Optional[List[Tuple[torch.Tensor, torch.Tensor]]]]:
+    ) -> tuple[torch.Tensor, list[tuple[torch.Tensor, torch.Tensor]] | None]:
         bsz, seq_len = input_ids.shape
 
         if kv_cache is not None and past_key_values is None:
@@ -190,15 +192,15 @@ class VajraForCausalLM(nn.Module):
     def forward(
         self,
         input_ids: torch.LongTensor,
-        attention_mask: Optional[torch.Tensor] = None,
-        position_ids: Optional[torch.LongTensor] = None,
-        past_key_values: Optional[List[Tuple[torch.Tensor, torch.Tensor]]] = None,
-        use_cache: Optional[bool] = None,
-        labels: Optional[torch.LongTensor] = None,
-        kv_cache: Optional[Any] = None,
+        attention_mask: torch.Tensor | None = None,
+        position_ids: torch.LongTensor | None = None,
+        past_key_values: list[tuple[torch.Tensor, torch.Tensor]] | None = None,
+        use_cache: bool | None = None,
+        labels: torch.LongTensor | None = None,
+        kv_cache: Any | None = None,
         start_pos: int = 0,
         **kwargs,
-    ) -> Union[Tuple[torch.Tensor, ...], dict]:
+    ) -> tuple[torch.Tensor, ...] | dict:
 
         hidden_states, past_key_values = self.model(
             input_ids=input_ids,
@@ -229,8 +231,8 @@ class VajraForCausalLM(nn.Module):
 
     def save_pretrained(
         self,
-        save_directory: Union[str, Path],
-        tokenizer_dir: Optional[Union[str, Path]] = None,
+        save_directory: str | Path,
+        tokenizer_dir: str | Path | None = None,
         **kwargs,
     ) -> dict:
         from inference.hf_compat import save_pretrained as _save_pretrained
@@ -240,8 +242,8 @@ class VajraForCausalLM(nn.Module):
     @classmethod
     def from_pretrained(
         cls,
-        pretrained_model_name_or_path: Union[str, Path],
-        device: Union[torch.device, str] = "cpu",
+        pretrained_model_name_or_path: str | Path,
+        device: torch.device | str = "cpu",
         strict: bool = True,
         **kwargs,
     ) -> "VajraForCausalLM":

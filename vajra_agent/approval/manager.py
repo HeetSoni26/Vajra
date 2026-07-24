@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from enum import Enum
-from typing import Callable, Any
+from typing import Any
 
 
 class ActionCategory(str, Enum):

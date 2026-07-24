@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-from pathlib import Path
 import subprocess
+from pathlib import Path
+
 from vajra_agent.verification.models import VerificationReport
 
 
@@ -72,4 +73,4 @@ class VerificationEngine:
             out = (res.stdout + "\n" + res.stderr).strip()
             return (res.returncode == 0, out)
         except Exception as e:
-            return (False, f"Execution failed: {str(e)}")
+            return (False, f"Execution failed: {e!s}")

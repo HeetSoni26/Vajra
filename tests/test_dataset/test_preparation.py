@@ -1,12 +1,12 @@
 from dataset.preparation.models import Document, PreparationConfig, PreparationStatistics
 from dataset.preparation.pipeline import PreparationPipeline
 from dataset.preparation.stages import (
+    CharacterRatioFilteringStage,
+    EmptyRemovalStage,
+    ExactDeduplicationStage,
+    LengthFilteringStage,
     UnicodeNormalizationStage,
     WhitespaceNormalizationStage,
-    EmptyRemovalStage,
-    LengthFilteringStage,
-    CharacterRatioFilteringStage,
-    ExactDeduplicationStage,
 )
 
 

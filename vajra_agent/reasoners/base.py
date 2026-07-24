@@ -15,4 +15,3 @@ class BaseReasoner(ABC):
     @abstractmethod
     def generate(self, prompt: str, system_prompt: str | None = None) -> str:
         """Generate reasoning output for a given prompt and optional system prompt."""
-        pass

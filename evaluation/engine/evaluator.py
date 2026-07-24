@@ -1,11 +1,12 @@
-import torch
 from pathlib import Path
 
-from model.checkpoints import CheckpointManager
-from training.data.loader import create_dataloader
+import torch
+
 from evaluation.config import EvaluationConfig
 from evaluation.metrics.standard import StandardMetrics
 from evaluation.reporting.generator import ReportGenerator
+from model.checkpoints import CheckpointManager
+from training.data.loader import create_dataloader
 
 
 class Evaluator:

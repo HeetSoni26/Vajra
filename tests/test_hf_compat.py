@@ -2,20 +2,19 @@
 
 from __future__ import annotations
 
-
 import pytest
 import torch
 
-from model import FoundationLM, ModelConfig
 from inference.hf_compat import (
-    save_pretrained,
-    load_pretrained,
-    _model_config_to_hf_dict,
     _hf_dict_to_model_config,
+    _model_config_to_hf_dict,
     convert_checkpoint_to_hf,
     convert_hf_to_checkpoint,
+    load_pretrained,
+    save_pretrained,
 )
-from training.checkpoint import save_checkpoint, load_checkpoint
+from model import FoundationLM, ModelConfig
+from training.checkpoint import load_checkpoint, save_checkpoint
 
 
 @pytest.fixture

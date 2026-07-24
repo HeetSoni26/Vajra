@@ -5,9 +5,9 @@ from dataset.preparation.writers import DocumentWriter
 
 __all__ = [
     "Document",
-    "PreparationConfig",
-    "PreparationStatistics",
-    "PreparationPipeline",
     "DocumentReader",
     "DocumentWriter",
+    "PreparationConfig",
+    "PreparationPipeline",
+    "PreparationStatistics",
 ]

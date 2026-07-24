@@ -2,7 +2,7 @@ import csv
 import json
 import time
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Any
 
 
 class MetricsTracker:
@@ -48,7 +48,7 @@ class MetricsTracker:
         except ImportError:
             pass
 
-    def log(self, step: int, metrics: Dict[str, Any]):
+    def log(self, step: int, metrics: dict[str, Any]):
         if step % self.log_interval != 0 and step != 1:
             return
 
@@ -101,8 +101,8 @@ class MetricsTracker:
         samples_in_step: int,
         grad_norm: float = 0.0,
         tokens_per_sec: float = 0.0,
-        val_loss: Optional[float] = None,
-    ) -> Dict[str, Any]:
+        val_loss: float | None = None,
+    ) -> dict[str, Any]:
         metrics = {
             "loss": loss,
             "learning_rate": lr,

@@ -6,6 +6,7 @@ import json
 import time
 from typing import Any
 
+from utils.logging import setup_logger
 from vajra_agent.config import AgentConfig
 from vajra_agent.events.bus import EventBus, EventListener
 from vajra_agent.events.types import (
@@ -28,7 +29,6 @@ from vajra_agent.registry.registry import ToolRegistry
 from vajra_agent.schemas.results import AgentResponse, ToolExecutionResult
 from vajra_agent.schemas.state import AgentState
 from vajra_agent.tools.base import BaseTool
-from utils.logging import setup_logger
 
 logger = setup_logger("vajra_agent")
 

@@ -1,4 +1,5 @@
 from pathlib import Path
+
 from dataset.sharding.reader import BinaryShardReader
 
 
@@ -41,6 +42,6 @@ class ShardValidator:
 
         except Exception as e:
             results["valid"] = False
-            results["errors"].append(f"Validation crashed: {str(e)}")
+            results["errors"].append(f"Validation crashed: {e!s}")
 
         return results

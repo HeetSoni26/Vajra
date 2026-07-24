@@ -1,19 +1,19 @@
 import argparse
 import json
 import random
+import re
 import sys
 import time
+from collections.abc import Generator
 from pathlib import Path
-from typing import Generator
 
-from datasets import load_dataset
-import re
 import numpy as np
+from datasets import load_dataset
 
 from dataset.builder import BinaryDatasetBuilder
 from dataset.processing.normalize import normalize_text
 from dataset.tokenize_dataset import DatasetTokenizer
-from utils.file_utils import ensure_dir, write_json, read_json
+from utils.file_utils import ensure_dir, read_json, write_json
 from utils.logging import setup_logger
 
 logger = setup_logger("prepare_dataset")

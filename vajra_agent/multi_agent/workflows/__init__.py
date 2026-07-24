@@ -10,10 +10,10 @@ from vajra_agent.multi_agent.workflows.workflows import (
 )
 
 __all__ = [
-    "MultiAgentWorkflow",
-    "SaaSBuildWorkflow",
-    "RepoRefactorWorkflow",
-    "FixFailingTestsWorkflow",
     "DocGenerationWorkflow",
+    "FixFailingTestsWorkflow",
+    "MultiAgentWorkflow",
+    "RepoRefactorWorkflow",
+    "SaaSBuildWorkflow",
     "SecurityAuditWorkflow",
 ]

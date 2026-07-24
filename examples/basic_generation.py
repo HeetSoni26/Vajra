@@ -1,6 +1,6 @@
 """Basic text generation example using FoundationLM InferenceEngine."""
 
-from inference.engine import InferenceEngine, GenerationConfig
+from inference.engine import GenerationConfig, InferenceEngine
 
 
 def main():

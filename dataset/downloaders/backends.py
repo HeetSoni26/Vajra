@@ -1,8 +1,8 @@
-from abc import ABC, abstractmethod
-from pathlib import Path
 import shutil
 import subprocess
 import urllib.request
+from abc import ABC, abstractmethod
+from pathlib import Path
 
 from dataset.metadata.models import DatasetMetadata
 from dataset.utils.logging import logger
@@ -16,7 +16,6 @@ class DownloadBackend(ABC):
         self, metadata: DatasetMetadata, target_dir: Path, filename: str, resume_offset: int = 0
     ) -> None:
         """Downloads a specific file from the dataset to the target directory."""
-        pass
 
 
 class HTTPBackend(DownloadBackend):

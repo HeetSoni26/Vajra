@@ -1,10 +1,11 @@
-import pytest
 import tempfile
 from unittest.mock import MagicMock
 
-from dataset.metadata.models import DatasetMetadata
-from dataset.downloaders.manager import DownloadManager
+import pytest
+
 from dataset.cache.manager import CacheManager
+from dataset.downloaders.manager import DownloadManager
+from dataset.metadata.models import DatasetMetadata
 from dataset.utils.exceptions import DownloadFailedError
 
 

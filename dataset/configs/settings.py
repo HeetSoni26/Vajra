@@ -1,7 +1,7 @@
 import os
-from typing import Optional
-from pydantic_settings import BaseSettings, SettingsConfigDict
+
 from pydantic import Field
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class DatasetConfig(BaseSettings):
@@ -32,8 +32,8 @@ class DatasetConfig(BaseSettings):
     retry_count: int = Field(default=3, description="Number of retries for failed downloads.")
 
     # Proxies
-    http_proxy: Optional[str] = Field(default=None, description="Optional HTTP proxy url.")
-    https_proxy: Optional[str] = Field(default=None, description="Optional HTTPS proxy url.")
+    http_proxy: str | None = Field(default=None, description="Optional HTTP proxy url.")
+    https_proxy: str | None = Field(default=None, description="Optional HTTPS proxy url.")
 
     # Logging
     log_level: str = Field(

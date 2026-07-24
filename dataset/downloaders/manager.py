@@ -1,12 +1,12 @@
 import time
 from pathlib import Path
 
-from dataset.configs.settings import config
-from dataset.metadata.models import DatasetMetadata
 from dataset.cache.manager import CacheManager
+from dataset.configs.settings import config
 from dataset.downloaders.backends import get_backend
-from dataset.utils.logging import logger
+from dataset.metadata.models import DatasetMetadata
 from dataset.utils.exceptions import DownloadFailedError
+from dataset.utils.logging import logger
 
 
 class DownloadManager:

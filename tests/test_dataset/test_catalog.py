@@ -1,12 +1,14 @@
+import tempfile
+
 import pytest
-from dataset.metadata.licenses import LicenseValidator, LicenseCategory
-from dataset.catalog.scoring import QualityScoringFramework, ScoringCriterion
-from dataset.catalog.search import DatasetSearch
+
 from dataset.catalog.comparison import DatasetComparison
 from dataset.catalog.reports import CatalogReportGenerator
+from dataset.catalog.scoring import QualityScoringFramework, ScoringCriterion
+from dataset.catalog.search import DatasetSearch
+from dataset.metadata.licenses import LicenseCategory, LicenseValidator
 from dataset.metadata.models import DatasetMetadata, DatasetType, QualityRating
 from dataset.registry.registry import DatasetRegistry
-import tempfile
 
 
 @pytest.fixture

@@ -1,6 +1,7 @@
-from typing import Iterator, List
-from tokenizer.tokenizers.base import BaseTokenizer
+from collections.abc import Iterator
+
 from dataset.sharding.models import ShardFormatConfig, ShardStatistics
+from tokenizer.tokenizers.base import BaseTokenizer
 
 
 class SequencePackingEngine:
@@ -14,7 +15,7 @@ class SequencePackingEngine:
         self.stats = stats
 
         # Internals
-        self._buffer: List[int] = []
+        self._buffer: list[int] = []
         self._bos_id = self.tokenizer.config.bos_token
         self._eos_id = self.tokenizer.config.eos_token
         self._pad_id = self.tokenizer.config.pad_token
@@ -31,7 +32,7 @@ class SequencePackingEngine:
             self._eos_id = 2
             self._pad_id = 0
 
-    def pack(self, token_stream: Iterator[List[int]]) -> Iterator[List[int]]:
+    def pack(self, token_stream: Iterator[list[int]]) -> Iterator[list[int]]:
         """
         Yields sequences exactly `self.config.sequence_length` long.
         """
@@ -56,7 +57,7 @@ class SequencePackingEngine:
                 self.stats.total_sequences += 1
                 yield chunk
 
-    def flush(self) -> Iterator[List[int]]:
+    def flush(self) -> Iterator[list[int]]:
         """
         Pads and yields whatever is leftover in the buffer.
         """

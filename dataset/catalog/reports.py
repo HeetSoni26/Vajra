@@ -1,8 +1,8 @@
 from collections import Counter
-from typing import Dict, Any
+from typing import Any
 
-from dataset.registry.registry import DatasetRegistry
 from dataset.metadata.licenses import LicenseValidator
+from dataset.registry.registry import DatasetRegistry
 
 
 class CatalogReportGenerator:
@@ -13,7 +13,7 @@ class CatalogReportGenerator:
     def __init__(self, registry: DatasetRegistry):
         self.registry = registry
 
-    def generate_summary_report(self) -> Dict[str, Any]:
+    def generate_summary_report(self) -> dict[str, Any]:
         """
         Generates a statistical summary of the registered datasets.
         """

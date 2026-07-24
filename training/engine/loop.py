@@ -1,16 +1,16 @@
-import time
-import torch
 import math
-from typing import Optional
+import time
 from pathlib import Path
 
+import torch
+
 from model.modeling import VajraForCausalLM
+from training.checkpoints.manager import TrainingCheckpointManager
 from training.config import TrainingConfig
 from training.data.loader import create_dataloader
+from training.metrics.tracker import MetricsTracker
 from training.optim.optimizers import create_optimizer
 from training.optim.schedulers import create_scheduler
-from training.metrics.tracker import MetricsTracker
-from training.checkpoints.manager import TrainingCheckpointManager
 
 
 class TrainingEngine:
@@ -50,7 +50,7 @@ class TrainingEngine:
             else (torch.float16 if self.config.mixed_precision == "fp16" else torch.float32)
         )
 
-    def train(self, resume_from_checkpoint: Optional[str | Path] = None):
+    def train(self, resume_from_checkpoint: str | Path | None = None):
         if resume_from_checkpoint:
             state = self.checkpoint_manager.load_checkpoint(
                 resume_from_checkpoint, self.model, self.optimizer, self.scheduler

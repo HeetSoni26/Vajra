@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
-from typing import Iterator, List
+from collections.abc import Iterator
+
 from tokenizer.shards.metadata import ShardMetadata
 
 
@@ -17,6 +18,5 @@ class BaseShardReader(ABC):
         pass
 
     @abstractmethod
-    def stream_sequences(self) -> Iterator[List[int]]:
+    def stream_sequences(self) -> Iterator[list[int]]:
         """Yields token sequences from the shard."""
-        pass

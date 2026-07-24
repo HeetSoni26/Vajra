@@ -12,12 +12,10 @@ class BaseEmbeddingProvider(ABC):
     @abstractmethod
     def dimension(self) -> int:
         """Vector embedding output dimension."""
-        pass
 
     @abstractmethod
     def embed_text(self, text: str) -> list[float]:
         """Embed a single text string into a vector float list."""
-        pass
 
     def embed_batch(self, texts: list[str]) -> list[list[float]]:
         """Embed a batch of text strings."""

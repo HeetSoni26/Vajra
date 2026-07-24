@@ -1,10 +1,9 @@
-from typing import Optional
 from dataset.preparation.models import Document, PreparationStatistics
 from dataset.preparation.stages.base import PipelineStage
 
 
 class LengthFilteringStage(PipelineStage):
-    def process(self, doc: Document, stats: PreparationStatistics) -> Optional[Document]:
+    def process(self, doc: Document, stats: PreparationStatistics) -> Document | None:
         if not self.config.enable_length_filtering:
             return doc
         length = len(doc.text)
@@ -20,7 +19,7 @@ class CharacterRatioFilteringStage(PipelineStage):
     often indicating log files, hex dumps, or excessive formatting.
     """
 
-    def process(self, doc: Document, stats: PreparationStatistics) -> Optional[Document]:
+    def process(self, doc: Document, stats: PreparationStatistics) -> Document | None:
         if not doc.text:
             return doc
 
@@ -35,7 +34,7 @@ class CharacterRatioFilteringStage(PipelineStage):
 
 
 class WhitespaceRatioFilteringStage(PipelineStage):
-    def process(self, doc: Document, stats: PreparationStatistics) -> Optional[Document]:
+    def process(self, doc: Document, stats: PreparationStatistics) -> Document | None:
         if not doc.text:
             return doc
 

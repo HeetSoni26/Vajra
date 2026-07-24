@@ -1,4 +1,5 @@
 import math
+
 import torch
 
 from training.metrics.tracker import MetricsTracker
@@ -16,4 +17,4 @@ def get_gpu_memory_mb() -> float:
     return 0.0
 
 
-__all__ = ["MetricsTracker", "perplexity", "get_gpu_memory_mb"]
+__all__ = ["MetricsTracker", "get_gpu_memory_mb", "perplexity"]

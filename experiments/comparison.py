@@ -1,11 +1,11 @@
-from typing import Dict, Any
 import json
 from pathlib import Path
+from typing import Any
 
 
 class ComparisonEngine:
     @staticmethod
-    def compare_runs(run_a_dir: Path, run_b_dir: Path) -> Dict[str, Any]:
+    def compare_runs(run_a_dir: Path, run_b_dir: Path) -> dict[str, Any]:
         with open(run_a_dir / "run_metadata.json") as f:
             meta_a = json.load(f)
         with open(run_b_dir / "run_metadata.json") as f:

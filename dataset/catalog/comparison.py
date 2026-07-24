@@ -1,4 +1,5 @@
-from typing import List, Dict, Any
+from typing import Any
+
 from dataset.metadata.models import DatasetMetadata
 
 
@@ -8,7 +9,7 @@ class DatasetComparison:
     """
 
     @classmethod
-    def compare(cls, datasets: List[DatasetMetadata]) -> Dict[str, Any]:
+    def compare(cls, datasets: list[DatasetMetadata]) -> dict[str, Any]:
         """
         Compare a list of datasets side-by-side.
         Returns a dictionary representing the comparison matrix.

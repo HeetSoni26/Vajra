@@ -12,19 +12,15 @@ class Transport(ABC):
     @abstractmethod
     def connect(self) -> None:
         """Establish transport connection."""
-        pass
 
     @abstractmethod
     def disconnect(self) -> None:
         """Close transport connection."""
-        pass
 
     @abstractmethod
     def send_message(self, message: dict[str, Any]) -> None:
         """Send JSON-RPC message over transport."""
-        pass
 
     @abstractmethod
     def receive_message(self) -> dict[str, Any]:
         """Receive JSON-RPC message from transport."""
-        pass

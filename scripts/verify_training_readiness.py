@@ -189,7 +189,7 @@ def verify_optimizer(model_cfg_path: str | Path) -> dict[str, Any]:
 def verify_checkpoint_roundtrip(model_cfg_path: str | Path, tmp_dir: str | Path) -> dict[str, Any]:
     """Verify checkpoint save and load round-trip works correctly."""
     from model import FoundationLM, ModelConfig
-    from training.checkpoint import save_checkpoint, load_checkpoint
+    from training.checkpoint import load_checkpoint, save_checkpoint
 
     cfg = ModelConfig.from_yaml(model_cfg_path)
     model = FoundationLM(cfg)

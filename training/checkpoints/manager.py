@@ -1,8 +1,9 @@
 import json
-import torch
 import shutil
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Any
+
+import torch
 
 from model.checkpoints import CheckpointManager as ModelCheckpointManager
 from model.modeling import VajraForCausalLM
@@ -29,7 +30,7 @@ class TrainingCheckpointManager:
         model: VajraForCausalLM,
         optimizer: torch.optim.Optimizer,
         scheduler: torch.optim.lr_scheduler.LRScheduler,
-        metrics: Dict[str, Any],
+        metrics: dict[str, Any],
         is_best: bool = False,
     ):
         checkpoint_dir = self.output_dir / f"checkpoint-{step}"
@@ -80,9 +81,9 @@ class TrainingCheckpointManager:
         self,
         checkpoint_dir: str | Path,
         model: VajraForCausalLM,
-        optimizer: Optional[torch.optim.Optimizer] = None,
-        scheduler: Optional[torch.optim.lr_scheduler.LRScheduler] = None,
-    ) -> Dict[str, Any]:
+        optimizer: torch.optim.Optimizer | None = None,
+        scheduler: torch.optim.lr_scheduler.LRScheduler | None = None,
+    ) -> dict[str, Any]:
         checkpoint_dir = Path(checkpoint_dir)
 
         # We assume the model weights were already loaded or we load them here?

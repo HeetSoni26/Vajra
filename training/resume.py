@@ -11,17 +11,15 @@ from typing import Any
 import torch
 from torch import nn
 
-from utils.logging import setup_logger
 from training.checkpoint import _restore_rng_state
 from training.cloud.sync_manager import CloudSyncManager
+from utils.logging import setup_logger
 
 logger = setup_logger("resume_manager")
 
 
 class CheckpointValidationError(Exception):
     """Raised when a checkpoint fails validation."""
-
-    pass
 
 
 class ResumeManager:

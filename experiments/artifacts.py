@@ -1,6 +1,5 @@
 import shutil
 from pathlib import Path
-from typing import Dict
 
 
 class ArtifactManager:
@@ -36,5 +35,5 @@ class ArtifactManager:
             "category": category,
         }
 
-    def get_artifacts(self) -> Dict[str, dict]:
+    def get_artifacts(self) -> dict[str, dict]:
         return self._registry

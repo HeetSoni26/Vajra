@@ -1,11 +1,12 @@
-from tokenizer.configs.settings import TokenizerConfig
-from tokenizer.tokenizers.mock import MockTokenizer
-from tokenizer.encoders.pipeline import TokenizationPipeline
-from tokenizer.vocab.manager import VocabularyManager
-from tokenizer.validators.validator import TokenizerValidator
-from tokenizer.statistics.models import TokenizerStatistics
 import tempfile
 from pathlib import Path
+
+from tokenizer.configs.settings import TokenizerConfig
+from tokenizer.encoders.pipeline import TokenizationPipeline
+from tokenizer.statistics.models import TokenizerStatistics
+from tokenizer.tokenizers.mock import MockTokenizer
+from tokenizer.validators.validator import TokenizerValidator
+from tokenizer.vocab.manager import VocabularyManager
 
 
 def test_tokenizer_config():

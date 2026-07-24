@@ -1,5 +1,4 @@
 import torch
-from typing import List
 
 from model.modeling import VajraForCausalLM
 from tokenizer.tokenizers.hf_bpe import HFBpeTokenizer
@@ -15,8 +14,8 @@ class TextGenerationPipeline:
 
     @torch.no_grad()
     def generate_samples(
-        self, prompts: List[str], max_new_tokens: int = 50, temperature: float = 0.7
-    ) -> List[str]:
+        self, prompts: list[str], max_new_tokens: int = 50, temperature: float = 0.7
+    ) -> list[str]:
         """Generates text sequentially for a list of prompts."""
         self.model.eval()
         results = []

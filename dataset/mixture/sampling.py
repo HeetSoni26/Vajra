@@ -1,4 +1,5 @@
-from typing import List, Any
+from typing import Any
+
 from dataset.mixture.models import DatasetMixtureEntry
 
 
@@ -8,7 +9,7 @@ class SamplingStrategyBase:
     Do not implement sampling algorithms, only the interfaces.
     """
 
-    def __init__(self, entries: List[DatasetMixtureEntry]):
+    def __init__(self, entries: list[DatasetMixtureEntry]):
         self.entries = entries
 
     def sample(self) -> Any:

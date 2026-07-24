@@ -73,7 +73,7 @@ class PythonTool(BaseTool):
         try:
             exec(code, global_namespace)
         except Exception as e:
-            error = f"{type(e).__name__}: {str(e)}\n{traceback.format_exc()}"
+            error = f"{type(e).__name__}: {e!s}\n{traceback.format_exc()}"
         finally:
             sys.stdout = old_stdout
 

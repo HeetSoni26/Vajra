@@ -1,5 +1,5 @@
 import time
-from typing import List
+
 from tokenizer.tokenizers.base import BaseTokenizer
 
 
@@ -11,7 +11,7 @@ class TokenizerBenchmark:
     def __init__(self, tokenizer: BaseTokenizer):
         self.tokenizer = tokenizer
 
-    def benchmark_encoding(self, texts: List[str]) -> dict:
+    def benchmark_encoding(self, texts: list[str]) -> dict:
         """
         Benchmarks encoding speed on a list of strings.
         """
@@ -37,7 +37,7 @@ class TokenizerBenchmark:
             "compression_ratio": total_chars / total_tokens if total_tokens > 0 else 0,
         }
 
-    def benchmark_decoding(self, token_batches: List[List[int]]) -> dict:
+    def benchmark_decoding(self, token_batches: list[list[int]]) -> dict:
         """
         Benchmarks decoding speed on a list of token lists.
         """

@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Dict
+
 import torch
 
 
@@ -13,7 +13,7 @@ class BaseMetric(ABC):
         pass
 
     @abstractmethod
-    def compute(self) -> Dict[str, float]:
+    def compute(self) -> dict[str, float]:
         pass
 
     @abstractmethod

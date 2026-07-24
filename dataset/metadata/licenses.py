@@ -1,5 +1,4 @@
 from enum import Enum
-from typing import Dict
 
 
 class LicenseCategory(str, Enum):
@@ -9,7 +8,7 @@ class LicenseCategory(str, Enum):
     UNKNOWN = "unknown"
 
 
-LICENSE_MAP: Dict[str, LicenseCategory] = {
+LICENSE_MAP: dict[str, LicenseCategory] = {
     "apache 2.0": LicenseCategory.COMMERCIALLY_USABLE,
     "mit": LicenseCategory.COMMERCIALLY_USABLE,
     "bsd": LicenseCategory.COMMERCIALLY_USABLE,

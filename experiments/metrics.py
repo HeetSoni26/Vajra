@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from typing import Dict, List, Any
+from typing import Any
 
 
 class MetricsHistory:
@@ -11,10 +11,10 @@ class MetricsHistory:
     def __init__(self, run_dir: Path):
         self.run_dir = run_dir
         self.history_file = self.run_dir / "metrics_history.jsonl"
-        self.history: List[Dict[str, Any]] = []
-        self.best_metrics: Dict[str, Any] = {}
+        self.history: list[dict[str, Any]] = []
+        self.best_metrics: dict[str, Any] = {}
 
-    def log_metrics(self, step: int, metrics: Dict[str, float]):
+    def log_metrics(self, step: int, metrics: dict[str, float]):
         entry = {"step": step, **metrics}
         self.history.append(entry)
 
@@ -35,7 +35,7 @@ class MetricsHistory:
         with open(self.history_file, "a") as f:
             f.write(json.dumps(entry) + "\n")
 
-    def get_summary(self) -> Dict[str, Any]:
+    def get_summary(self) -> dict[str, Any]:
         return {
             "total_steps_logged": len(self.history),
             "best": self.best_metrics,

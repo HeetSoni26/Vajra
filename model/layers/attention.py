@@ -1,7 +1,8 @@
 import math
+
 import torch
-import torch.nn as nn
-from typing import Optional, Tuple
+from torch import nn
+
 from model.config import VajraConfig
 from model.layers.rope import apply_rotary_pos_emb
 
@@ -48,14 +49,14 @@ class VajraAttention(nn.Module):
     def forward(
         self,
         hidden_states: torch.Tensor,
-        attention_mask: Optional[torch.Tensor] = None,
-        position_ids: Optional[torch.LongTensor] = None,
-        past_key_value: Optional[Tuple[torch.Tensor, torch.Tensor]] = None,
+        attention_mask: torch.Tensor | None = None,
+        position_ids: torch.LongTensor | None = None,
+        past_key_value: tuple[torch.Tensor, torch.Tensor] | None = None,
         output_attentions: bool = False,
         use_cache: bool = False,
-        cos: Optional[torch.Tensor] = None,
-        sin: Optional[torch.Tensor] = None,
-    ) -> Tuple[torch.Tensor, Optional[torch.Tensor], Optional[Tuple[torch.Tensor, torch.Tensor]]]:
+        cos: torch.Tensor | None = None,
+        sin: torch.Tensor | None = None,
+    ) -> tuple[torch.Tensor, torch.Tensor | None, tuple[torch.Tensor, torch.Tensor] | None]:
         bsz, q_len, _ = hidden_states.size()
 
         query_states = self.q_proj(hidden_states)

@@ -1,23 +1,23 @@
-import time
 import math
-import torch
+import time
 from pathlib import Path
-from typing import Optional
+
+import torch
 
 from model.modeling import VajraForCausalLM
+from training.checkpoints.manager import TrainingCheckpointManager
 from training.config import TrainingConfig
 from training.ddp.config import DDPConfig
-from training.ddp.init import (
-    cleanup,
-    barrier,
-)
-from training.ddp.wrapper import wrap_model_ddp, unwrap_model
 from training.ddp.dataloader import create_distributed_dataloader
+from training.ddp.init import (
+    barrier,
+    cleanup,
+)
 from training.ddp.metrics import aggregate_metrics
+from training.ddp.wrapper import unwrap_model, wrap_model_ddp
+from training.metrics.tracker import MetricsTracker
 from training.optim.optimizers import create_optimizer
 from training.optim.schedulers import create_scheduler
-from training.metrics.tracker import MetricsTracker
-from training.checkpoints.manager import TrainingCheckpointManager
 
 
 class DDPTrainingEngine:
@@ -83,7 +83,7 @@ class DDPTrainingEngine:
         self.samples_processed = 0
 
     # ------------------------------------------------------------------
-    def train(self, resume_from_checkpoint: Optional[str | Path] = None, epoch: int = 0):
+    def train(self, resume_from_checkpoint: str | Path | None = None, epoch: int = 0):
         dataloader = create_distributed_dataloader(
             dataset_dir=self.config.dataset_dir,
             batch_size=self.config.batch_size,

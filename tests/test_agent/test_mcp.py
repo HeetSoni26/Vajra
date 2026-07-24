@@ -1,6 +1,7 @@
 """Tests for MCP interface abstractions and ToolAdapter."""
 
 from typing import Any
+
 from vajra_agent.mcp import MCPClient, ToolAdapter, Transport
 
 

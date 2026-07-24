@@ -1,6 +1,7 @@
 """Persistent session memory example using LocalDiskVectorStore."""
 
 from pathlib import Path
+
 from vajra_agent import LocalDiskVectorStore, MemoryManager, MockEmbeddingProvider
 
 

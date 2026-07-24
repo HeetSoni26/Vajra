@@ -13,7 +13,6 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-
 # ──────────────────────────────────────────────────────────────────────────────
 # DataSourceRegistry tests
 # ──────────────────────────────────────────────────────────────────────────────
@@ -23,7 +22,7 @@ class TestDataSourceRegistry:
     """Tests for DataSourceRegistry and DataSource."""
 
     def test_register_and_get(self):
-        from dataset.sources.registry import DataSourceRegistry, DataSource
+        from dataset.sources.registry import DataSource, DataSourceRegistry
 
         registry = DataSourceRegistry()
         src = DataSource(
@@ -39,7 +38,7 @@ class TestDataSourceRegistry:
         assert retrieved.domain == "web"
 
     def test_list_all(self):
-        from dataset.sources.registry import DataSourceRegistry, DataSource
+        from dataset.sources.registry import DataSource, DataSourceRegistry
 
         registry = DataSourceRegistry()
         for i in range(3):
@@ -54,7 +53,7 @@ class TestDataSourceRegistry:
         assert len(registry.list_all()) == 3
 
     def test_list_enabled(self):
-        from dataset.sources.registry import DataSourceRegistry, DataSource
+        from dataset.sources.registry import DataSource, DataSourceRegistry
 
         registry = DataSourceRegistry()
         registry.register(
@@ -72,7 +71,7 @@ class TestDataSourceRegistry:
         assert enabled[0].name == "enabled"
 
     def test_filter_by_domain(self):
-        from dataset.sources.registry import DataSourceRegistry, DataSource
+        from dataset.sources.registry import DataSource, DataSourceRegistry
 
         registry = DataSourceRegistry()
         registry.register(
@@ -86,7 +85,7 @@ class TestDataSourceRegistry:
         assert web[0].name == "web-src"
 
     def test_filter_by_tag(self):
-        from dataset.sources.registry import DataSourceRegistry, DataSource
+        from dataset.sources.registry import DataSource, DataSourceRegistry
 
         registry = DataSourceRegistry()
         registry.register(
@@ -115,7 +114,7 @@ class TestDataSourceRegistry:
         assert "web" in summary["domains"]
 
     def test_deregister(self):
-        from dataset.sources.registry import DataSourceRegistry, DataSource
+        from dataset.sources.registry import DataSource, DataSourceRegistry
 
         registry = DataSourceRegistry()
         registry.register(DataSource(name="tmp", url="https://x.com", domain="web", license="CC0"))
@@ -123,7 +122,7 @@ class TestDataSourceRegistry:
         assert registry.get("tmp") is None
 
     def test_save_and_load_yaml(self):
-        from dataset.sources.registry import DataSourceRegistry, DataSource
+        from dataset.sources.registry import DataSource, DataSourceRegistry
 
         registry = DataSourceRegistry()
         registry.register(

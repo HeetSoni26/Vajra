@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import Any
 
 
 class TrainingReportGenerator:
@@ -10,7 +10,7 @@ class TrainingReportGenerator:
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
-    def generate(self, step: int, metrics_history: List[Dict[str, Any]], samples: List[str]):
+    def generate(self, step: int, metrics_history: list[dict[str, Any]], samples: list[str]):
         """Generates a markdown report for the given step."""
         report_path = self.output_dir / f"training_report_step_{step}.md"
 

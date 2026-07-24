@@ -1,6 +1,5 @@
 import json
 from pathlib import Path
-from typing import List, Optional
 
 from dataset.configs.settings import config
 from dataset.metadata.models import DatasetMetadata
@@ -14,7 +13,7 @@ class DatasetRegistry:
     Backed by local JSON manifests in the configured manifests_dir.
     """
 
-    def __init__(self, manifests_dir: Optional[str] = None):
+    def __init__(self, manifests_dir: str | None = None):
         self.manifests_dir = Path(manifests_dir or config.manifests_dir)
         self.manifests_dir.mkdir(parents=True, exist_ok=True)
         self._cache = {}
@@ -69,7 +68,7 @@ class DatasetRegistry:
             raise DatasetRegistrationError(f"Dataset not found: {key}")
         return self._cache[key]
 
-    def list_datasets(self, tags: Optional[List[str]] = None) -> List[DatasetMetadata]:
+    def list_datasets(self, tags: list[str] | None = None) -> list[DatasetMetadata]:
         """
         Lists all registered datasets, optionally filtering by tags.
         """

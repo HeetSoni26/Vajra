@@ -18,11 +18,7 @@ from inference.hf_compat import save_pretrained
 model_cfg = ModelConfig.from_yaml("configs/model/model_tiny.yaml")
 model = FoundationLM(model_cfg)
 
-save_pretrained(
-    model=model,
-    output_dir="checkpoints/hf_export",
-    tokenizer_dir="tokenizer/v1.0"
-)
+save_pretrained(model=model, output_dir="checkpoints/hf_export", tokenizer_dir="tokenizer/v1.0")
 ```
 
 ### Loading from Hugging Face Directory
@@ -42,12 +38,9 @@ convert_checkpoint_to_hf(
     checkpoint_path="checkpoints/run/latest.pt",
     model_config_path="configs/model/model_tiny.yaml",
     output_dir="checkpoints/hf_out",
-    tokenizer_dir="tokenizer/v1.0"
+    tokenizer_dir="tokenizer/v1.0",
 )
 
 # HF directory -> Native .pt
-convert_hf_to_checkpoint(
-    hf_dir="checkpoints/hf_out",
-    output_path="checkpoints/restored.pt"
-)
+convert_hf_to_checkpoint(hf_dir="checkpoints/hf_out", output_path="checkpoints/restored.pt")
 ```

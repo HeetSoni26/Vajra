@@ -1,8 +1,10 @@
+import json
+import tempfile
+from pathlib import Path
+
 import pytest
 import torch
-import tempfile
-import json
-from pathlib import Path
+
 from evaluation.metrics.standard import StandardMetrics
 from evaluation.reporting.comparison import ComparisonEngine
 from evaluation.reporting.generator import ReportGenerator

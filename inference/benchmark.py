@@ -9,7 +9,7 @@ from typing import Any
 
 import torch
 
-from inference.engine import InferenceEngine, GenerationConfig
+from inference.engine import GenerationConfig, InferenceEngine
 from utils.environment import get_memory_info
 from utils.file_utils import write_json
 from utils.logging import setup_logger

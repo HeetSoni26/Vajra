@@ -1,6 +1,7 @@
-from evaluation.benchmarks.registry import BenchmarkRegistry
-from evaluation.benchmarks.pipeline import EvaluationPipeline
 from evaluation.benchmarks.integration import TrainingBenchmarkIntegration
+from evaluation.benchmarks.pipeline import EvaluationPipeline
+from evaluation.benchmarks.registry import BenchmarkRegistry
+
 # Load adapters
 
 

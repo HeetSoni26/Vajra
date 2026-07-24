@@ -1,4 +1,3 @@
-from typing import List
 from tokenizer.tokenizers.base import BaseTokenizer
 from tokenizer.vocab.manager import VocabularyManager
 
@@ -21,7 +20,7 @@ class TokenizerValidator:
         decoded = self.tokenizer.decode(encoded)
         return text.strip() == decoded.strip()
 
-    def validate_special_tokens(self, special_tokens: List[str]) -> bool:
+    def validate_special_tokens(self, special_tokens: list[str]) -> bool:
         """
         Ensures all required special tokens are in the vocabulary.
         """

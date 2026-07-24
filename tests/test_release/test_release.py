@@ -1,7 +1,8 @@
-import torch.nn as nn
+from torch import nn
+
 from release.export import ModelExporter
-from release.package import ReleasePackager
 from release.inference import InferenceExamplesGenerator
+from release.package import ReleasePackager
 
 
 def test_model_exporter(tmp_path):

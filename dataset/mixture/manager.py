@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from typing import Dict, List, Optional
+
 from dataset.mixture.models import DatasetMixture
 
 
@@ -12,7 +12,7 @@ class MixtureManager:
     def __init__(self, storage_dir: str | Path):
         self.storage_dir = Path(storage_dir)
         self.storage_dir.mkdir(parents=True, exist_ok=True)
-        self.mixtures: Dict[str, DatasetMixture] = {}
+        self.mixtures: dict[str, DatasetMixture] = {}
         self._load_all()
 
     def _load_all(self):
@@ -32,10 +32,10 @@ class MixtureManager:
         with open(path, "w", encoding="utf-8") as f:
             f.write(mixture.model_dump_json(indent=2))
 
-    def get(self, name: str) -> Optional[DatasetMixture]:
+    def get(self, name: str) -> DatasetMixture | None:
         return self.mixtures.get(name)
 
-    def list_mixtures(self) -> List[DatasetMixture]:
+    def list_mixtures(self) -> list[DatasetMixture]:
         return list(self.mixtures.values())
 
     def export_mixture(self, name: str, export_path: str | Path) -> None:

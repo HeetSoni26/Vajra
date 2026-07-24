@@ -40,7 +40,7 @@ class ModelEvaluator:
         cls,
         config_path: str | Path,
         checkpoint_path: str | Path | None = None,
-    ) -> "ModelEvaluator":
+    ) -> ModelEvaluator:
         """Construct evaluator from a training YAML config."""
         cfg = yaml.safe_load(Path(config_path).read_text(encoding="utf-8"))
         model_cfg = ModelConfig.from_yaml(cfg["model_config"])

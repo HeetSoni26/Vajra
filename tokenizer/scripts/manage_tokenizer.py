@@ -1,8 +1,9 @@
 import argparse
+
 from tokenizer.configs.settings import TokenizerConfig
+from tokenizer.statistics.benchmark import TokenizerBenchmark
 from tokenizer.tokenizers.hf_bpe import HFBpeTokenizer
 from tokenizer.trainers.hf_trainer import HFBpeTrainer
-from tokenizer.statistics.benchmark import TokenizerBenchmark
 from tokenizer.validators.validator import TokenizerValidator
 from tokenizer.vocab.manager import VocabularyManager
 

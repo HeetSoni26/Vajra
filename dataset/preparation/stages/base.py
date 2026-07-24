@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Optional
+
 from dataset.preparation.models import Document, PreparationConfig, PreparationStatistics
 
 
@@ -14,9 +14,8 @@ class PipelineStage(ABC):
         self.config = config
 
     @abstractmethod
-    def process(self, doc: Document, stats: PreparationStatistics) -> Optional[Document]:
+    def process(self, doc: Document, stats: PreparationStatistics) -> Document | None:
         """
         Process the document. Return None if it fails filtering.
         Update `stats` appropriately.
         """
-        pass

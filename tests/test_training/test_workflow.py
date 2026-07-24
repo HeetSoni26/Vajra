@@ -1,10 +1,11 @@
-import pytest
 from pathlib import Path
 
-from training.workflows.preset import get_vajra_tiny_preset
-from training.workflows.orchestrator import TrainingSessionManager
-from training.workflows.generation import TextGenerationPipeline
+import pytest
+
 from model.modeling import VajraForCausalLM
+from training.workflows.generation import TextGenerationPipeline
+from training.workflows.orchestrator import TrainingSessionManager
+from training.workflows.preset import get_vajra_tiny_preset
 
 
 @pytest.fixture
@@ -15,8 +16,9 @@ def workflow_setup(tmp_path):
     dataset_dir.mkdir()
 
     # Create mock dataset shard
-    import numpy as np
     import json
+
+    import numpy as np
 
     data = np.random.randint(0, 1000, size=(100, 32), dtype=np.int32)
     meta_path = dataset_dir / "shard_001.json"

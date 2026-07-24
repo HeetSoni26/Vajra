@@ -1,6 +1,7 @@
+import warnings
+
 import torch
 import torch.nn.functional as F
-import warnings
 
 
 def _scaled_dot_product_attention_fallback(q, k, v, attn_mask=None, dropout_p=0.0, is_causal=False):

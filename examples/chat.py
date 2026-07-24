@@ -1,6 +1,6 @@
 """Interactive chat example using FoundationLM."""
 
-from inference.engine import InferenceEngine, GenerationConfig
+from inference.engine import GenerationConfig, InferenceEngine
 
 
 def main():

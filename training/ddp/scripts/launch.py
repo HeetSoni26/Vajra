@@ -1,4 +1,5 @@
 import argparse
+
 import torch
 import torch.multiprocessing as mp
 
@@ -6,8 +7,8 @@ from model.config import get_preset
 from model.modeling import VajraForCausalLM
 from training.config import TrainingConfig
 from training.ddp.config import DDPConfig
-from training.ddp.init import init_process_group
 from training.ddp.engine import DDPTrainingEngine
+from training.ddp.init import init_process_group
 
 
 def _worker(rank: int, world_size: int, config: TrainingConfig, ddp_config: DDPConfig):
@@ -41,8 +42,7 @@ def cmd_train_ddp(args):
     )
 
     world_size = args.num_gpus or torch.cuda.device_count()
-    if world_size < 1:
-        world_size = 1
+    world_size = max(world_size, 1)
 
     print(f"Launching DDP training across {world_size} process(es).")
     mp.spawn(

@@ -1,7 +1,7 @@
-import json
 import csv
+import json
 from pathlib import Path
-from typing import Dict, Any
+from typing import Any
 
 
 class BenchmarkReporter:
@@ -11,13 +11,13 @@ class BenchmarkReporter:
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
-    def generate_json(self, run_name: str, results: Dict[str, Dict[str, Any]]):
+    def generate_json(self, run_name: str, results: dict[str, dict[str, Any]]):
         path = self.output_dir / f"{run_name}_results.json"
         with open(path, "w") as f:
             json.dump(results, f, indent=2)
         return path
 
-    def generate_csv(self, run_name: str, results: Dict[str, Dict[str, Any]]):
+    def generate_csv(self, run_name: str, results: dict[str, dict[str, Any]]):
         path = self.output_dir / f"{run_name}_results.csv"
         if not results:
             return path
@@ -30,7 +30,7 @@ class BenchmarkReporter:
                     writer.writerow([bench, k, v])
         return path
 
-    def generate_markdown(self, run_name: str, results: Dict[str, Dict[str, Any]]):
+    def generate_markdown(self, run_name: str, results: dict[str, dict[str, Any]]):
         path = self.output_dir / f"{run_name}_report.md"
 
         lines = [f"# Benchmark Report: {run_name}", ""]
@@ -49,7 +49,7 @@ class BenchmarkReporter:
             f.write("\n".join(lines))
         return path
 
-    def generate_leaderboard(self, historical_runs: Dict[str, Dict[str, Dict[str, Any]]]):
+    def generate_leaderboard(self, historical_runs: dict[str, dict[str, dict[str, Any]]]):
         """Generates a leaderboard from historical runs."""
         path = self.output_dir / "leaderboard.md"
 

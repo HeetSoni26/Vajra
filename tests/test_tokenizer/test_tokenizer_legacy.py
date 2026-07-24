@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from pathlib import Path
-import pytest
 
+import pytest
 from tokenizers import ByteLevelBPETokenizer
 from transformers import AutoTokenizer, PreTrainedTokenizerFast
 

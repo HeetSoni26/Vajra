@@ -6,4 +6,4 @@ from vajra_agent.memory.knowledge.graph import (
     RepositoryKnowledgeGraph,
 )
 
-__all__ = ["KnowledgeNode", "KnowledgeEdge", "RepositoryKnowledgeGraph"]
+__all__ = ["KnowledgeEdge", "KnowledgeNode", "RepositoryKnowledgeGraph"]

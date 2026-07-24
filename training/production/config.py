@@ -1,4 +1,3 @@
-from typing import List
 from pydantic import BaseModel, Field
 
 from training.config import TrainingConfig
@@ -31,7 +30,7 @@ class ProfilingConfig(BaseModel):
 
     enable_memory_profiling: bool = False
     enable_perf_profiling: bool = False
-    profile_steps: List[int] = Field(default_factory=lambda: [10, 50, 100])
+    profile_steps: list[int] = Field(default_factory=lambda: [10, 50, 100])
     profile_memory_interval: int = 100
 
 

@@ -1,12 +1,12 @@
 import argparse
-import sys
 import json
+import sys
 from pathlib import Path
 
 from evaluation.config import EvaluationConfig
 from evaluation.engine.evaluator import Evaluator
-from evaluation.validation.checker import ValidationEngine
 from evaluation.reporting.comparison import ComparisonEngine
+from evaluation.validation.checker import ValidationEngine
 
 
 def cmd_evaluate(args):

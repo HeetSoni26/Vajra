@@ -1,11 +1,12 @@
 import argparse
-import sys
 import json
+import sys
 from pathlib import Path
+
+from model.checkpoints import CheckpointManager
 from model.config import get_preset
 from model.modeling import VajraForCausalLM
-from model.utils import summarize_model, initialize_weights
-from model.checkpoints import CheckpointManager
+from model.utils import initialize_weights, summarize_model
 
 
 def cmd_create(args):

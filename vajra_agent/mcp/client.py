@@ -17,9 +17,7 @@ class MCPClient(ABC):
     @abstractmethod
     def list_tools(self) -> list[dict[str, Any]]:
         """List available tools exposed by the MCP server."""
-        pass
 
     @abstractmethod
     def call_tool(self, name: str, arguments: dict[str, Any]) -> Any:
         """Call a specific tool on the MCP server."""
-        pass

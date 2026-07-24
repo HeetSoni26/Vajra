@@ -1,12 +1,12 @@
 import re
 import unicodedata
-from typing import Optional
+
 from dataset.preparation.models import Document, PreparationStatistics
 from dataset.preparation.stages.base import PipelineStage
 
 
 class UnicodeNormalizationStage(PipelineStage):
-    def process(self, doc: Document, stats: PreparationStatistics) -> Optional[Document]:
+    def process(self, doc: Document, stats: PreparationStatistics) -> Document | None:
         if not self.config.enable_unicode_normalization:
             return doc
         doc.text = unicodedata.normalize("NFC", doc.text)
@@ -14,7 +14,7 @@ class UnicodeNormalizationStage(PipelineStage):
 
 
 class WhitespaceNormalizationStage(PipelineStage):
-    def process(self, doc: Document, stats: PreparationStatistics) -> Optional[Document]:
+    def process(self, doc: Document, stats: PreparationStatistics) -> Document | None:
         if not self.config.enable_whitespace_normalization:
             return doc
         # Convert multiple spaces/tabs to a single space, but preserve newlines
@@ -27,7 +27,7 @@ class WhitespaceNormalizationStage(PipelineStage):
 
 
 class EmptyRemovalStage(PipelineStage):
-    def process(self, doc: Document, stats: PreparationStatistics) -> Optional[Document]:
+    def process(self, doc: Document, stats: PreparationStatistics) -> Document | None:
         if not self.config.enable_empty_removal:
             return doc
         if not doc.text or len(doc.text.strip()) == 0:
