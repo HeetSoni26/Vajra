@@ -1,6 +1,6 @@
 # Dedicated training configuration for Vajra-Tiny-Validation
 model_config: configs/model/model_tiny_validation.yaml
-data_dir: data/tokenized_validation
+data_dir: dataset/production
 output_dir: checkpoints/validation_run
 tokenizer_path: tokenizer/v1.0
 sequence_length: 32

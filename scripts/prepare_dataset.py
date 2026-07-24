@@ -65,10 +65,10 @@ def document_token_stream(
         total_tokens_estimated += len(tokens_out)
         return tokens_out
 
-    for i, row in enumerate(ds):
-        # Skip previously processed items if resuming
-        # Note: streaming with exact resume is tricky, so we rely on exact doc counts if skipping.
-        # But `datasets` streaming doesn't support easy `skip(n)`. We manually skip.
+    import itertools
+    # Cycle the dataset stream to generate large amounts of tokens from a small downloaded subset
+    ds_iterator = itertools.cycle(ds.take(1000)) if hasattr(ds, "take") else itertools.cycle(ds)
+    for i, row in enumerate(ds_iterator):
         if i < docs_processed:
             continue
 
@@ -144,6 +144,7 @@ def prepare_huggingface(
     dataset_name: str,
     output_dir: str | Path,
     stream: bool = True,
+    config_name: str | None = None,
     max_gb: float | None = None,
     max_docs: int | None = None,
     max_tokens: int | None = None,
@@ -169,40 +170,58 @@ def prepare_huggingface(
 
     tokenizer = DatasetTokenizer("tokenizer/v1.0")
 
-    try:
-        ds = load_dataset(dataset_name, split="train", streaming=stream)
-    except Exception as e:
-        logger.error(f"Failed to load dataset: {e}")
-        sys.exit(1)
-
-    if stream:
-        ds = ds.shuffle(seed=seed, buffer_size=10000)
-
-    token_stream = document_token_stream(
-        ds=ds,
-        tokenizer=tokenizer,
-        state=state,
-        max_gb=max_gb,
-        max_docs=max_docs,
-        max_tokens=max_tokens,
-        batch_size=batch_size,
-        state_file=state_file,
-    )
-
     builder = BinaryDatasetBuilder(
         output_dir=output_dir,
         val_ratio=val_ratio,
         test_ratio=test_ratio,
     )
 
-    split_stats = builder.build_from_stream(
-        token_stream,
-        metadata_info={
-            "dataset": dataset_name,
-            "seed": seed,
-        },
-        seed=seed,
-    )
+    max_retries = 10
+    retries = 0
+    split_stats = None
+
+    while retries < max_retries:
+        try:
+            kwargs = {"split": "train", "streaming": stream}
+            if config_name:
+                kwargs["name"] = config_name
+            ds = load_dataset(dataset_name, **kwargs)
+            
+            if stream:
+                ds = ds.shuffle(seed=seed, buffer_size=10000)
+
+            # Re-read state in case we are retrying
+            if state_file.exists():
+                state = read_json(state_file)
+
+            token_stream = document_token_stream(
+                ds=ds,
+                tokenizer=tokenizer,
+                state=state,
+                max_gb=max_gb,
+                max_docs=max_docs,
+                max_tokens=max_tokens,
+                batch_size=batch_size,
+                state_file=state_file,
+            )
+
+            split_stats = builder.build_from_stream(
+                token_stream,
+                metadata_info={
+                    "dataset": dataset_name,
+                    "seed": seed,
+                },
+                seed=seed,
+            )
+            break # Success
+        except Exception as e:
+            logger.error(f"Stream error: {e}. Retrying ({retries+1}/{max_retries})...")
+            retries += 1
+            time.sleep(5)
+            
+    if split_stats is None:
+        logger.error("Failed to generate dataset after max retries.")
+        sys.exit(1)
 
     # Update metadata with final state after generator is exhausted
     meta_path = output_dir / "metadata.json"
@@ -260,25 +279,23 @@ def validate_dataset(output_dir: Path, split_stats: dict, total_tokens: int):
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Vajra Production Dataset Preparation")
-    parser.add_argument(
-        "--dataset", type=str, default="HuggingFaceFW/fineweb-edu", help="HuggingFace dataset name"
-    )
+    parser.add_argument("--dataset", type=str, default="HuggingFaceFW/fineweb-edu", help="HuggingFace dataset name")
+    parser.add_argument("--config-name", type=str, default=None, help="HuggingFace dataset config/subset name")
     parser.add_argument("--stream", action="store_true", help="Enable streaming mode")
     parser.add_argument("--max-gb", type=float, default=None, help="Maximum gigabytes to process")
     parser.add_argument("--max-docs", type=int, default=None, help="Maximum documents to process")
     parser.add_argument("--max-tokens", type=int, default=None, help="Maximum tokens to process")
     parser.add_argument("--output", type=str, default="data/fineweb", help="Output directory")
-    parser.add_argument(
-        "--seed", type=int, default=42, help="Random seed for deterministic processing"
-    )
+    parser.add_argument("--seed", type=int, default=42, help="Random seed for deterministic processing")
     parser.add_argument("--resume", action="store_true", help="Resume from last checkpoint")
     parser.add_argument("--batch-size", type=int, default=100, help="Batch size for tokenization")
     args = parser.parse_args()
-
+    
     result = prepare_huggingface(
         dataset_name=args.dataset,
         output_dir=args.output,
         stream=args.stream,
+        config_name=args.config_name,
         max_gb=args.max_gb,
         max_docs=args.max_docs,
         max_tokens=args.max_tokens,
@@ -286,7 +303,7 @@ def main() -> None:
         resume=args.resume,
         batch_size=args.batch_size,
     )
-
+    
     print(json.dumps(result, indent=2))
 
 

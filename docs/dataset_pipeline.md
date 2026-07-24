@@ -46,7 +46,19 @@ data/fineweb/
 
 ## Usage
 
-Run the pipeline using the provided CLI:
+```bash
+python -m scripts.prepare_dataset \
+    --dataset HuggingFaceFW/fineweb-edu \
+    --stream \
+    --max-docs 10000 \
+    --output data/fineweb \
+    --seed 42 \
+    --batch-size 100
+```
+
+### Resuming Generation
+
+Dataset preparation fully supports resuming from an interrupted state. Progress is automatically saved to `pipeline_state.json`.
 
 ```bash
 python -m scripts.prepare_dataset \
@@ -54,5 +66,5 @@ python -m scripts.prepare_dataset \
     --stream \
     --max-docs 10000 \
     --output data/fineweb \
-    --seed 42
+    --resume
 ```

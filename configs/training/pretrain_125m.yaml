@@ -2,7 +2,7 @@
 # Target: ~5B tokens (Chinchilla-optimal for ~125M params)
 # Suitable for: single A100 80GB, or 2x RTX A6000
 model_config: configs/model/model_125m.yaml
-data_dir: data/tokenized
+data_dir: dataset/production
 output_dir: checkpoints/pretrain_125m
 tokenizer_path: tokenizer/v1.0
 sequence_length: 2048

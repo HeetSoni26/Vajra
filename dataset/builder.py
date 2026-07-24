@@ -32,7 +32,7 @@ class StreamingBinaryWriter:
         self.dtype = np.dtype(dtype)
         self.buffer_size = buffer_size
 
-        self.file = path.open("wb")
+        self.file = path.open("ab")
         self.buffer = []
         self.tokens_written = 0
 
@@ -129,12 +129,13 @@ class BinaryDatasetBuilder:
             "test.bin": compute_file_hash(test_path),
         }
 
-        train_tokens = writers["train"].tokens_written
-        val_tokens = writers["val"].tokens_written
-        test_tokens = writers["test"].tokens_written
+        train_tokens = train_path.stat().st_size // 4
+        val_tokens = val_path.stat().st_size // 4
+        test_tokens = test_path.stat().st_size // 4
+        total_tokens_written = train_tokens + val_tokens + test_tokens
 
         split_stats = {
-            "total_tokens": total_tokens,
+            "total_tokens": total_tokens_written,
             "train_tokens": train_tokens,
             "val_tokens": val_tokens,
             "test_tokens": test_tokens,

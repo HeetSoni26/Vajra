@@ -2,7 +2,7 @@
 # Target: ~1B tokens (Chinchilla-optimal for ~18M params)
 # Suitable for: single GPU (RTX 3090 / A100) or development machine
 model_config: configs/model/model_tiny.yaml
-data_dir: data/tokenized
+data_dir: dataset/production
 output_dir: checkpoints/pretrain_tiny
 tokenizer_path: tokenizer/v1.0
 sequence_length: 2048

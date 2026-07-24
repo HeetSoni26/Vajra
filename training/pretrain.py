@@ -294,7 +294,7 @@ def main() -> None:
                         model=trainer.raw_model,
                         optimizer=optimizer,
                         tokens_seen=tokens_seen,
-                        metrics={"val_loss": step_metrics.get("val_loss", step_metrics["loss"])},
+                    metrics={"val_loss": step_metrics.get("val_loss") or step_metrics.get("loss", 0.0)},
                     )
                     training_logger.log_checkpoint(global_step, ckpt_path.name)
                     logger.info(f"Checkpoint saved at step {global_step} -> {ckpt_path.name}")

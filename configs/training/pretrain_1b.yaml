@@ -1,5 +1,5 @@
 model_config: configs/model/model_1b.yaml
-data_dir: data/tokenized
+data_dir: dataset/production
 output_dir: checkpoints/pretrain_1b
 sequence_length: 4096
 global_batch_tokens: 2097152

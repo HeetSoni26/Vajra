@@ -2,7 +2,7 @@
 # Target: ~15B tokens (Chinchilla-optimal for ~370M params)
 # Suitable for: 4x A100 80GB (DDP) or 8x RTX A6000
 model_config: configs/model/model_370m.yaml
-data_dir: data/tokenized
+data_dir: dataset/production
 output_dir: checkpoints/pretrain_370m
 tokenizer_path: tokenizer/v1.0
 sequence_length: 4096
