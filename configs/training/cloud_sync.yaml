@@ -1,6 +1,6 @@
 enable_sync: true
 provider: "huggingface"
-repository: "HeetSoni26/vajra-cloud-sync"
+repository: "HeetSoni26/vajra-checkpoints"
 private: true
 upload_frequency: 50
 background_upload: true
