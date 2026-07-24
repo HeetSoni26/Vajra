@@ -1,0 +1,21 @@
+# Vajra Orchestration Configuration
+
+checkpoint_every_steps: 50
+time_checkpoint_every_minutes: 15.0
+
+watchdog_timeout_seconds: 300.0
+watchdog_check_interval: 10.0
+
+health_check_every_steps: 10
+min_disk_free_gb: 2.0
+gpu_mem_warn_pct: 90.0
+loss_spike_factor: 3.0
+grad_norm_warn_threshold: 50.0
+
+retention:
+  keep_last_n: 5
+  keep_best: true
+  keep_latest: true
+
+logging_format: "plain"
+heartbeat_interval: 30.0
