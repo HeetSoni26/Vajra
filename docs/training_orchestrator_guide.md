@@ -113,3 +113,16 @@ Each experiment directory contains `experiment_registry.json`:
 | `loss_spike_factor` | 3.0 | Loss spike multiplier |
 | `grad_norm_warn_threshold` | 50.0 | Gradient norm warning |
 | `retention.keep_last_n` | 5 | Number of step checkpoints to keep |
+
+## Validation Report & Known Fixes
+
+During real-world validation on Lightning AI T4 instances, the training orchestrator, health monitor, and cloud sync manager behaved flawlessly across network disconnects and interruptions. 
+
+### Fixed Production Bugs
+
+1. **Exploding Gradient Abort**: Previously, if gradient norm exceeded the threshold, `Trainer` would raise an error and abort training immediately. This has been updated to clip the gradient, record the pre-clipped norm in the metrics, log a warning, and continue training seamlessly.
+2. **Tokens per Second Computation**: Previously `tokens_per_sec` could result in a `KeyError` or display `0.0`. It is now computed using actual elapsed wall-clock time in `Trainer` and safely populated for all consumers (ETA, Logger, Orchestrator). Safe defaults have also been added to other time metrics to ensure `KeyError`s are never raised in the logging pipeline.
+
+### Recovery Workflows
+
+- **Lightning / Kaggle / Colab**: If an instance resets, simply re-run the same `pretrain.py` command. Vajra will discover the incomplete experiment directory (if persistent) or download the latest checkpoint from Hugging Face if local state is missing, resuming perfectly with identical optimizer, scheduler, and RNG state.

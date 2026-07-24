@@ -85,6 +85,7 @@ class MetricsTracker:
         tokens_in_step: int,
         samples_in_step: int,
         grad_norm: float = 0.0,
+        tokens_per_sec: float = 0.0,
         val_loss: Optional[float] = None,
     ) -> Dict[str, Any]:
         metrics = {
@@ -93,6 +94,7 @@ class MetricsTracker:
             "tokens_processed": tokens_in_step,
             "samples_processed": samples_in_step,
             "grad_norm": grad_norm,
+            "tokens_per_sec": tokens_per_sec,
             "val_loss": val_loss,
         }
         self.log(step, metrics)

@@ -169,8 +169,8 @@ class Trainer:
                 raise ValueError(f"[EARLY FAILURE] Training aborted at rank {self.rank}, step {step}: Gradient norm is NaN/Inf.")
 
             if grad_norm > self.max_grad_norm_threshold:
-                raise ValueError(
-                    f"[EARLY FAILURE] Training aborted at rank {self.rank}, step {step}: Exploding gradient norm ({grad_norm:.2f} > {self.max_grad_norm_threshold})."
+                logger.warning(
+                    f"[WARNING] Step {step}: Gradient norm ({grad_norm:.2f}) exceeded threshold ({self.max_grad_norm_threshold}). Pre-clipped value recorded."
                 )
 
             # Update learning rate
@@ -193,6 +193,10 @@ class Trainer:
             tokens_in_step = batch_size * seq_len * self.grad_accum_steps
             samples_in_step = batch_size * self.grad_accum_steps
 
+            # Calculate tokens_per_sec using elapsed time
+            elapsed_time = time.time() - step_start_t
+            tokens_per_sec = tokens_in_step / elapsed_time if elapsed_time > 0 else 0.0
+
             metrics = self.metrics_tracker.record_step(
                 step=step,
                 loss=self.accumulated_loss,
@@ -200,6 +204,7 @@ class Trainer:
                 tokens_in_step=tokens_in_step,
                 samples_in_step=samples_in_step,
                 grad_norm=grad_norm,
+                tokens_per_sec=tokens_per_sec,
             )
 
             step_loss = self.accumulated_loss
@@ -218,11 +223,21 @@ class Trainer:
                 metrics["eta_hours"] = (steps_remaining * time_per_step) / 3600.0
 
             metrics["timing"] = {
-                "step_time_ms": round((time.time() - step_start_t) * 1000, 2),
+                "step_time_ms": round(elapsed_time * 1000, 2),
                 "forward_time_ms": round(fwd_time * 1000, 2),
                 "backward_time_ms": round(bwd_time * 1000, 2),
                 "optimizer_time_ms": round(opt_time * 1000, 2),
             }
+            # Ensure safe fallback keys per logging review
+            metrics["step_time"] = elapsed_time
+            metrics["forward_time"] = fwd_time
+            metrics["backward_time"] = bwd_time
+            metrics["optimizer_time"] = opt_time
+            if "gpu_mem_allocated_mb" not in metrics:
+                metrics["gpu_mem_allocated_mb"] = 0.0
+            if "gpu_mem_reserved_mb" not in metrics:
+                metrics["gpu_mem_reserved_mb"] = 0.0
+
             return metrics
 
         return None
