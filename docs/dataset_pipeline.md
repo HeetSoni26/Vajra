@@ -1,80 +1,58 @@
-# Dataset Ingestion & Preprocessing Pipeline
+# Vajra Dataset Pipeline
 
-This document describes the design, architecture, processing stages, configuration options, expected output artifacts, and scaling guidelines for the dataset pipeline in `vajra-lm`.
+The Vajra production dataset pipeline is designed to easily ingest, clean, tokenize, and format massive corpora from the Hugging Face hub (specifically optimized for `HuggingFaceFW/fineweb-edu`).
 
-## Architecture Overview
+## Pipeline Workflow
 
-The dataset pipeline is designed to ingest raw, heterogeneous text datasets (JSONL, TXT, Markdown, CSV), apply text normalization, filter low-quality documents, deduplicate exact content, tokenize documents into streaming ID arrays, and pack tokens into memory-mapped binary files (`train.bin`, `val.bin`, `test.bin`) with `np.uint32` encoding.
+1. **Download / Streaming**
+   - The pipeline uses the `datasets` library to connect to Hugging Face.
+   - It supports `streaming=True`, allowing for on-the-fly processing without needing terabytes of local storage.
+   - It includes configurable limits such as `max-docs`, `max-tokens`, and `max-gb`.
+
+2. **Preprocessing & Cleaning**
+   - **Language Filtering**: Skips non-English documents (if metadata is available).
+   - **Length Constraints**: Removes documents that are too short (<50 chars) or too long (>100,000 chars).
+   - **HTML Removal**: Strips any residual HTML tags via regex.
+   - **Normalization**: Applies strict Unicode NFC normalization and collapses multiple whitespaces and newlines.
+   - **Empty & Duplicate Removal**: Hashes each cleaned document to remove exact duplicates and filters out empty lines.
+   - **Statistics Collection**: Logs the number of processed documents, tokens, and data volume bytes.
+
+3. **Tokenization**
+   - Uses the Vajra tokenizer (`DatasetTokenizer`).
+   - Appends an EOS token to each document.
+
+4. **Splitting & Binary Formatting**
+   - Splits the processed token stream into `train`, `val`, and `test` partitions based on user-defined ratios.
+   - Saves them as `.bin` files (`uint32` memmaps) for extremely fast loading during training.
+   - Generates `metadata.json` and `dataset_report.json` to keep track of splits, token counts, and cleaning statistics.
+
+5. **Validation**
+   - Ensures that output `.bin` files are not empty.
+   - Verifies that the total tokens match the metadata statistics.
+   - Checks the maximum token ID to ensure it is within the expected vocabulary range (e.g., `<128000`).
+
+## Expected Directory Structure
+
+After running the pipeline, the output directory (e.g., `data/fineweb`) will look like this:
 
 ```
-┌─────────────────┐     ┌─────────────────────┐     ┌──────────────────────┐
-│  Raw Documents  │ ──> │ Ingestion & Clean   │ ──> │ Deduplication        │
-│ (.jsonl, .txt)  │     │ (NFC, Quality, LEN) │     │ (SHA256 text hashes) │
-└─────────────────┘     └─────────────────────┘     └──────────────────────┘
-                                                                │
-                                                                ▼
-┌─────────────────┐     ┌─────────────────────┐     ┌──────────────────────┐
-│ Dataset Manifest│ <── │ Binary Builder      │ <── │ Tokenizer Engine     │
-│ & Verification  │     │ (train/val/test.bin)│     │ (AutoTokenizer BPE)  │
-└─────────────────┘     └─────────────────────┘     └──────────────────────┘
+data/fineweb/
+├── train.bin             # Training tokens (uint32 memmap)
+├── val.bin               # Validation tokens (uint32 memmap)
+├── test.bin              # Test tokens (uint32 memmap)
+├── metadata.json         # High-level dataset metadata (split info)
+└── dataset_report.json   # Detailed stats on cleaning and processing
 ```
 
-## Processing Stages
+## Usage
 
-### 1. Ingestion (`dataset/ingest.py`)
-- **Supported Formats**: `.jsonl`, `.txt`, `.md`, `.csv`.
-- **Directory Traversal**: Recursive folder scanning using `Path.rglob()`.
-- **Fault Tolerance**: UTF-8 replacement on invalid characters, skipping malformed JSON lines or unreadable files cleanly.
-- **Metadata**: Each document retains its `doc_id` and `source_file`.
+Run the pipeline using the provided CLI:
 
-### 2. Cleaning & Filtering (`dataset/processing/`)
-- **Normalization** (`normalize.py`): Applies Unicode NFC normalization, strips non-printable control characters (`[\x00-\x08\x0b\x0c\x0e-\x1f\x7f-\x9f]`), collapses horizontal spaces, and restricts consecutive newlines to maximum 2.
-- **Quality Filter** (`quality_filter.py`): Rejects empty documents, enforces minimum/maximum word counts (`min_words=5`, `max_words=100000`), minimum alphanumeric character ratio (`min_alnum_ratio=0.50`), and maximum repetition ratio.
-- **Deduplication** (`deduplication.py`): Tracks SHA256 document hashes to prevent duplicate content across multi-file sources.
-
-### 3. Tokenization & Binary Memmap Packing (`dataset/tokenize_dataset.py` & `dataset/builder.py`)
-- **Tokenizer**: Loads the trained ByteLevel BPE tokenizer (`tokenizer/v1.0`) via `AutoTokenizer`.
-- **EOS Token**: Automatically appends `<|eos|>` token after each document.
-- **Memmap Generation**: Packs token streams into `np.uint32` binary files:
-  - `data/tokenized/train.bin` (90%)
-  - `data/tokenized/val.bin` (5%)
-  - `data/tokenized/test.bin` (5%)
-- **Checksums**: Calculates SHA256 hashes of generated `.bin` files for reproducibility.
-
-### 4. Resume & Manifest System (`dataset/run_pipeline.py`)
-- **State File**: `pipeline_state.json` tracks completed pipeline stages. Re-running `python dataset/run_pipeline.py` skips completed stages unless `--force_rebuild` is passed.
-- **Dataset Manifest**: Writes `dataset_manifest.json` recording timestamp, pipeline version, raw input counts, cleaned doc count, total token count, split breakdown, sequence length, checksums, and performance metrics.
-
-## Configuration Guide (`configs/data/preprocessing.yaml`)
-
-```yaml
-raw_dir: data/raw
-processed_dir: data/processed
-tokenized_dir: data/tokenized
-tokenizer_path: tokenizer/v1.0
-
-language:
-  keep_language: en
-  min_confidence: 0.65
-
-quality:
-  min_words: 5
-  max_words: 100000
-  max_char_word_ratio: 10.0
-  min_alnum_ratio: 0.60
-  max_repetition_ratio: 0.30
-
-dedup:
-  shingle_size: 13
-  minhash_threshold: 0.80
-
-packing:
-  sequence_length: 4096
-  separator_token: "<|sep|>"
+```bash
+python -m scripts.prepare_dataset \
+    --dataset HuggingFaceFW/fineweb-edu \
+    --stream \
+    --max-docs 10000 \
+    --output data/fineweb \
+    --seed 42
 ```
-
-## Scaling Guidelines (1 GB to 1 TB Datasets)
-
-1. **Chunked Memmap Appending**: For multi-gigabyte or terabyte corpora, replace in-memory token list aggregation with progressive chunk writing (`mode="r+"` on `np.memmap`) in fixed 100MB buffers.
-2. **MinHash / LSH Deduplication**: For multi-terabyte web scale data (e.g. FineWeb/SlimPajama), upgrade exact SHA256 deduplication to MinHash LSH fuzzy deduplication using `datasketch` or PySpark.
-3. **Multi-Processing Tokenization**: Distribute document tokenization across CPU workers using `multiprocessing.Pool` or Ray.

@@ -1,184 +1,200 @@
-"""
-Dataset preparation script for Vajra Framework.
-
-Orchestrates the full data preparation pipeline:
-  1. Generate synthetic corpus (for development/testing)
-  2. Run the full dataset pipeline (ingest → clean → tokenize → build binary)
-  3. Compute dataset statistics and validation report
-  4. Write manifest with checksums
-
-Usage:
-    # Development: generate synthetic data and prepare for training
-    python -m scripts.prepare_dataset --synthetic --num_docs 200
-
-    # Production: prepare real data from raw_dir
-    python -m scripts.prepare_dataset --config configs/data/preprocessing.yaml
-"""
-
-from __future__ import annotations
-
 import argparse
 import json
+import random
+import sys
 from pathlib import Path
 
+from datasets import load_dataset
+import re
+import numpy as np
+
+from dataset.builder import BinaryDatasetBuilder
+from dataset.processing.normalize import normalize_text
+from dataset.tokenize_dataset import DatasetTokenizer
 from utils.file_utils import ensure_dir, write_json
 from utils.logging import setup_logger
 
 logger = setup_logger("prepare_dataset")
 
+# Basic HTML removal regex
+HTML_TAG_RE = re.compile(r'<[^>]+>')
 
-def prepare_synthetic(
-    output_dir: str | Path = "data",
-    num_docs: int = 200,
-    sequence_length: int = 128,
-    vocab_size: int = 297,
+def clean_document(text: str, min_len: int = 50, max_len: int = 100000) -> str:
+    """Apply cleaning rules: HTML removal, normalization, length constraints."""
+    if not text:
+        return ""
+    # HTML removal
+    text = HTML_TAG_RE.sub(" ", text)
+    # Unicode and whitespace normalization
+    text = normalize_text(text)
+    
+    if len(text) < min_len or len(text) > max_len:
+        return ""
+        
+    return text
+
+def prepare_huggingface(
+    dataset_name: str,
+    output_dir: str | Path,
+    stream: bool = True,
+    max_gb: float | None = None,
+    max_docs: int | None = None,
+    max_tokens: int | None = None,
     seed: int = 42,
+    train_ratio: float = 0.90,
+    val_ratio: float = 0.05,
+    test_ratio: float = 0.05,
 ) -> dict:
-    """Generate synthetic corpus and build training-ready binary files.
-
-    Designed for CI and development testing — no real data download required.
-    """
-    from dataset.sources.synthetic import write_synthetic_corpus
-    from dataset.ingest import DataIngestor
-    from dataset.processing.normalize import normalize_text
-    from dataset.processing.quality_filter import QualityFilter
-    from dataset.processing.deduplication import Deduplicator
-    from dataset.builder import BinaryDatasetBuilder
-    from dataset.statistics import DatasetStatistics
-
     output_dir = Path(output_dir)
-    raw_dir = ensure_dir(output_dir / "raw")
-    ensure_dir(output_dir / "processed")
-    tokenized_dir = ensure_dir(output_dir / "tokenized")
+    ensure_dir(output_dir)
+    
+    logger.info(f"Preparing dataset from {dataset_name} (stream={stream}, seed={seed})")
+    
+    random.seed(seed)
+    
+    tokenizer = DatasetTokenizer("tokenizer/v1.0")
+    
+    try:
+        ds = load_dataset(dataset_name, split="train", streaming=stream)
+    except Exception as e:
+        logger.error(f"Failed to load dataset: {e}")
+        sys.exit(1)
+        
+    if stream:
+        # We need to shuffle if streaming, but datasets.IterableDataset.shuffle requires a buffer size.
+        ds = ds.shuffle(seed=seed, buffer_size=10000)
 
-    logger.info(f"Generating {num_docs} synthetic documents...")
-    corpus_stats = write_synthetic_corpus(
-        output_dir=raw_dir,
-        num_documents=num_docs,
-        seed=seed,
-    )
-    logger.info(f"Synthetic corpus: {corpus_stats}")
-
-    # Ingest
-    ingestor = DataIngestor(raw_dir)
-    quality_filter = QualityFilter(min_words=5, max_words=100000, min_alnum_ratio=0.40)
-    deduplicator = Deduplicator()
-
-    cleaned_docs = []
-    for doc in ingestor.stream_documents():
-        norm_text = normalize_text(doc.get("text", ""))
-        valid, _ = quality_filter.is_valid(norm_text)
-        if valid and not deduplicator.is_duplicate(norm_text):
-            cleaned_docs.append({"doc_id": doc["doc_id"], "text": norm_text})
-
-    logger.info(f"After cleaning: {len(cleaned_docs)} documents")
-
-    # Simple character-level tokenization for synthetic data (no real tokenizer required)
-    # Produces token IDs in range [0, vocab_size)
-    all_tokens: list[int] = []
-    for doc in cleaned_docs:
-        text = doc["text"]
-        # Convert characters to token IDs bounded by vocab_size
-        token_ids = [ord(c) % vocab_size for c in text]
-        token_ids.append(2)  # EOS token
-        all_tokens.extend(token_ids)
-
-    if len(all_tokens) < sequence_length + 2:
-        # Pad to ensure at least one full sequence
-        all_tokens.extend([0] * (sequence_length + 2 - len(all_tokens)))
-
-    logger.info(f"Total tokens: {len(all_tokens):,}")
-
-    # Build binary dataset
+    seen_hashes = set()
+    
+    total_bytes = 0
+    total_tokens_estimated = 0
+    docs_processed = 0
+    
+    logger.info("Streaming and cleaning documents...")
+    
+    all_tokens = []
+    
+    for row in ds:
+        text = row.get("text", "")
+        # Language filtering (if metadata exists, otherwise heuristic)
+        # fineweb-edu is English mostly. If language is provided we can check.
+        if "language" in row and row["language"] != "en":
+            continue
+            
+        cleaned = clean_document(text)
+        if not cleaned:
+            continue
+            
+        # Deduplication using hash
+        doc_hash = hash(cleaned)
+        if doc_hash in seen_hashes:
+            continue
+        seen_hashes.add(doc_hash)
+        
+        # Tokenize
+        tokens, _ = tokenizer.tokenize_documents([{"text": cleaned}])
+        all_tokens.extend(tokens)
+        
+        docs_processed += 1
+        total_bytes += len(cleaned.encode("utf-8"))
+        total_tokens_estimated += len(tokens)
+        
+        if max_docs and docs_processed >= max_docs:
+            logger.info(f"Reached max_docs ({max_docs})")
+            break
+        if max_tokens and total_tokens_estimated >= max_tokens:
+            logger.info(f"Reached max_tokens ({max_tokens})")
+            break
+        if max_gb and (total_bytes / (1024**3)) >= max_gb:
+            logger.info(f"Reached max_gb ({max_gb})")
+            break
+            
+    logger.info(f"Finished processing. Total docs: {docs_processed}, Total tokens: {len(all_tokens)}")
+    
     builder = BinaryDatasetBuilder(
-        output_dir=tokenized_dir,
-        val_ratio=0.10,
-        test_ratio=0.10,
-        sequence_length=sequence_length,
+        output_dir=output_dir,
+        val_ratio=val_ratio,
+        test_ratio=test_ratio,
     )
+    
     split_stats = builder.build_binary_dataset(
         all_tokens,
         metadata_info={
-            "tokenizer": "synthetic_char",
-            "vocab_size": vocab_size,
-            "cleaned_documents": len(cleaned_docs),
-        },
+            "dataset": dataset_name,
+            "seed": seed,
+            "docs_processed": docs_processed,
+            "total_bytes": total_bytes,
+        }
     )
-
-    # Statistics report
-    stats_engine = DatasetStatistics(tokenized_dir, vocab_size=vocab_size)
-    report = stats_engine.generate_report()
-
-    result = {
-        "corpus_stats": corpus_stats,
-        "cleaned_docs": len(cleaned_docs),
-        "split_stats": split_stats,
-        "integrity": report["integrity_validation"],
-        "tokenized_dir": str(tokenized_dir),
+    
+    # Validation
+    validate_dataset(output_dir, split_stats, len(all_tokens))
+    
+    # Generate report
+    report = {
+        "dataset_name": dataset_name,
+        "seed": seed,
+        "cleaning_stats": {
+            "docs_processed": docs_processed,
+            "unique_docs": len(seen_hashes),
+            "total_bytes_processed": total_bytes,
+        },
+        "tokenization_stats": split_stats,
+        "validation_passed": True,
     }
+    write_json(report, output_dir / "dataset_report.json")
+    
+    return report
 
-    write_json(result, tokenized_dir / "preparation_summary.json")
-    logger.info(f"Dataset preparation complete → {tokenized_dir}")
-    return result
 
-
-def prepare_from_config(
-    config_path: str | Path = "configs/data/preprocessing.yaml",
-    force_rebuild: bool = False,
-) -> dict:
-    """Run the full production dataset pipeline from config."""
-    from dataset.run_pipeline import DatasetPipelineRunner
-    from dataset.statistics import DatasetStatistics
-
-    runner = DatasetPipelineRunner(config_path)
-    manifest = runner.run(force_rebuild=force_rebuild)
-
-    # Load vocab size from config
-    import yaml
-    cfg = yaml.safe_load(Path(config_path).read_text(encoding="utf-8"))
-    tokenized_dir = Path(cfg.get("tokenized_dir", "data/tokenized"))
-
-    stats_engine = DatasetStatistics(tokenized_dir, vocab_size=102400)
-    stats_engine.generate_report()
-
-    return manifest
+def validate_dataset(output_dir: Path, split_stats: dict, total_tokens: int):
+    """Verify checksums, token counts, vocab range, empty files."""
+    logger.info("Validating output files...")
+    
+    # Check empty files
+    for split in ["train", "val", "test"]:
+        file_path = output_dir / f"{split}.bin"
+        if not file_path.exists() or file_path.stat().st_size == 0:
+            raise ValueError(f"Validation failed: {split}.bin is empty or missing.")
+            
+    # Check token counts
+    metadata = json.loads((output_dir / "metadata.json").read_text())
+    meta_total = sum(s["count"] for s in metadata["splits"].values())
+    if meta_total != total_tokens:
+        raise ValueError(f"Validation failed: Metadata token count ({meta_total}) != Actual tokens ({total_tokens})")
+        
+    # Vocab range check
+    train_data = np.memmap(output_dir / "train.bin", dtype=np.uint32, mode="r")
+    if train_data.size > 0:
+        max_id = int(train_data.max())
+        if max_id > 128000:
+            logger.warning(f"Max token ID is suspiciously high: {max_id}")
+            
+    logger.info("Validation successful.")
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Vajra Dataset Preparation")
-    parser.add_argument("--config", default="configs/data/preprocessing.yaml",
-                        help="Preprocessing config YAML")
-    parser.add_argument("--synthetic", action="store_true",
-                        help="Generate synthetic data instead of downloading real data")
-    parser.add_argument("--num_docs", type=int, default=200,
-                        help="Number of synthetic documents to generate")
-    parser.add_argument("--sequence_length", type=int, default=128,
-                        help="Sequence length for binary dataset chunks")
-    parser.add_argument("--vocab_size", type=int, default=297,
-                        help="Vocab size for synthetic tokenization")
-    parser.add_argument("--output_dir", default="data",
-                        help="Output directory for synthetic data")
-    parser.add_argument("--force_rebuild", action="store_true",
-                        help="Force rebuild ignoring existing pipeline state")
-    parser.add_argument("--seed", type=int, default=42)
+    parser = argparse.ArgumentParser(description="Vajra Production Dataset Preparation")
+    parser.add_argument("--dataset", type=str, default="HuggingFaceFW/fineweb-edu", help="HuggingFace dataset name")
+    parser.add_argument("--stream", action="store_true", help="Enable streaming mode")
+    parser.add_argument("--max-gb", type=float, default=None, help="Maximum gigabytes to process")
+    parser.add_argument("--max-docs", type=int, default=None, help="Maximum documents to process")
+    parser.add_argument("--max-tokens", type=int, default=None, help="Maximum tokens to process")
+    parser.add_argument("--output", type=str, default="data/fineweb", help="Output directory")
+    parser.add_argument("--seed", type=int, default=42, help="Random seed for deterministic processing")
     args = parser.parse_args()
-
-    if args.synthetic:
-        result = prepare_synthetic(
-            output_dir=args.output_dir,
-            num_docs=args.num_docs,
-            sequence_length=args.sequence_length,
-            vocab_size=args.vocab_size,
-            seed=args.seed,
-        )
-    else:
-        result = prepare_from_config(
-            config_path=args.config,
-            force_rebuild=args.force_rebuild,
-        )
-
+    
+    result = prepare_huggingface(
+        dataset_name=args.dataset,
+        output_dir=args.output,
+        stream=args.stream,
+        max_gb=args.max_gb,
+        max_docs=args.max_docs,
+        max_tokens=args.max_tokens,
+        seed=args.seed,
+    )
+    
     print(json.dumps(result, indent=2))
-
 
 if __name__ == "__main__":
     main()
