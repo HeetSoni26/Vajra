@@ -4,7 +4,7 @@
   "package_version": "1.0.0",
   "architecture": "vajra-lm-tiny",
   "parameter_count": 90317312,
-  "git_commit_hash": "4142456",
+  "git_commit_hash": "9136b1f",
   "training_config": {
     "model_config": "configs/model/model_tiny.yaml",
     "data_dir": "dataset/production",
@@ -63,7 +63,7 @@
   "tokens_seen": 64000,
   "evaluation_timestamp": "2026-07-24T22:22:49Z",
   "benchmark_timestamp": "2026-07-24T22:23:12Z",
-  "packaging_timestamp": "2026-07-24T23:05:16Z",
+  "packaging_timestamp": "2026-07-24T23:17:34Z",
   "files": {
     "benchmark.json": {
       "size_bytes": 647,
@@ -87,7 +87,7 @@
     },
     "metadata.json": {
       "size_bytes": 318,
-      "sha256": "b40caa8d23dbd300c7573943050a11f273951713336a0d9a57b9831cfde8f92e"
+      "sha256": "745f9ba2e0294c7c6d7f3bff3ef20932b4e1b4a9d0c01944aca3b1ed0847e5b7"
     },
     "model.safetensors": {
       "size_bytes": 361277520,
@@ -99,7 +99,7 @@
     },
     "README.md": {
       "size_bytes": 3413,
-      "sha256": "261ccde346094aeaffd2396d4c3a94367f7caacbe2d86c76d51538d109490784"
+      "sha256": "af75565d379704917b6149ee4ef0ce6462ad538f2da653dfe19ff1d87d9ce19c"
     },
     "special_tokens_map.json": {
       "size_bytes": 90,

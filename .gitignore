@@ -39,6 +39,8 @@ Thumbs.db
 *.gguf
 *.zst
 *.pt
+!release/**/*.safetensors
+!release/**/*.bin
 
 # Outputs & Reports
 benchmark_report.json

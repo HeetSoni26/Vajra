@@ -1,0 +1,2 @@
+release/**/*.safetensors filter=lfs diff=lfs merge=lfs -text
+release/**/*.bin filter=lfs diff=lfs merge=lfs -text
