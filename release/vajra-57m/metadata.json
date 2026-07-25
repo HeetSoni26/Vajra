@@ -2,7 +2,7 @@
   "architecture": "vajra-lm-tiny",
   "checkpoint_step": 250,
   "dataset": "production",
-  "git_commit_hash": "fd4b18c",
+  "git_commit_hash": "e49fd7e",
   "model_name": "vajra-57m",
   "package_version": "1.0.0",
   "packaging_timestamp": "2026-01-01T00:00:00Z",
