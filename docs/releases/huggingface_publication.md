@@ -21,7 +21,7 @@
 | `tokenizer_config.json` | JSON | Tokenizer Configuration & Special Tokens | **VERIFIED (SHA-256)** |
 | `special_tokens_map.json` | JSON | Vocabulary Special Token Mapping | **VERIFIED (SHA-256)** |
 | `README.md` | Markdown + YAML | Hugging Face Model Card with Frontmatter | **VERIFIED (SHA-256)** |
-| `LICENSE` | Text | MIT Open-Source License | **VERIFIED (SHA-256)** |
+| `LICENSE` | Text | Apache License 2.0 | **VERIFIED (SHA-256)** |
 | `manifest.json` | JSON | Release Package Manifest & Timestamps | **VERIFIED (SHA-256)** |
 | `metadata.json` | JSON | Extended Model Specifications | **VERIFIED (SHA-256)** |
 | `benchmark.json` | JSON | First-Token Latency & Generation Benchmarks | **VERIFIED (SHA-256)** |
@@ -40,7 +40,7 @@
 ---
 language:
 - en
-license: mit
+license: apache-2.0
 library_name: vajra
 pipeline_tag: text-generation
 tags:

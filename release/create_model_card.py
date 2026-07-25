@@ -44,7 +44,7 @@ class ModelCardGenerator:
         frontmatter = f"""---
 language:
 - en
-license: mit
+license: apache-2.0
 library_name: vajra
 pipeline_tag: text-generation
 tags:
@@ -70,7 +70,7 @@ It is designed for efficient autoregressive sequence modeling, optimized for bot
 - **Model Type**: Transformer-based Causal Language Model
 - **Parameters**: {param_str}
 - **Language**: English
-- **License**: MIT License
+- **License**: Apache License 2.0
 
 ---
 
@@ -157,7 +157,7 @@ It is designed for efficient autoregressive sequence modeling, optimized for bot
 ---
 
 ## License
-This model and its weights are released under the [MIT License](LICENSE).
+This model and its weights are released under the [Apache License 2.0](LICENSE).
 
 ---
 

@@ -1,7 +1,7 @@
 ---
 language:
 - en
-license: mit
+license: apache-2.0
 library_name: vajra
 pipeline_tag: text-generation
 tags:
@@ -24,7 +24,7 @@ It is designed for efficient autoregressive sequence modeling, optimized for bot
 - **Model Type**: Transformer-based Causal Language Model
 - **Parameters**: 90,317,312
 - **Language**: English
-- **License**: MIT License
+- **License**: Apache License 2.0
 
 ---
 
@@ -104,14 +104,14 @@ vajra-57m utilizes a modern decoder-only Transformer architecture with the follo
 ---
 
 ## Reproducibility Information
-- **Git Commit Hash**: `bc6ceee`
+- **Git Commit Hash**: `06ac533`
 - **Package Version**: `1.0.0`
 - **Packaging Timestamp**: `2026-01-01T00:00:00Z`
 
 ---
 
 ## License
-This model and its weights are released under the [MIT License](LICENSE).
+This model and its weights are released under the [Apache License 2.0](LICENSE).
 
 ---
 

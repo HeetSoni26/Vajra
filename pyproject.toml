@@ -6,6 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "vajra-lm"
 version = "1.0.0"
 description = "Vajra v1.0.0 - A 1B-2B open-source foundation language model and autonomous agent framework."
+license = { text = "Apache-2.0" }
 requires-python = ">=3.10"
 dependencies = [
   "torch>=2.3",

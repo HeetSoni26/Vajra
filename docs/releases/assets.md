@@ -19,7 +19,7 @@ This document defines the complete asset manifest and distribution inventory acc
 | `manifest.json` | JSON | Full file inventory manifest with byte sizes and SHA-256 signatures. |
 | `checksums.txt` | Text | Plaintext SHA-256 checksum signatures for all package files. |
 | `README.md` | Markdown | Hugging Face Model Card with YAML frontmatter. |
-| `LICENSE` | Text | MIT Software License. |
+| `LICENSE` | Text | Apache License 2.0. |
 
 ---
 

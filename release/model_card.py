@@ -43,7 +43,7 @@ class ModelCardGenerator:
 This model is a base foundation model and has not undergone safety alignment or instruction tuning. It may produce inaccurate, biased, or inappropriate content.
 
 ## License
-MIT License (or equivalent Open Source License).
+Apache License 2.0.
 
 ## Citation
 ```bibtex

@@ -141,7 +141,7 @@ def package_model(
         content = root_license.read_text(encoding="utf-8")
         write_deterministic_text(output_dir / "LICENSE", content)
     else:
-        write_deterministic_text(output_dir / "LICENSE", "Apache License 2.0 / MIT License\n")
+        write_deterministic_text(output_dir / "LICENSE", "Apache License 2.0\n")
 
     # 2. Save Tokenizer Files
     for tok_file in ["tokenizer.json", "tokenizer_config.json", "special_tokens_map.json"]:

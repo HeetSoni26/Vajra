@@ -1,7 +1,7 @@
 # Vajra: Scalable Foundation Language Model Framework
 
 [![Python Version](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Tests: Passing](https://img.shields.io/badge/tests-248%20passed-brightgreen.svg)](#testing)
 [![Release Verification](https://img.shields.io/badge/release%20verification-8%2F8%20passed-success.svg)](#release-pipeline)
 [![Release: v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue.svg)](RELEASE_NOTES.md)
@@ -364,7 +364,7 @@ For the detailed revision history, see [CHANGELOG.md](CHANGELOG.md).
 
 ## License
 
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the **Apache License 2.0** - see the [LICENSE](LICENSE) file for details.
 
 ---
 

@@ -31,7 +31,7 @@ class ReleasePackager:
         if root_license.exists():
             (self.output_dir / "LICENSE").write_text(root_license.read_text(encoding="utf-8"), encoding="utf-8")
         else:
-            (self.output_dir / "LICENSE").write_text("MIT License / Apache 2.0 License\n", encoding="utf-8")
+            (self.output_dir / "LICENSE").write_text("Apache License 2.0\n", encoding="utf-8")
 
         return self.output_dir
 

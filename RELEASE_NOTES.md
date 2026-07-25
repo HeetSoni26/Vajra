@@ -57,5 +57,5 @@ We are thrilled to present the official **v1.0.0** release of **Vajra**, an open
 
 - **Release Version**: `v1.0.0`
 - **Git Commit Hash**: `9b4ffafecd784387446a008c40081477a3649811`
-- **License**: [MIT License](LICENSE)
+- **License**: [Apache License 2.0](LICENSE)
 - **Documentation**: [Full Technical Docs Index](docs/README.md)
