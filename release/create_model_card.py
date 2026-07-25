@@ -60,6 +60,10 @@ model-index:
 
         # Header & Overview
         content = frontmatter + f"""
+<p align="center">
+  <img src="https://raw.githubusercontent.com/HeetSoni26/Vajra/main/branding/social-banner.png" alt="Vajra Banner" width="100%">
+</p>
+
 # {model_name}
 
 ## Overview

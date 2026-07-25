@@ -1,3 +1,11 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="branding/logo-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="branding/logo-light.svg">
+    <img alt="Vajra Logo" src="branding/logo-dark.svg" width="600">
+  </picture>
+</p>
+
 # Vajra: Scalable Foundation Language Model Framework
 
 [![Python Version](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)

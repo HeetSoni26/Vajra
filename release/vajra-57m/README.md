@@ -14,6 +14,10 @@ model-index:
   results: []
 ---
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/HeetSoni26/Vajra/main/branding/social-banner.png" alt="Vajra Banner" width="100%">
+</p>
+
 # vajra-57m
 
 ## Overview
@@ -104,7 +108,7 @@ vajra-57m utilizes a modern decoder-only Transformer architecture with the follo
 ---
 
 ## Reproducibility Information
-- **Git Commit Hash**: `06ac533`
+- **Git Commit Hash**: `c05db82`
 - **Package Version**: `1.0.0`
 - **Packaging Timestamp**: `2026-01-01T00:00:00Z`
 

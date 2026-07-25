@@ -12,8 +12,8 @@
       "size_bytes": 10173
     },
     "README.md": {
-      "sha256": "9b3026c3e5020154f8433d50f2830ed37be838822f1c4dc21cf21ffe5df6daa2",
-      "size_bytes": 3300
+      "sha256": "0131e8e8fd550fbeece0712455fbfe6c78960a7c2d512afa7e88cb697e1dd2b9",
+      "size_bytes": 3454
     },
     "benchmark.json": {
       "sha256": "070ceb416520b79f08e8bb49c4a3cf6c2ad7a5745a1e78034345fd38415a3967",
@@ -32,7 +32,7 @@
       "size_bytes": 174
     },
     "metadata.json": {
-      "sha256": "60e9051cfbf5e54bf0c797a96825a2e5d25f1188ce98308c6b781eabf4c96234",
+      "sha256": "e58063aa6580bad6e79ee1bee5fe8830988fe7d840d8984f4e0b8541dcf5eab5",
       "size_bytes": 308
     },
     "model.safetensors": {
@@ -68,7 +68,7 @@
       "size_bytes": 970
     }
   },
-  "git_commit_hash": "06ac533",
+  "git_commit_hash": "c05db82",
   "model_config": {
     "activation_function": "swiglu",
     "architectures": [
