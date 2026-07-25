@@ -1,9 +1,5 @@
 <p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="branding/logo-dark.svg">
-    <source media="(prefers-color-scheme: light)" srcset="branding/logo-light.svg">
-    <img alt="Vajra Logo" src="branding/logo-dark.svg" width="600">
-  </picture>
+  <img src="branding/logo.png" alt="Vajra Logo" width="600">
 </p>
 
 # Vajra: Scalable Foundation Language Model Framework
