@@ -104,7 +104,7 @@ vajra-57m utilizes a modern decoder-only Transformer architecture with the follo
 ---
 
 ## Reproducibility Information
-- **Git Commit Hash**: `e49fd7e`
+- **Git Commit Hash**: `bc6ceee`
 - **Package Version**: `1.0.0`
 - **Packaging Timestamp**: `2026-01-01T00:00:00Z`
 
